@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CodeImage/Code-Image.iml" filepath="$PROJECT_DIR$/CodeImage/Code-Image.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CodeImage/CodeImage.iml" filepath="$PROJECT_DIR$/CodeImage/CodeImage.iml" />
       <module fileurl="file://$PROJECT_DIR$/Excel/Excel.iml" filepath="$PROJECT_DIR$/Excel/Excel.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/GaticoProject.iml" filepath="$PROJECT_DIR$/.idea/GaticoProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/Mail/Mail.iml" filepath="$PROJECT_DIR$/Mail/Mail.iml" />

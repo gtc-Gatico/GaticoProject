@@ -7,14 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Test" />
-        <module name="Code-Image" />
+        <module name="CodeImage" />
         <module name="Excel" />
         <module name="Mail" />
         <module name="splunk" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Code-Image" target="1.8" />
+      <module name="CodeImage" target="1.8" />
       <module name="Excel" target="1.8" />
       <module name="GaticoProject" target="1.8" />
       <module name="Mail" target="1.8" />
@@ -24,7 +24,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Code-Image" options="-parameters" />
+      <module name="CodeImage" options="-parameters" />
       <module name="Excel" options="-parameters" />
       <module name="Mail" options="-parameters" />
       <module name="Test" options="-parameters" />
