@@ -1,6 +1,5 @@
 # GaticoProject
 个人的测试代码
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
