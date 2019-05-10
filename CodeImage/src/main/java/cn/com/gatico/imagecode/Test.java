@@ -3,6 +3,10 @@ package cn.com.gatico.imagecode;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,12 +18,13 @@ public class Test {
         createCodeImg2();
 
     }
+
     public static void createCodeImg2() {
         int width = 400, height = 400;
         BufferedImage bufferimg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = bufferimg.createGraphics();
         g2d.setBackground(Color.green);
-
+        g2d.drawString("I love China",1,1);
         bufferimg.flush();
         try {
             ImageIO.write(bufferimg, "PNG", new File("/home/tianci.gao/test/test2.PNG"));
@@ -27,6 +32,7 @@ public class Test {
             e.printStackTrace();
         }
     }
+
     public static void createCodeImg() {
         try {
             int width = 400, height = 400;

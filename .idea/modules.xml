@@ -7,7 +7,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/GaticoProject.iml" filepath="$PROJECT_DIR$/.idea/GaticoProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/Mail/Mail.iml" filepath="$PROJECT_DIR$/Mail/Mail.iml" />
       <module fileurl="file://$PROJECT_DIR$/Test/Test.iml" filepath="$PROJECT_DIR$/Test/Test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebSocket/WebSocket.iml" filepath="$PROJECT_DIR$/WebSocket/WebSocket.iml" />
       <module fileurl="file://$PROJECT_DIR$/splunk/splunk.iml" filepath="$PROJECT_DIR$/splunk/splunk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Websocket-demo/websocket-demo.iml" filepath="$PROJECT_DIR$/Websocket-demo/websocket-demo.iml" />
     </modules>
   </component>
 </project>

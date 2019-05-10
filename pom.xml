@@ -32,6 +32,6 @@
         <module>Mail</module>
         <module>splunk</module>
         <module>Test</module>
-       
+        <module>WebSocket</module>
     </modules>
 </project>
