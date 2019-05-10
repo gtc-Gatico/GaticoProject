@@ -7,9 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Calendar;
 
 public class Test {
     public static void main(String[] args) {
