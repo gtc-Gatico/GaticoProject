@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.min.js"></script>
+    <link href="/style/login.css" rel="stylesheet">
+
+</head>
+<body>
+<div id="login_mian" class="login_box">
+    <div class="login_l_img"><img src="/img/login-img.png" /></div>
+    <div class="login">
+        <div class="login_logo"><img src="/img/login_logo.png" /></div>
+        <div class="login_name"> <p>用户登录</p>
+        </div>
+        <input type="text" v-model.trim="username" placeholder="请输入用户名"/>
+        <input type="password" id="password"  v-model.trim="userpassword" placeholder="请输入密码"/>
+        <button class="submit" style="width:100%;" v-on:click="submit">登录</button>
+        <a href="/user/register" style="float: right">注册</a>
+    </div>
+</div>
+<script>
+    var app=new Vue({
+        el:'#login_mian',
+        data:{
+            username:"",
+            userpassword:"",
+
+        },
+        methods:{
+            submit:function(){
+                if(this.username.length<=0||this.userpassword.length<=0){
+                    return ;
+                }
+                var datas={"userName":this.username,"userPassword":this.userpassword};
+                this.$http.post('/login',datas).then(function(res){
+                    var errcode=res.body.code;
+                    var errmsg=res.body.msg;
+                    if(errcode==="0000"){
+                        //登录成功
+                        alert(errmsg)
+                        location.href="html/index.html";
+                    }else if(errcode==="0001"){
+                        /*处理密码错误*/
+                        alert(errmsg)
+                    }else if(errcode==="0002"){
+                        /*处理用户不存在*/
+                        alert(errmsg)
+                    }else if(errcode==="0005"){
+                        /*处理异常*/
+                        alert(errmsg)
+                    }
+                },function(res){
+                    alert(res)
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>
