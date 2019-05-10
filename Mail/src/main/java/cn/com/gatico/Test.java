@@ -1,23 +1,10 @@
 package cn.com.gatico;
 
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
-
-import javax.mail.internet.ContentType;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeUtility;
-import javax.mail.internet.ParseException;
-import javax.mail.util.ByteArrayDataSource;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) {
-        //tianci.gao@7x-networks.com;jimmy.guo@watsons.com.cn
         String mail="jimmy.guo@watsons.com.cn";
         Pattern pattern = Pattern.compile("^[\\w!#$%&'*+/=?'{|}~^-]+(?:\\.[\\w!#$%&'*+/=?'{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
         Matcher matcher = pattern.matcher(mail);
@@ -44,7 +31,7 @@ public class Test {
             String []tos = new String[]{"48909084@qq.com"};
             String host = "smtp.qq.com";
             String username = "48909084@qq.com";
-            String password = "wbgzktpzagjkbhhb";
+            String password = "awbgzktpzagjkbhhbz";
             File osFile = new File("/home/tianci.gao/test/test.PNG");
             JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
             //mailSender.setJavaMailProperties(properties);
