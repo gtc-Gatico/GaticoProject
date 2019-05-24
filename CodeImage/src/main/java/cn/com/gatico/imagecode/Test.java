@@ -1,6 +1,8 @@
 package cn.com.gatico.imagecode;
 
 
+import com.alibaba.fastjson.JSONObject;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -20,16 +22,73 @@ public class Test {
     }
 
     public static void createCodeImg2() {
-        int width = 400, height = 400;
-        BufferedImage bufferimg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        int size = 400;
+        int imgSize = 500;
+        BufferedImage bufferimg = new BufferedImage(imgSize, imgSize, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = bufferimg.createGraphics();
-        g2d.setBackground(Color.green);
-        g2d.drawString("I love China",1,1);
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, imgSize, imgSize);
+        g2d.setColor(Color.BLACK);
+        Square[][] arr = new Square[size / 5][size / 5];
+        for (int i = ((imgSize - size) / 2); i < size + ((imgSize - size) / 2); i += 5) {
+            g2d.drawLine(i, ((imgSize - size) / 2), i, size + ((imgSize - size) / 2));
+            g2d.drawLine(((imgSize - size) / 2), i, size + ((imgSize - size) / 2), i);
+        }
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                if (i == 0 && j == 0) {
+                    Square square = new Square();
+                    square.setX(i * 5);
+                    square.setY(j * 5);
+                    square.setP(square);
+                    arr[i][j] = square;
+                } else if (j == 0) {
+                    Square square = new Square();
+                    square.setX(i * 5);
+                    square.setY(j * 5);
+                    square.setP(arr[i - 1][arr[i].length - 1]);
+                    arr[i][j] = square;
+                } else {
+                    Square square = new Square();
+                    square.setX(i * 5);
+                    square.setY(j * 5);
+                    square.setP(arr[i][j - 1]);
+                    arr[i][j] = square;
+                }
+                if (i == j) {
+                    Square square = arr[i][j];
+                    square.setB(1);
+                    arr[i][j] = square;
+                }
+                if (i + 1 == j) {
+                    Square square = arr[i][j];
+                    square.setL(1);
+                    arr[i][j] = square;
+                }
+                g2d.drawRect(i, j, size, size);
+            }
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data", arr);
+        System.out.println(jsonObject.toJSONString());
+        g2d.drawRect(((imgSize - size) / 2), ((imgSize - size) / 2), size, size);
         bufferimg.flush();
         try {
             ImageIO.write(bufferimg, "PNG", new File("/home/tianci.gao/test/test2.PNG"));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void drawSquare(Graphics2D graphics2D, Square square) {
+        graphics2D.setColor(Color.BLACK);
+        graphics2D.drawRect(square.x,square.y,5,5);
+        graphics2D.setColor(Color.BLACK);
+        if(square.b==1){
+            graphics2D.drawLine(square.x,square.y+5,square.x+5,square.y+5);
+        }
+        if(square.r==1){
+            graphics2D.drawLine(square.x,square.y+5,square.x+5,square.y+5);
         }
     }
 

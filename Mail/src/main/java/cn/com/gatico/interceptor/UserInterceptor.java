@@ -23,6 +23,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        response.sendRedirect("http://www.baidu.com");
         System.out.println(getRemoteAddr(request));
         return true;
     }
