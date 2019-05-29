@@ -2,7 +2,9 @@ package cn.com.gatico.autocode;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Timestamp;
@@ -24,7 +26,7 @@ public class AutoCode {
                 "\t`priority` INT ( 31 ) DEFAULT NULL COMMENT '优先级',\n" +
                 "PRIMARY KEY ( `id` ) \n" +
                 ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '七层安全规则'";
-        CreateFile("entity", "/home/tianci.gao/test/AutoCode", "cn.com.gatico.entity", AnalysisSql(sql), "java");
+        CreateFile("entity", "cn.com.gatico.entity", AnalysisSql(sql), "java");
     }
 
     //解析sql
@@ -94,25 +96,40 @@ public class AutoCode {
 
     //生成文件
 
-    public static void CreateFile(String type, String path, String packageName, List<Map<String, Object>> param, String suffix) {
-        File root = new File(path + "/" + packageName.replace(".", "/"));
-        System.out.println(root.getPath());
+    public static void CreateFile(String type, String packageName, List<Map<String, Object>> param, String suffix) {
+        String path = AutoCode.class.getResource("/").getPath();
+        path = path.replace("/target/classes", "/src/main/java");
+        File root = new File(path + packageName.replace(".", "/"));
         if (!root.exists()) {
-            //root.mkdirs();
+            root.mkdirs();
         }
-        String className = (String) param.get(0).get("tableName");
-        String fgh = className.substring(className.indexOf("_") + 1, className.indexOf("_") + 2);
-        className = className.replace("_" + fgh, fgh.toUpperCase());
-        className = (className.charAt(0) + "").toUpperCase() + className.substring(1);
+        String className = ToName((String) param.get(0).get("tableName"), true);
+        String fileText = "";
+        File file = null;
         if ("entity".equals(type.toLowerCase())) {
-            File file = new File(root + "/" + className + "Entity." + suffix);
-            String fileText = getEntityTemp(packageName, param);
-            System.out.println(fileText);
+            file = new File(root + "/" + className + "Entity." + suffix);
+            fileText = getEntityTemp(packageName, param);
+        } else if ("dao".equals(type.toLowerCase())) {
+            file = new File(root + "/" + className + "dao." + suffix);
+            fileText = getDaoTemp(packageName, param);
+        } else if ("service".equals(type.toLowerCase())) {
+            file = new File(root + "/" + className + "Entity." + suffix);
+            fileText = getEntityTemp(packageName, param);
+        }
+
+
+        try {
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(fw);
+            bufferedWriter.write(fileText);
+            bufferedWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public static String getEntityTemp(String packageName, List<Map<String, Object>> param) {
-        String packageText = "package " + packageName + ";\n";
+    private static String getDaoTemp(String packageName, List<Map<String, Object>> param) {
+        String packageText = "package " + packageName + ";\n\n";
         StringBuffer importText = new StringBuffer();
         importText.append("import javax.persistence.*;\n");
         StringBuffer classText = new StringBuffer();
@@ -164,11 +181,68 @@ public class AutoCode {
         classText.append(classGetSetText);
         classText.append("}");
         importText.append(classText);
-        return packageText+importText.toString();
+        return packageText + importText.toString();
+        return"";
+    }
+
+    public static String getEntityTemp(String packageName, List<Map<String, Object>> param) {
+        String packageText = "package " + packageName + ";\n\n";
+        StringBuffer importText = new StringBuffer();
+        importText.append("import javax.persistence.*;\n");
+        StringBuffer classText = new StringBuffer();
+        classText.append("\n@Entity\n" +
+                "@Table(name = \"" + param.get(0).get("tableName") + "\")\n");
+        String className = ToName((String) param.get(0).get("tableName"), true);
+        classText.append("public class " + className + "Entity {\n\n");
+
+        StringBuffer classGetSetText = new StringBuffer();
+        boolean apppended = false;
+        for (int i = 0; i < param.size(); i++) {
+            Map map = param.get(i);
+            if (map.get("column") != null) {
+                String column = ToName(map.get("column").toString(), false);
+                String type = "";
+                if (map.get("type").toString().contains("java.sql.Timestamp")) {
+                    type = "Timestamp";
+                    if (!apppended) {
+                        importText.append("import java.sql.Timestamp;\n");
+                        apppended = true;
+                    }
+                } else if (map.get("type").toString().contains("java.lang.Boolean")) {
+                    type = "boolean";
+                } else if (map.get("type").toString().contains("java.lang.Long")) {
+                    type = "Long";
+                } else if (map.get("type").toString().contains("java.lang.Integer")) {
+                    type = "Integer";
+                } else if (map.get("type").toString().contains("java.lang.String")) {
+                    type = "String";
+                }
+                classText.append("\tprivate " + type + " " + column + ";\n\n");
+                if (map.get("column").toString().equals("id")) {
+                    classGetSetText.append("\t@Id\n");
+                }
+                if (map.get("autoIncrement") != null && map.get("autoIncrement").toString().equals("true")) {
+                    classGetSetText.append("\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n");
+                } else {
+                    classGetSetText.append("\t@Basic\n");
+                }
+                classGetSetText.append("\t@Column(name = \"" + map.get("column").toString() + "\")\n");
+                classGetSetText.append("\tpublic " + type + " get" + ToName(column, true) + "() {\n");
+                classGetSetText.append("\t\treturn " + column + ";\n");
+                classGetSetText.append("\t}\n\n");
+                classGetSetText.append("\tpublic void set" + ToName(column, true) + "(" + type + " " + column + ") {\n");
+                classGetSetText.append("\t\tthis." + column + " = " + column + ";\n");
+                classGetSetText.append("\t}\n\n");
+            }
+        }
+        classText.append(classGetSetText);
+        classText.append("}");
+        importText.append(classText);
+        return packageText + importText.toString();
     }
 
     public static String ToName(String name, boolean fristTrans) {
-       while(name.indexOf("_") != -1) {
+        while (name.indexOf("_") != -1) {
             String fgh = name.substring(name.indexOf("_") + 1, name.indexOf("_") + 2);
             name = name.replace("_" + fgh, fgh.toUpperCase());
         }
