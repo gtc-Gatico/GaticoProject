@@ -15,17 +15,17 @@ import java.util.Map;
 
 public class AutoCode {
     public static void main(String[] args) {
-        String sql = "CREATE TABLE `box_i7_security_rule` (\n" +
-                "\t`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
-                "\t`box_id` BIGINT ( 20 ) DEFAULT NULL COMMENT '盒子ID',\n" +
-                "\t`src_cidr` VARCHAR ( 32 ) DEFAULT NULL COMMENT '源地址段',\n" +
-                "\t`dst_cidr` VARCHAR ( 32 ) DEFAULT NULL COMMENT '目的地址段',\n" +
-                "\t`protocol` BIGINT ( 20 ) DEFAULT NULL COMMENT '协议',\n" +
-                "\t`action` VARCHAR ( 50 ) DEFAULT NULL COMMENT '行为',\n" +
-                "\t`create_time` datetime DEFAULT NULL COMMENT '创建时间',\n" +
-                "\t`priority` INT ( 31 ) DEFAULT NULL COMMENT '优先级',\n" +
+        String sql = "CREATE TABLE `a_b_c_d_e_f` (\n" +
+                "\t`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT '',\n" +
+                "\t`box_id` BIGINT ( 20 ) DEFAULT NULL COMMENT '',\n" +
+                "\t`src_cidr` VARCHAR ( 32 ) DEFAULT NULL COMMENT '',\n" +
+                "\t`dst_cidr` VARCHAR ( 32 ) DEFAULT NULL COMMENT '',\n" +
+                "\t`protocol` BIGINT ( 20 ) DEFAULT NULL COMMENT '',\n" +
+                "\t`action` VARCHAR ( 50 ) DEFAULT NULL COMMENT '',\n" +
+                "\t`create_time` datetime DEFAULT NULL COMMENT '',\n" +
+                "\t`priority` INT ( 31 ) DEFAULT NULL COMMENT '',\n" +
                 "PRIMARY KEY ( `id` ) \n" +
-                ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = '七层安全规则'";
+                ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = ''";
         CreateFile("entity", "cn.com.gatico.entity", AnalysisSql(sql), "java");
     }
 
@@ -108,12 +108,13 @@ public class AutoCode {
         File file = null;
         if ("entity".equals(type.toLowerCase())) {
             file = new File(root + "/" + className + "Entity." + suffix);
+            System.out.println(file.getPath());
             fileText = getEntityTemp(packageName, param);
         } else if ("dao".equals(type.toLowerCase())) {
-            file = new File(root + "/" + className + "dao." + suffix);
+            file = new File(root + "/" + className + "Dao." + suffix);
             fileText = getDaoTemp(packageName, param);
         } else if ("service".equals(type.toLowerCase())) {
-            file = new File(root + "/" + className + "Entity." + suffix);
+            file = new File(root + "/" + className + "Service." + suffix);
             fileText = getEntityTemp(packageName, param);
         }
 
@@ -182,7 +183,6 @@ public class AutoCode {
         classText.append("}");
         importText.append(classText);
         return packageText + importText.toString();
-        return"";
     }
 
     public static String getEntityTemp(String packageName, List<Map<String, Object>> param) {
@@ -241,12 +241,12 @@ public class AutoCode {
         return packageText + importText.toString();
     }
 
-    public static String ToName(String name, boolean fristTrans) {
+    public static String ToName(String name, boolean firstTrans) {
         while (name.indexOf("_") != -1) {
             String fgh = name.substring(name.indexOf("_") + 1, name.indexOf("_") + 2);
             name = name.replace("_" + fgh, fgh.toUpperCase());
         }
-        if (fristTrans) {
+        if (firstTrans) {
             name = (name.charAt(0) + "").toUpperCase() + name.substring(1);
         }
         return name;
