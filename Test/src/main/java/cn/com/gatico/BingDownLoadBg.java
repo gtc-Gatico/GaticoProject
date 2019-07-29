@@ -15,7 +15,12 @@ public class BingDownLoadBg {
         if (null != args) {
             path = args[0];
         }
+        File json = new File(path+"/img.json");
         while (true) {
+            if(!json.exists()){
+                json.mkdir();
+            }
+            FileWriter fw = new FileWriter(json,true);
             String[] urls = {"https://cn.bing.com", "https://cn.bing.com/?ensearch=1&FORM=BEHPTB"};
             for (int i = 0; i < urls.length; i++) {
                 URL url = new URL(urls[i]);
@@ -46,8 +51,11 @@ public class BingDownLoadBg {
                 while ((bit = bgInputStream.read()) != -1) {
                     fileOutputStream.write(bit);
                 }
+                fw.append("");
+                fw.flush();
             }
-            Thread.sleep(TimeUnit.HOURS.toMillis(12));
+            fw.close();
+            Thread.sleep(TimeUnit.HOURS.toMillis(24));
         }
 
     }
