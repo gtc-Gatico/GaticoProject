@@ -65,6 +65,7 @@ public class BingDownLoadBg {
                 }else{
                     enfw.append(","+System.lineSeparator()+"{\"time\":\""+new SimpleDateFormat("yyyy-MM-dd").format(new Date())+"\",\"path\":\""+  "en" + "/"+fileName + ".jpg"+"\"}");
                     enfw.flush();
+                    enfw.close();
                 }
             }
             Thread.sleep(TimeUnit.HOURS.toMillis(24));
