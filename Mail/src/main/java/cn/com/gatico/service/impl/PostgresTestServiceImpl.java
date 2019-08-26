@@ -20,4 +20,12 @@ public class PostgresTestServiceImpl implements PostgresTestService {
     public List<PostgresTestEntity> findAll() {
         return postgresTestDao.findAll();
     }
+
+    @Override
+    public void insert(int id, String name) {
+        PostgresTestEntity postgresTestEntity = new PostgresTestEntity();
+        postgresTestEntity.setId(id);
+        postgresTestEntity.setName(name);
+        postgresTestDao.save(postgresTestEntity);
+    }
 }

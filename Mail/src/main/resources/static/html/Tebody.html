@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body>
+
+</body>
+<script>
+    $(function () {
+        console.log(66);
+        var colors = [];
+        for (var i = 0; i < 10; i++) {
+            colors.push("rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")");
+        }
+        var c1 = colors[0];
+        var c2 = colors[1];
+
+        function changeColor() {
+            var c1str = c1.split(",");
+            var c1r = parseInt(c1str[0].replace("rgb(", ""));
+            var c1g = parseInt(c1str[1]);
+            var c1b = parseInt(c1str[2].replace(")", ""));
+            var c2str = c2.split(",");
+            var c2r = parseInt(c2str[0].replace("rgb(", ""));
+            var c2g = parseInt(c2str[1]);
+            var c2b = parseInt(c2str[2].replace(")", ""));
+            if (c1r > c2r) {
+                c1r--;
+            } else if (c1r < c2r) {
+                c1r++;
+            }
+            if (c1g > c2g) {
+                c1g--;
+            } else if (c1g < c2g) {
+                c1g++;
+            }
+            if (c1b > c2b) {
+                c1b--;
+            } else if (c1b < c2b) {
+                c1b++;
+            }
+            if (c1r == c2r && c1g == c2g && c1b == c2b) {
+                colors.push(colors.shift());
+                c1 = colors[0];
+                c2 = colors[1];
+            }
+            c1 = "rgb(" + c1r + "," + c1g + "," + c1b + ")";
+            $("body").css("background-color", c1);
+            requestAnimationFrame(changeColor);
+        }
+
+        changeColor();
+    });
+</script>
+</html>

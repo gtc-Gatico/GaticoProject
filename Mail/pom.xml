@@ -76,8 +76,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>5.1.6.RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

@@ -7,4 +7,6 @@ import java.util.List;
 public interface PostgresTestService {
 
     List<PostgresTestEntity> findAll();
+
+    void insert(int id, String name);
 }

@@ -15,17 +15,11 @@ import java.util.Map;
 
 public class AutoCode {
     public static void main(String[] args) {
-        String sql = "CREATE TABLE `a_b_c_d_e_f` (\n" +
-                "\t`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT '',\n" +
-                "\t`box_id` BIGINT ( 20 ) DEFAULT NULL COMMENT '',\n" +
-                "\t`src_cidr` VARCHAR ( 32 ) DEFAULT NULL COMMENT '',\n" +
-                "\t`dst_cidr` VARCHAR ( 32 ) DEFAULT NULL COMMENT '',\n" +
-                "\t`protocol` BIGINT ( 20 ) DEFAULT NULL COMMENT '',\n" +
-                "\t`action` VARCHAR ( 50 ) DEFAULT NULL COMMENT '',\n" +
-                "\t`create_time` datetime DEFAULT NULL COMMENT '',\n" +
-                "\t`priority` INT ( 31 ) DEFAULT NULL COMMENT '',\n" +
+        String sql = "CREATE TABLE `dpi_protocol_library` (\n" +
+                "\t`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
+                "\t`protocol` VARCHAR ( 32 ) DEFAULT NULL COMMENT '协议',\n" +
                 "PRIMARY KEY ( `id` ) \n" +
-                ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = ''";
+                ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4";
         CreateFile("entity", "cn.com.gatico.entity", AnalysisSql(sql), "java");
     }
 
