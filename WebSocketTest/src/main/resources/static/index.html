@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>tail log</title>
+</head>
+<body>
+<button id="open">打开连接</button>
+<button id="close">断开连接</button>
+<button id="clear">清空</button>
+</br>
+<input id="cmd" type="text" name="cmd"/>
+<button id="sendCmd">执行</button>
+</br>
+<textarea id="log-container" rows="40" cols="100" style="padding: 10px;">
+</textarea>
+<script type="text/jscript" src="js/jquery-1.7.2.min.js"></script>
+<script>
+    /*$(document).ready(function () {
+        // 指定websocket路径
+        var websocket = new WebSocket('ws://localhost:8080/echo');
+        websocket.onmessage = function (event) {
+            console.log(event.data);
+            // 接收服务端的实时日志并添加到HTML页面中
+            $("#log-container").append(event.data);
+        };
+    });*/
+    var websocket;
+    $(function () {
+        $("#open").click(function () {
+            websocket = new WebSocket('ws://localhost:11111/echo');
+            websocket.onopen = function () {
+                console.log("websocket:open.");
+            };
+            websocket.onmessage = function (event) {
+                console.log(event.data);
+                // 接收服务端的实时日志并添加到HTML页面中
+                $("#log-container").append(event.data);
+            };
+            websocket.onerror = function (res) {
+                console.log("err:" + res);
+            }
+        });
+        $("#close").click(function () {
+            websocket.close();
+            console.log("websocket:close.");
+        });
+        $("#sendCmd").click(function () {
+            /* switch (ws.readyState) {
+                 case WebSocket.CONNECTING:
+                     // do something
+                     break;
+                 case WebSocket.OPEN:
+                     // do something
+                     break;
+                 case WebSocket.CLOSING:
+                     // do something
+                     break;
+                 case WebSocket.CLOSED:
+                     // do something
+                     break;
+                 default:
+                     // this never happens
+                     break;
+             }*/
+            if (websocket) {
+                if (websocket.readyState == WebSocket.OPEN) {
+                    var cmd = $("#cmd").val();
+                    websocket.send(JSON.stringify({"cmd": cmd, "width": $("#log-container").width()}));
+                    console.log("websocket:send.");
+                } else {
+                    switch (websocket.readyState) {
+                        case WebSocket.CONNECTING:
+                            // do something
+                            alert("WebSocket正在连接.");
+                            break;
+                        case WebSocket.OPEN:
+                            // do something
+                            break;
+                        case WebSocket.CLOSING:
+                            alert("WebSocket正在关闭.");
+                            // do something
+                            break;
+                        case WebSocket.CLOSED:
+                            // do something
+                            alert("WebSocket已经关闭.");
+                            break;
+                        default:
+                            // this never happens
+                            break;
+                    }
+                }
+            } else {
+                alert("请打开连接.");
+            }
+
+        });
+        $("#clear").click(function () {
+            $("#log-container").empty();
+        });
+    });
+    $(window).unload(function () {
+        websocket.close();
+    });
+</script>
+</body>
+</html>

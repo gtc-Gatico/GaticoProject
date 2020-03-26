@@ -65,6 +65,33 @@
             <artifactId>spring-context</artifactId>
             <version>5.1.6.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>2.1.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.sf.javamusictag/jid3lib -->
+        <dependency>
+            <groupId>net.sf.javamusictag</groupId>
+            <artifactId>jid3lib</artifactId>
+            <version>0.5.4</version>
+        </dependency>
+
 
     </dependencies>
 
