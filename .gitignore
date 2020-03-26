@@ -1,4 +1,17 @@
 # Created by .ignore support plugin (hsz.mobi)
 /.idea/
+/CodeImage/target
+/Excel/target
+/Mail/target
+/splunk/target
+/Test/target
+/WebSocket/target
+/WebSocketTest/target
 
-*.iml
+/CodeImage/*.iml
+/Excel/*.iml
+/Mail/*.iml
+/splunk/*.iml
+/Test/*.iml
+/WebSocket/*.iml
+/WebSocketTest/*.iml

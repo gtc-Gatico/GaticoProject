@@ -11,6 +11,8 @@
 
     <groupId>cn.com.gatico</groupId>
     <artifactId>splunk</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
