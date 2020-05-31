@@ -1,13 +1,16 @@
 package cn.com.gatico.server.controller;
 
+import cn.com.gatico.server.ApplicationContext;
 import cn.com.gatico.server.Response;
 import cn.com.gatico.server.annotattions.API;
 import cn.com.gatico.server.annotattions.Mapping;
 import com.google.gson.JsonArray;
+import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 
 @API(url = "/api")
 public class APIController {
@@ -58,4 +61,23 @@ public class APIController {
         int a = 10 / 0;
         return a + "";
     }
+
+    @Mapping(url = "/upload", method = "POST")
+    public Response hello6(File file1) {
+        System.out.println(file1.getName());
+        try {
+            File file = new File(ApplicationContext.uploadPath + file1.getName());
+            if (file.exists()) {
+                file.delete();
+            }
+            FileUtils.copyFile(file1, file);
+            System.out.println("666");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Response response = new Response();
+        response.setRedirectHtml("/index2.html");
+        return response;
+    }
+
 }

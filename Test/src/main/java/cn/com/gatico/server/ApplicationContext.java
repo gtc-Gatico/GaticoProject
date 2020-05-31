@@ -10,10 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ApplicationContext {
     public static Integer port = 8080;
-    private static String staticPath = "F:\\web\\MyWebSite\\";
-    private static String _404Path = "404.html";
-    private static String _500Path = "500.html";
-    private static String default_500Path = "default_500.html";
+    public static String staticPath = "F:\\web\\MyWebSite\\";
+    public static String uploadPath = "F:\\web\\MyWebSite\\upload\\";
+    public static String _404Path = "404.html";
+    public static String _500Path = "500.html";
+    public static String default_500Path = "default_500.html";
     private static Map<String, Urls> mapping = new ConcurrentHashMap<>();
 
     public static Map<String, Urls> getMapping() {

@@ -2,14 +2,12 @@ package cn.com.gatico.server;
 
 
 import cn.com.gatico.server.conf.MIMEType;
+import org.apache.commons.io.FileUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URLDecoder;
 
 public class HttpServer {
 
@@ -37,36 +35,22 @@ public class HttpServer {
                 InputStream inSocket;
                 try {
                     //获取HTTP请求头
-                    inSocket = socket.getInputStream();
-                    int size = inSocket.available();
-                    byte[] buffer = new byte[size];
-                    inSocket.read(buffer);
-                    String request = new String(buffer);
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     String uri = "/index.html";
-                    Map<String, String> paraMap = new HashMap<>();
-                    if (request.length() > 0) {
-                        String[] params = request.split("\r\n");
-                        String[] heads = params[0].split(" ");
-                        paraMap.put("method", heads[0]);
-                        paraMap.put("path", heads[1]);
-                        paraMap.put("protocol", heads[2]);
-                        for (int i = 1; i < params.length; i++) {
-                            String[] temp = params[i].split(": ");
-                            paraMap.put(temp[0], temp[1]);
-                        }
-//                        socket.setKeepAlive(paraMap.get("Connection").equals("keep-alive"));
+                    String headStr = bufferedReader.readLine();
+                    if (headStr != null && headStr.length() > 0) {
                         Request requestTemp = new Request();
-                        requestTemp.setMethod(paraMap.get("method"));
-                        requestTemp.setVersion(paraMap.get("protocol"));
-                        String path = paraMap.get("path");
-                        requestTemp.setPath(path);
-                        requestTemp.setUrl(path);
-                        if (path.equals("/")) {
+                        String[] heads = headStr.split(" ");
+                        requestTemp.setMethod(heads[0]);
+                        requestTemp.setPath(heads[1]);
+                        requestTemp.setVersion(heads[2]);
+                        requestTemp.setUrl(requestTemp.getPath());
+                        if (requestTemp.getPath().equals("/")) {
                             requestTemp.setUrl(uri);
                         }
-                        if (path.indexOf("?") != -1) {
-                            requestTemp.setUrl(java.net.URLDecoder.decode(path.split("\\?")[0], "UTF-8"));
-                            String[] paramArray = path.split("\\?")[1].split("&");
+                        if (requestTemp.getPath().indexOf("?") != -1) {
+                            requestTemp.setUrl(URLDecoder.decode(requestTemp.getPath().split("\\?")[0], "UTF-8"));
+                            String[] paramArray = requestTemp.getPath().split("\\?")[1].split("&");
                             for (int i = 0; i < paramArray.length; i++) {
                                 String key = paramArray[i].split("=")[0];
                                 String value = paramArray[i].split("=")[1];
@@ -74,15 +58,144 @@ public class HttpServer {
                             }
                         }
                         requestTemp.setContentType(getMimeType(requestTemp.getUrl()));
-                        paraMap.forEach((s, s2) -> {
-                            requestTemp.getHeads().put(s, s2);
-                        });
+
+                        String headLineStr = bufferedReader.readLine();
+                        while (headLineStr.length() > 0 && !headLineStr.equals("\r\n")) {
+                            String[] headParam = headLineStr.split(": ");
+                            requestTemp.getHeads().put(headParam[0], headParam[1]);
+                            headLineStr = bufferedReader.readLine();
+                        }
+                        //POST请求处理
+                        String contentType = null;
+                        if ("POST".equals(requestTemp.getMethod()) && ((contentType = (String) requestTemp.getHeads().get("Content-Type")) != null
+                                && requestTemp.getHeads().get("Content-Type").toString().startsWith("multipart/form-data"))) {
+                            //文件上传的分割位 这里只处理单个文件的上传
+                            String boundary = contentType.substring(contentType.indexOf("boundary") +
+                                    "boundary=".length());
+                            //解析消息体
+                            String str;
+                            while ((str = bufferedReader.readLine()) != null) {
+                                //解析结束的标记
+                                do {
+                                    //读取boundary中的内容
+                                    //读取Content-Disposition
+                                    str = bufferedReader.readLine();
+                                    //说明是文件上传
+                                    if (str.indexOf("Content-Disposition:") >= 0 && str.indexOf("filename") > 0) {
+                                        int contentLength = Integer.valueOf(requestTemp.getHeads().get("Content-Length").toString());
+                                        int bl = (str + "\r\n").length();
+                                        str = str.substring("Content-Disposition:".length());
+                                        String[] strs = str.split(";");
+                                        String valueName = strs[1].split("=")[1].replace("\"", "");//页面的name值在这里面
+                                        String fileName = strs[2].split("=")[1].replace("\"", "");//fileName
+                                        System.out.println("fileName = " + fileName);
+                                        //这一行是Content-Type
+                                        String contentTypeLength = bufferedReader.readLine();
+                                        bl += (contentTypeLength + "\r\n").length();
+                                        //这一行是换行
+                                        bufferedReader.readLine();
+                                        bl += ("\r\n--" + boundary).length();
+                                        bl += ("\r\n--" + boundary + "--").length();
+                                        //正式去读文件的内容
+                                        FileOutputStream fileOutputStream = null;
+                                        System.out.println(contentLength);
+                                        System.out.println(bl);
+                                        try {
+                                            File fileTemp = File.createTempFile("myServer", fileName);
+                                            fileOutputStream = new FileOutputStream(fileTemp);
+                                            int d = -1;
+                                            int index = 0;
+                                            while (contentLength - index >= bl) {
+                                                d = bufferedReader.read();
+                                                fileOutputStream.write(d);
+                                                if (index % 1000 == 0) {
+                                                    fileOutputStream.flush();
+                                                }
+                                                index++;
+                                            }
+                                            fileOutputStream.flush();
+                                            File file = new File(fileTemp.getParent() + File.separator, fileName);
+                                            if (file.exists()) {
+                                                file.delete();
+                                            }
+                                            System.out.println(fileTemp.length());
+                                            FileUtils.copyFile(fileTemp, file);
+                                            System.out.println(file.length());
+                                            requestTemp.getParams().put(valueName, file);
+                                        } catch (Exception e) {
+
+                                        } finally {
+                                            if (fileOutputStream != null) {
+                                                fileOutputStream.close();
+                                            }
+                                        }
+
+                                    }
+                                    if (str.indexOf("Content-Disposition:") >= 0) {
+                                        str = str.substring("Content-Disposition:".length());
+                                        String[] strs = str.split(";");
+                                        String name = strs[strs.length - 1].replace("\"", "").split("=")[1];
+                                        bufferedReader.readLine();
+                                        StringBuilder stringBuilder = new StringBuilder();
+                                        while (true) {
+                                            str = bufferedReader.readLine();
+                                            if (str.startsWith("--" + boundary)) {
+                                                break;
+                                            }
+                                            stringBuilder.append(str);
+                                        }
+                                        requestTemp.getParams().put(name, stringBuilder.toString());
+                                        //parameters.put(name, stringBuilder.toString());
+                                    }
+                                } while (("--" + boundary).equals(str));
+                                //解析结束
+                                if (str.equals("--" + boundary + "--")) {
+                                    break;
+                                }
+                            }
+                        }
+
+
+
+                            /*String bodyLineStr = bufferedReader.readLine();
+                            while (bodyLineStr != null && bodyLineStr.length() > 0) {
+                                if (bodyLineStr.equals("--" + contentType)) {
+                                    String content_disposition = bufferedReader.readLine();
+                                    String valueName = content_disposition.split(";")[1].split("=")[1].replace("\"", "");//页面的name值在这里面
+                                    String fileName = content_disposition.split(";")[2].split("=")[1].replace("\"", "");//fileName
+                                    String content_Type = bufferedReader.readLine();
+                                    System.out.println(content_Type);
+                                    bodyLineStr = bufferedReader.readLine();//换行符
+                                    if (fileName != null && fileName.length() > 0) {
+                                        //读文件
+                                        int x = -1;
+                                        int index = 0;
+                                        File temp = File.createTempFile("myServer", fileName);
+                                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+                                        while ((x = bufferedReader.read()) != -1 && index < contentLength) {
+                                            byteArrayOutputStream.write(x);
+                                            byteArrayOutputStream.flush();
+                                            index++;
+                                        }
+                                        System.out.println("end:"+bodyLineStr);
+                                        byte[] fileBytes = byteArrayOutputStream.toByteArray();
+                                        System.out.println(fileBytes.length);
+                                        FileUtils.writeByteArrayToFile(temp, fileBytes, 0, fileBytes.length );
+                                        File file = new File(temp.getParent(), fileName);
+                                        if (file.exists()) {
+                                            file.delete();
+                                        }
+                                        temp.renameTo(file);
+                                        requestTemp.getParams().put(valueName, file);
+                                        bodyLineStr = bufferedReader.readLine();
+                                    } else {
+                                        //读参数
+                                    }
+                                }
+                            }
+                            bodyLineStr = bufferedReader.readLine();*/
                         ApplicationContext.invoke(requestTemp, socket);
-                        /*if (uri.indexOf("html") != -1) {
-                            contentType = "text/html";
-                        } else {
-                            contentType = "application/octet-stream";
-                        }*/
                     }
                     /*String responseFirstLine = "";
                     String responseHead = "Content-Type: " + contentType + "\r\n";
@@ -120,16 +233,41 @@ public class HttpServer {
                     }*/
                     socket.close();
                 } catch (IOException e) {
+                    OutputStream outputStream = null;
                     try {
-                        String responseFirstLine = "HTTP/1.1 500 Internal Server Error\r\n";
-                        OutputStream outputStream = socket.getOutputStream();
-                        outputStream.write(responseFirstLine.getBytes());
-                        outputStream.write("Content-Type: text/html;charset=utf8 \r\n".getBytes());
-                        outputStream.write("\r\n".getBytes());//通过HTTP请求中的uri读取相应文件发送给客户端
-                        socket.close();
+                        outputStream = socket.getOutputStream();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
+                    Response response = new Response();
+                    response = response.getError();
+                    File file = new File(ApplicationContext.staticPath + ApplicationContext._500Path);
+                    if (!file.exists()) {
+                        try {
+                            File defaultFile = new File(ApplicationContext.staticPath + ApplicationContext.default_500Path);
+                            BufferedReader bufferedReader = new BufferedReader(new FileReader(defaultFile));
+                            StringBuffer stringBuffer = new StringBuffer();
+                            String html = "";
+                            while ((html = bufferedReader.readLine()) != null) {
+                                stringBuffer.append(html);
+                            }
+                            html = stringBuffer.toString();
+                            String errorStr = "";
+
+                            errorStr += e;
+
+                            String htmlTemplate = html.replace("${errormsg}", errorStr);
+                            File tempFile = File.createTempFile("500", ".html");
+                            e.printStackTrace(new PrintWriter(tempFile));
+                            FileWriter fileWriter = new FileWriter(tempFile);
+                            fileWriter.write(htmlTemplate);
+                            fileWriter.flush();
+                            file = tempFile;
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    ApplicationContext.writerFile(file, response, outputStream);
 
                 }
             }

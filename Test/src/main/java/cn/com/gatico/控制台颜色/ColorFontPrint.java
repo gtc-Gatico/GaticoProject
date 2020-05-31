@@ -161,7 +161,20 @@ public class ColorFontPrint {
         if (_code.endsWith(";")) {
             _code = _code.substring(0, _code.length() - 1);
         }
-        return "\033" + "[" + _code + "m" + String.valueOf(txt) + "\033" + "[0m";
+        return (char) 27 + "[" + _code + "m" + String.valueOf(txt) + (char) 27 + "[0m";
+    }
+
+    public static String convertLine(Object txt, String split, int... codes) {
+        int[] color = fontColors;
+        if (codes != null && codes.length > 0) {
+            color = codes;
+        }
+        StringBuffer sb = new StringBuffer();
+        String[] chars = String.valueOf(txt).split(split);
+        for (int i = 0; i < chars.length; i++) {
+            sb.append(convert(i != chars.length - 1 ? chars[i] + split : chars[i], (color[i < color.length - 1 ? i : i % color.length])));
+        }
+        return sb.toString();
     }
 
     public static String convertLine(Object txt, int... codes) {

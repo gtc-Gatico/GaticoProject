@@ -3,12 +3,17 @@ package cn.com.gatico.server;
 import cn.com.gatico.server.annotattions.API;
 import cn.com.gatico.server.annotattions.Mapping;
 import cn.com.gatico.server.annotattions.Urls;
+import cn.com.gatico.控制台颜色.ColorFontPrint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ApplicationStart {
+    public static Logger logger = LoggerFactory.getLogger(ApplicationStart.class);
+
     public static void start(Class<?> clazz, String args[]) {
         Set<Class<?>> classSet = Scanner.getClasses(clazz.getPackage().getName());
         Set<Class<?>> apis = new HashSet<>();
@@ -24,7 +29,7 @@ public class ApplicationStart {
             if (annotation.url() != null) {
                 url = annotation.url();
             }
-            Method[] methods = aClass.getMethods();
+            Method[] methods = aClass.getDeclaredMethods();
 
             for (int i = 0; i < methods.length; i++) {
                 Mapping mapping = methods[i].getAnnotation(Mapping.class);
@@ -35,6 +40,7 @@ public class ApplicationStart {
                     urls.setExecMethod(methods[i]);
                     urls.setClazz(aClass);
                     ApplicationContext.getMapping().put(url + mapping.url() + ";" + mapping.method(), urls);
+                    logger.info(ColorFontPrint.convertLine(url + mapping.url() + ";" + mapping.method(), ";", ColorFontPrint.GREEN, ColorFontPrint.RED));
                 }
             }
         });

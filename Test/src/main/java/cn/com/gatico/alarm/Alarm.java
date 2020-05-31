@@ -13,7 +13,7 @@ import java.io.OutputStream;
 public class Alarm {
     public static void main(String[] args) {
 
-        String c = "set";
+        String c = "tasklist ";
         try {
             Process p = Runtime.getRuntime().exec(new String[]{"cmd", "/c", c});
             InputStream is = p.getErrorStream();

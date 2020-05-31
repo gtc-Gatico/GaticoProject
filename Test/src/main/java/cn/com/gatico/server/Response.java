@@ -15,6 +15,12 @@ public class Response {
     private Map<String, Object> heads = new HashMap<>();
     private byte[] body;
 
+    public Response() {
+        if (contentType == null || contentType.length() <= 0) {
+            contentType = "text/html;charset=utf8";
+        }
+    }
+
     public String getProtocol() {
         return protocol;
     }

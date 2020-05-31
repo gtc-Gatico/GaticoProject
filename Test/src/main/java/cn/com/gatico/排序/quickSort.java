@@ -225,7 +225,7 @@ public class quickSort {
     }
 
     public static void main(String[] args) throws Exception {
-        int size = 100;
+        int size = 10;
         int arr1[] = new int[size];
         int arr2[] = new int[size];
         int arr3[] = new int[size];
@@ -235,28 +235,32 @@ public class quickSort {
         int arr7[] = new int[size];
         int arr8[] = new int[size];
         int arr9[] = new int[size];
+        int arr10[] = new int[size];
         Random random = new Random();
         for (int i = 0; i < arr1.length; i++) {
             arr1[i] = random.nextInt(size * size);
         }
-        System.arraycopy(arr1, 0, arr2, 0, arr1.length);
+      /*  System.arraycopy(arr1, 0, arr2, 0, arr1.length);
         System.arraycopy(arr1, 0, arr3, 0, arr1.length);
         System.arraycopy(arr1, 0, arr4, 0, arr1.length);
         System.arraycopy(arr1, 0, arr5, 0, arr1.length);
         System.arraycopy(arr1, 0, arr6, 0, arr1.length);
         System.arraycopy(arr1, 0, arr7, 0, arr1.length);
         System.arraycopy(arr1, 0, arr8, 0, arr1.length);
-        System.arraycopy(arr1, 0, arr9, 0, arr1.length);
-
-        maopaoTest(arr1);//冒泡
-        sortTest(arr2);//天赐
+        System.arraycopy(arr1, 0, arr9, 0, arr1.length);*/
+        System.arraycopy(arr1, 0, arr10, 0, arr1.length);
+        arr10 = new int[]{1, 9, 3, 4, 6, 2, 5, 7, 8, 0};
+        //maopaoTest(arr1);//冒泡
+        maopao2Test(arr10);//冒泡2
+        /*sortTest(arr2);//双向选择
         qsTest(arr3);//快速
         selectionSortTest(arr4);//选择
         insertionSortTest(arr5);//插入
         shellSortTest(arr6);//希尔
         mergeSortTest(arr7);//归并
         heapSortTest(arr8);//堆排序
-        countSortTest(arr9);//计数
+        countSortTest(arr9);//计数*/
+
     }
 
     public static void sort(int arr[]) {
@@ -301,6 +305,43 @@ public class quickSort {
         }
     }
 
+    public static void maopao2(int arr[]) {
+        int max = arr.length - 1;
+        int min = 0;
+        int index = 0;
+        for (int j = 0; j < arr.length; j++) {
+            if (arr[j] > arr[max]) {
+                swap(arr, j, max);
+                j = 0;
+            }
+            if (arr[j] == arr[max]) {
+                swap(arr, j, max - 1);
+                j = 0;
+
+            }
+            if (arr[j] < arr[min]) {
+                swap(arr, j, min);
+                j = 0;
+            }
+                /*if (arr[j] == arr[min]) {
+                    swap(arr, j, min + 1);
+                }*/
+            printArray(arr);
+        }
+    }
+
+    public static void printArray(int[] arr) {
+        System.out.println();
+        for (int i = 0; i < arr.length; i++) {
+            if (i == arr.length - 1) {
+                System.out.print(arr[i]);
+            } else {
+                System.out.print(arr[i] + ",");
+            }
+        }
+        System.out.println();
+    }
+
     public static void qsTest(int arr[]) throws Exception {
         Thread.sleep(1000);
         long b = System.nanoTime();
@@ -331,12 +372,28 @@ public class quickSort {
         System.out.println("\t有序用时\t" + (e - b));
     }
 
+    public static void maopao2Test(int arr[]) throws Exception {
+        Thread.sleep(1000);
+        long b = System.nanoTime();
+        printArray(arr);
+        maopao2(arr);
+        long e = System.nanoTime();
+        System.out.print("冒泡2排序(" + arr.length + ")\t无序用时\t" + (e - b));
+
+        Thread.sleep(1000);
+        b = System.nanoTime();
+        printArray(arr);
+        maopao2(arr);
+        e = System.nanoTime();
+        System.out.println("\t有序用时\t" + (e - b));
+    }
+
     public static void sortTest(int arr[]) throws Exception {
         Thread.sleep(1000);
         long b = System.nanoTime();
         sort(arr);
         long e = System.nanoTime();
-        System.out.print("天赐排序(" + arr.length + ")\t无序用时\t" + (e - b));
+        System.out.print("双向选择排序(" + arr.length + ")\t无序用时\t" + (e - b));
 
         Thread.sleep(1000);
         b = System.nanoTime();

@@ -15,9 +15,13 @@ import java.util.Map;
 
 public class AutoCode {
     public static void main(String[] args) {
-        String sql = "CREATE TABLE `dpi_protocol_library` (\n" +
+        String sql = "CREATE TABLE `box_dns_redirect` (\n" +
                 "\t`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
-                "\t`protocol` VARCHAR ( 32 ) DEFAULT NULL COMMENT '协议',\n" +
+                "\t`box_id` BIGINT ( 20 ) DEFAULT NULL COMMENT '云盒id',\n" +
+                "\t`src_cidr` VARCHAR ( 50 ) DEFAULT NULL COMMENT '源地址段',\n" +
+                "\t`domain` VARCHAR ( 255 ) DEFAULT NULL COMMENT '域名（非IP）',\n" +
+                "\t`dns_server_addr` VARCHAR ( 32 ) DEFAULT NULL COMMENT 'dns服务器地址',\n" +
+                "\t`dns_server_port` VARCHAR ( 32 ) DEFAULT NULL COMMENT 'dns服务器端口',\n" +
                 "PRIMARY KEY ( `id` ) \n" +
                 ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4";
         CreateFile("entity", "cn.com.gatico.entity", AnalysisSql(sql), "java");
