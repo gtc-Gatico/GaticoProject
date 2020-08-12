@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  * @version 1.0
  * @date 2020/2/26 16:21
  */
-public class Ipv2Int {
+public class Ipv42Int {
     public static void main(String[] args) {
 
         System.out.println(new Timestamp(System.currentTimeMillis()).getTime() / 1000);

@@ -4,6 +4,7 @@ import cn.com.gatico.server.ApplicationContext;
 import cn.com.gatico.server.Response;
 import cn.com.gatico.server.annotattions.API;
 import cn.com.gatico.server.annotattions.Mapping;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonArray;
 import org.apache.commons.io.FileUtils;
 
@@ -14,6 +15,20 @@ import java.io.IOException;
 
 @API(url = "/api")
 public class APIController {
+
+    @Mapping(url = "/getUser")
+    public String getUser(String user) {
+        System.out.println(user);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("serverPort", "9999");
+        jsonObject.put("serverHost", "127.0.0.1");
+        JSONObject userInfo = new JSONObject();
+        userInfo.put("userId", "10001");
+        userInfo.put("name", "zhangsan");
+        userInfo.put("password", "123456");
+        jsonObject.put("resource", userInfo);
+        return jsonObject.toJSONString();
+    }
 
     @Mapping(url = "/hello")
     public String hello(String str) {
@@ -33,7 +48,6 @@ public class APIController {
     public Response hello3() throws Exception {
         Response response = new Response();
         response = response.getSuccess();
-        response.setContentType("application/octet-stream");
         File file = new File("F:\\test2.PNG");
         FileInputStream writehtml = new FileInputStream(file);
         byte[] htmlbuffer = new byte[writehtml.available()];
@@ -76,7 +90,7 @@ public class APIController {
             e.printStackTrace();
         }
         Response response = new Response();
-        response.setRedirectHtml("/index2.html");
+        response.setRedirectHtml("/index.html");
         return response;
     }
 

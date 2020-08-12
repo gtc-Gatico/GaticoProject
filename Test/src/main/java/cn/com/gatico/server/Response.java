@@ -1,5 +1,6 @@
 package cn.com.gatico.server;
 
+import com.sun.net.httpserver.HttpExchange;
 import org.springframework.util.Assert;
 
 import java.io.ByteArrayOutputStream;
@@ -8,9 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Response {
-    private String protocol = "HTTP/1.1";
     private Integer code;
-    private String codeMsg;
     private String contentType;
     private Map<String, Object> heads = new HashMap<>();
     private byte[] body;
@@ -21,13 +20,6 @@ public class Response {
         }
     }
 
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
 
     public Integer getCode() {
         return code;
@@ -35,14 +27,6 @@ public class Response {
 
     public void setCode(Integer code) {
         this.code = code;
-    }
-
-    public String getCodeMsg() {
-        return codeMsg;
-    }
-
-    public void setCodeMsg(String codeMsg) {
-        this.codeMsg = codeMsg;
     }
 
     public String getContentType() {
@@ -78,40 +62,22 @@ public class Response {
 
     public Response getSuccess() {
         this.setCode(200);
-        this.setCodeMsg("OK");
         return this;
     }
 
     public Response getNotfound() {
         this.setCode(400);
-        this.setCodeMsg("Not Found");
         return this;
     }
 
     public Response getError() {
         this.setCode(500);
-        this.setCodeMsg("server error");
         return this;
     }
 
     public byte[] toBytes() {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
-            byteArrayOutputStream.write(this.protocol.getBytes());
-            byteArrayOutputStream.write(" ".getBytes());
-            byteArrayOutputStream.write(String.valueOf(this.code).getBytes());
-            byteArrayOutputStream.write(" ".getBytes());
-            byteArrayOutputStream.write(this.codeMsg.getBytes());
-            byteArrayOutputStream.write("\r\n".getBytes());
-            byteArrayOutputStream.write(("Content-Type: " + this.contentType).getBytes());
-            byteArrayOutputStream.write("\r\n".getBytes());
-            if (this.heads.size() > 0) {
-                for (String key : this.heads.keySet()) {
-                    byteArrayOutputStream.write((key + ": " + this.heads.get(key)).getBytes());
-                }
-                byteArrayOutputStream.write("\r\n".getBytes());
-            }
-            byteArrayOutputStream.write("\r\n".getBytes());
             if (this.body != null) {
                 byteArrayOutputStream.write(this.body);
             }
@@ -135,9 +101,16 @@ public class Response {
 
     public void setRedirectHtml(String name) {
         this.code = 302;
-        this.setContentType();
-        this.codeMsg = "Redirect";
         this.heads.put("Location", name);
+    }
+
+    public void setAttr(HttpExchange exchange) {
+        exchange.getResponseHeaders().set("Content-Type", this.getContentType());
+        if (this.heads.size() > 0) {
+            for (String key : this.heads.keySet()) {
+                exchange.getResponseHeaders().set(key, (String) this.heads.get(key));
+            }
+        }
     }
 
 }

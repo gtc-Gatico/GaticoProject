@@ -1,10 +1,10 @@
 package cn.com.gatico.server;
 
 import cn.com.gatico.server.annotattions.Urls;
+import com.sun.net.httpserver.HttpExchange;
 
 import java.io.*;
 import java.lang.reflect.Method;
-import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,14 +21,8 @@ public class ApplicationContext {
         return mapping;
     }
 
-    public static void invoke(Request request, Socket socket) {
+    public static void invoke(Request request, HttpExchange exchange) {
         Response response = new Response();
-        OutputStream outputStream = null;
-        try {
-            outputStream = socket.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         String urlKey = request.getUrl() + ";" + request.getMethod();
         if (mapping.containsKey(urlKey)) {
             Urls urls = mapping.get(urlKey);
@@ -56,8 +50,12 @@ public class ApplicationContext {
                         Response res = (Response) method.invoke(urls.getObj(), param);
                         response = res;
                     }
-                    outputStream.write(response.toBytes());
-                    outputStream.flush();
+
+                    response.setAttr(exchange);
+                    byte[] bytes = response.toBytes();
+                    exchange.sendResponseHeaders(response.getCode(), bytes.length);
+                    exchange.getResponseBody().write(bytes);
+                    exchange.getResponseBody().flush();
                 } catch (Exception e) {
                     response = response.getError();
                     response.setContentType(request.getContentType());
@@ -87,14 +85,13 @@ public class ApplicationContext {
                             ex.printStackTrace();
                         }
                     }
-                    writerFile(file, response, outputStream);
+                    writerFile(file, response, exchange);
                 }
             } else {
                 //404
                 File file = new File(staticPath + _404Path);
                 response = response.getNotfound();
-                response.setContentType(request.getContentType());
-                writerFile(file, response, outputStream);
+                writerFile(file, response, exchange);
             }
         } else {
             File file = new File(staticPath + request.getUrl());
@@ -104,38 +101,22 @@ public class ApplicationContext {
                 file = new File(staticPath + _404Path);
                 response = response.getNotfound();
             }
-            response.setContentType(request.getContentType());
-            writerFile(file, response, outputStream);
+            writerFile(file, response, exchange);
         }
     }
 
-    public static void writerFile(File file, Response response, OutputStream outputStream) {
+    public static void writerFile(File file, Response response, HttpExchange exchange) {
         FileInputStream writeHtml = null;
         try {
             writeHtml = new FileInputStream(file);
-            outputStream.write(response.toBytes());
-            outputStream.flush();
-            if (file.length() > 1024 * 1024 * 100) {
-                byte[] arr = new byte[1024];
-                int len = 0;
-                while ((len = writeHtml.read(arr)) != -1) {
-                    if (len < arr.length) {
-                        outputStream.write(arr, 0, len % arr.length);
-                    } else {
-                        outputStream.write(arr);
-                    }
-                    arr = new byte[1024];
-                    outputStream.flush();
-                }
-            } else {
-                byte[] htmlBuffer = new byte[writeHtml.available()];
-                if (writeHtml != null) {
-                    int len = 0;
-                    while ((len = writeHtml.read(htmlBuffer)) != -1) {
-                        outputStream.write(htmlBuffer, 0, len);
-                        outputStream.flush();
-                    }
-                }
+            byte[] htmlBuffer = new byte[writeHtml.available()];
+            if (writeHtml != null) {
+                writeHtml.read(htmlBuffer);
+                response.setBody(htmlBuffer);
+                response.setAttr(exchange);
+                exchange.sendResponseHeaders(response.getCode(), htmlBuffer.length);
+                exchange.getResponseBody().write(response.getBody());
+                exchange.getResponseBody().flush();
             }
         } catch (Exception e) {
 

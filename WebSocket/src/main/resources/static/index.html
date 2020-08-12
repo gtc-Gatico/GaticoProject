@@ -1,53 +1,83 @@
 <!DOCTYPE html>
 <html>
-  <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-      <title>Spring Boot WebSocket Chat Application | CalliCoder</title>
-      <link rel="stylesheet" href="/css/main.css" />
-  </head>
-  <body>
-    <noscript>
-      <h2>Sorry! Your browser doesn't support Javascript</h2>
-    </noscript>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Spring Boot WebSocket Chat Application | CalliCoder</title>
+    <link rel="stylesheet" href="/css/main.css"/>
+</head>
+<body>
+<noscript>
+    <h2>Sorry! Your browser doesn't support Javascript</h2>
+</noscript>
 
-    <div id="username-page">
-        <div class="username-page-container">
-            <h1 class="title">Type your username</h1>
-            <form id="usernameForm" name="usernameForm">
-                <div class="form-group">
-                    <input type="text" id="name" placeholder="Username" autocomplete="off" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="accent username-submit">Start Chatting</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="chat-page" class="hidden">
-        <div class="chat-container">
-            <div class="chat-header">
-                <h2>Spring WebSocket Chat Demo</h2>
+<div id="username-page">
+    <div class="username-page-container">
+        <h1 class="title">Type your username</h1>
+        <form id="usernameForm" name="usernameForm">
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Username" autocomplete="off" class="form-control"/>
             </div>
-            <div class="connecting">
-                Connecting...
+            <div class="form-group">
+                <button type="submit" class="accent username-submit">Start Chatting</button>
             </div>
-            <ul id="messageArea">
-
-            </ul>
-            <form id="messageForm" name="messageForm" nameForm="messageForm">
-                <div class="form-group">
-                    <div class="input-group clearfix">
-                        <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
-                        <button type="submit" class="primary">Send</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-    <script src="/js/main.js"></script>
-  </body>
+<div id="chat-page" class="hidden">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Spring WebSocket Chat Demo</h2>
+        </div>
+        <div class="connecting">
+            Connecting...
+        </div>
+        <ul id="messageArea">
+
+        </ul>
+        <form id="messageForm" name="messageForm" nameForm="messageForm">
+            <div class="form-group">
+                <div class="input-group clearfix">
+                    <div type="text" id="message" contenteditable="true" placeholder="Type a message..." autocomplete="off" class="form-control"></div>
+                    <button type="submit" class="primary">Send</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>-->
+<script src="/js/sockjs.min.js"></script>
+<script src="/js/stomp.min.js"></script>
+<script src="/js/main.js"></script>
+<script>
+    function myFunction(event) {
+        var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        if (items.length > 0 && items[0].kind === "file") {
+            var blob = items[0].getAsFile();
+            var reader = new FileReader();
+            var filename = new Date().getTime() + ".png";
+            reader.onload = function (e) {
+                var base64 = e.target.result;
+                base64 = base64.replace(/^data:image\/(png|jpg);base64,/, "");
+                var path = writeImg(filename, base64);
+
+            };
+            reader.readAsDataURL(blob);
+        }
+    }
+
+    function writeImg(filename, base64) {
+        console.log(base64)
+        return filename;
+    }
+
+    document.querySelector('#message').addEventListener('paste', function (even) {
+        console.log(even);
+        console.log(even.clipboardData.files)
+        myFunction(even);
+    })
+</script>
+</body>
 </html>

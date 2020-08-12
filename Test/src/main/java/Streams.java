@@ -17,11 +17,6 @@ public class Streams {
                 .forEachOrdered(e -> System.out.print(e.getKey()));
 
 
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
         int[] arr = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
         System.out.println(Collectors.joining(","));
         //String s = String.join(",", Arrays.toString(arr));//.join(",");

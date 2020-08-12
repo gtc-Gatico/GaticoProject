@@ -18,16 +18,14 @@ public class PasswordGenerator {
         genpwd("7xops", "7xops@7xops!");
         genpwd("watson", "watson@watson!");
         genpwd("7x-networks", "7x-networks");
+        genpwd("watsons", "W@ts0ns2018");
+        genpwd("test", "test");
     }
 
     public static void genpwd(String username, String password) {
         System.out.println(username + ":" + MD5Utils.encrypt(MD5Utils.encrypt(password)) + ":" +
-                MD5Utils.encrypt(
-                        MD5Utils.encrypt(MD5Utils.encrypt(password)) + "{" + username + "}")
+                MD5Utils.encrypt(MD5Utils.encrypt(MD5Utils.encrypt(password)) + "{" + username + "}")
         );
     }
 
-    public static void genpwd(String username) {
-        genpwd(username, username);
-    }
 }

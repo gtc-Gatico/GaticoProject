@@ -45,7 +45,7 @@ public class ApplicationStart {
             }
         });
         new Thread(() -> {
-            HttpServer.Start(ApplicationContext.port);
+            HttpServer1.Start(ApplicationContext.port);
         }).start();
 
            /* urlsSet.forEach(urls -> {

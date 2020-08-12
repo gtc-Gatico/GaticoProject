@@ -15,16 +15,22 @@ import java.util.Map;
 
 public class AutoCode {
     public static void main(String[] args) {
-        String sql = "CREATE TABLE `box_dns_redirect` (\n" +
+        String sql = "CREATE TABLE `device_box_probe_score` (\n" +
                 "\t`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
-                "\t`box_id` BIGINT ( 20 ) DEFAULT NULL COMMENT '云盒id',\n" +
-                "\t`src_cidr` VARCHAR ( 50 ) DEFAULT NULL COMMENT '源地址段',\n" +
-                "\t`domain` VARCHAR ( 255 ) DEFAULT NULL COMMENT '域名（非IP）',\n" +
-                "\t`dns_server_addr` VARCHAR ( 32 ) DEFAULT NULL COMMENT 'dns服务器地址',\n" +
-                "\t`dns_server_port` VARCHAR ( 32 ) DEFAULT NULL COMMENT 'dns服务器端口',\n" +
+                "\t`box_id` BIGINT ( 20 ) DEFAULT NULL COMMENT '云盒主键',\n" +
+                "\t`probe_id` BIGINT ( 20 ) DEFAULT NULL COMMENT '探针主键',\n" +
+                "\t`time` datetime DEFAULT NULL COMMENT '时间',\n" +
+                "\t`score` INT ( 3 ) DEFAULT NULL COMMENT '分数',\n" +
                 "PRIMARY KEY ( `id` ) \n" +
                 ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4";
-        CreateFile("entity", "cn.com.gatico.entity", AnalysisSql(sql), "java");
+        List<Map<String, Object>> obj = AnalysisSql(sql);
+        String filePath = "F:\\Workspaces\\IDEA\\colossus\\src\\main\\java\\";
+        String packName = "com.sevenXnetworks.colossus";
+        CreateFile(filePath, "entity", packName, obj, "java");
+        CreateFile(filePath, "dao", packName, obj, "java");
+        CreateFile(filePath, "daoImpl", packName, obj, "java");
+        //CreateFile(filePath, "service", packName, obj, "java");
+        //CreateFile(filePath, "serviceImpl", packName , obj, "java");
     }
 
     //解析sql
@@ -94,9 +100,8 @@ public class AutoCode {
 
     //生成文件
 
-    public static void CreateFile(String type, String packageName, List<Map<String, Object>> param, String suffix) {
-        String path = AutoCode.class.getResource("/").getPath();
-        path = path.replace("/target/classes", "/src/main/java");
+    public static void CreateFile(String filePAth, String type, String packageName, List<Map<String, Object>> param, String suffix) {
+        String path = filePAth;
         File root = new File(path + packageName.replace(".", "/"));
         if (!root.exists()) {
             root.mkdirs();
@@ -105,15 +110,21 @@ public class AutoCode {
         String fileText = "";
         File file = null;
         if ("entity".equals(type.toLowerCase())) {
-            file = new File(root + "/" + className + "Entity." + suffix);
+            file = new File(root + "/entity" + "/" + className + "Entity." + suffix);
             System.out.println(file.getPath());
             fileText = getEntityTemp(packageName, param);
         } else if ("dao".equals(type.toLowerCase())) {
-            file = new File(root + "/" + className + "Dao." + suffix);
+            file = new File(root + "/dao" + "/" + className + "Dao." + suffix);
             fileText = getDaoTemp(packageName, param);
+        } else if ("daoimpl".equals(type.toLowerCase())) {
+            file = new File(root + "/dao/impl" + "/" + className + "DaoImpl." + suffix);
+            fileText = getDaoImplTemp(packageName, param);
         } else if ("service".equals(type.toLowerCase())) {
-            file = new File(root + "/" + className + "Service." + suffix);
-            fileText = getEntityTemp(packageName, param);
+            file = new File(root + "/service" + "/" + className + "Service." + suffix);
+            fileText = getServiceTemp(packageName, param);
+        } else if ("serviceimpl".equals(type.toLowerCase())) {
+            file = new File(root + "/service/impl" + "/" + className + "ServiceImpl." + suffix);
+            fileText = getServiceImplTemp(packageName, param);
         }
 
 
@@ -127,8 +138,8 @@ public class AutoCode {
         }
     }
 
-    private static String getDaoTemp(String packageName, List<Map<String, Object>> param) {
-        String packageText = "package " + packageName + ";\n\n";
+    public static String getEntityTemp(String packageName, List<Map<String, Object>> param) {
+        String packageText = "package " + packageName + ".entity" + ";\n\n";
         StringBuffer importText = new StringBuffer();
         importText.append("import javax.persistence.*;\n");
         StringBuffer classText = new StringBuffer();
@@ -183,57 +194,60 @@ public class AutoCode {
         return packageText + importText.toString();
     }
 
-    public static String getEntityTemp(String packageName, List<Map<String, Object>> param) {
-        String packageText = "package " + packageName + ";\n\n";
-        StringBuffer importText = new StringBuffer();
-        importText.append("import javax.persistence.*;\n");
-        StringBuffer classText = new StringBuffer();
-        classText.append("\n@Entity\n" +
-                "@Table(name = \"" + param.get(0).get("tableName") + "\")\n");
+    private static String getDaoTemp(String packageName, List<Map<String, Object>> param) {
+        String packageText = "package " + packageName + ".dao" + ";\n\n";
         String className = ToName((String) param.get(0).get("tableName"), true);
-        classText.append("public class " + className + "Entity {\n\n");
+        StringBuffer importText = new StringBuffer();
+        importText.append("import " + packageName + ".entity." + className + "Entity;\n");
+        StringBuffer classText = new StringBuffer();
+        classText.append("\npublic interface " + className + "Dao extends BaseDao<" + className + "Entity, Long>{\n\n");
+        classText.append("}");
+        importText.append(classText);
+        return packageText + importText.toString();
+    }
 
-        StringBuffer classGetSetText = new StringBuffer();
-        boolean apppended = false;
-        for (int i = 0; i < param.size(); i++) {
-            Map map = param.get(i);
-            if (map.get("column") != null) {
-                String column = ToName(map.get("column").toString(), false);
-                String type = "";
-                if (map.get("type").toString().contains("java.sql.Timestamp")) {
-                    type = "Timestamp";
-                    if (!apppended) {
-                        importText.append("import java.sql.Timestamp;\n");
-                        apppended = true;
-                    }
-                } else if (map.get("type").toString().contains("java.lang.Boolean")) {
-                    type = "boolean";
-                } else if (map.get("type").toString().contains("java.lang.Long")) {
-                    type = "Long";
-                } else if (map.get("type").toString().contains("java.lang.Integer")) {
-                    type = "Integer";
-                } else if (map.get("type").toString().contains("java.lang.String")) {
-                    type = "String";
-                }
-                classText.append("\tprivate " + type + " " + column + ";\n\n");
-                if (map.get("column").toString().equals("id")) {
-                    classGetSetText.append("\t@Id\n");
-                }
-                if (map.get("autoIncrement") != null && map.get("autoIncrement").toString().equals("true")) {
-                    classGetSetText.append("\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n");
-                } else {
-                    classGetSetText.append("\t@Basic\n");
-                }
-                classGetSetText.append("\t@Column(name = \"" + map.get("column").toString() + "\")\n");
-                classGetSetText.append("\tpublic " + type + " get" + ToName(column, true) + "() {\n");
-                classGetSetText.append("\t\treturn " + column + ";\n");
-                classGetSetText.append("\t}\n\n");
-                classGetSetText.append("\tpublic void set" + ToName(column, true) + "(" + type + " " + column + ") {\n");
-                classGetSetText.append("\t\tthis." + column + " = " + column + ";\n");
-                classGetSetText.append("\t}\n\n");
-            }
-        }
-        classText.append(classGetSetText);
+    private static String getDaoImplTemp(String packageName, List<Map<String, Object>> param) {
+        String packageText = "package " + packageName + ".dao.impl" + ";\n\n";
+        String className = ToName((String) param.get(0).get("tableName"), true);
+        StringBuffer importText = new StringBuffer();
+        importText.append("import " + packageName + ".dao." + className + "Dao;\n");
+        importText.append("import " + packageName + ".entity." + className + "Entity;\n");
+        importText.append("import org.springframework.stereotype.Repository;\n");
+        StringBuffer classText = new StringBuffer();
+        classText.append("\n@Repository\n");
+
+        classText.append("public class " + className + "DaoImpl extends BaseDaoImpl<" + className + "Entity, Long> implements " + className + "Dao{\n\n");
+        classText.append("}");
+        importText.append(classText);
+        return packageText + importText.toString();
+    }
+
+    private static String getServiceTemp(String packageName, List<Map<String, Object>> param) {
+        String packageText = "package " + packageName + ".service" + ";\n\n";
+        StringBuffer importText = new StringBuffer();
+//        importText.append("import org.springframework.stereotype.Repository;\n");
+        StringBuffer classText = new StringBuffer();
+//        classText.append("\n@Repositoryy\n");
+        String className = ToName((String) param.get(0).get("tableName"), true);
+        classText.append("public interface " + className + "Service {\n\n");
+        classText.append("}");
+        importText.append(classText);
+        return packageText + importText.toString();
+    }
+
+    private static String getServiceImplTemp(String packageName, List<Map<String, Object>> param) {
+        String packageText = "package " + packageName + ".service.impl" + ";\n\n";
+        String className = ToName((String) param.get(0).get("tableName"), true);
+        StringBuffer importText = new StringBuffer();
+        importText.append("import " + packageName + ".service." + className + "Service;\n");
+        importText.append("import org.springframework.stereotype.Service;\n");
+        importText.append("import org.springframework.transaction.annotation.Propagation;\n");
+        importText.append("import org.springframework.transaction.annotation.Transactional;\n");
+        StringBuffer classText = new StringBuffer();
+        classText.append("\n@Service\n");
+        classText.append("@Transactional(propagation = Propagation.REQUIRED, readOnly = true)\n");
+
+        classText.append("public class " + className + "ServiceImpl implements " + className + "Service{\n\n");
         classText.append("}");
         importText.append(classText);
         return packageText + importText.toString();

@@ -24,7 +24,7 @@ public class Chat {
         JFrame jFrame = new JFrame();
         jFrame.setTitle("与" + UserName + "聊天中");
         jFrame.setSize(500, 500);
-        ImageIcon icon = new ImageIcon(MainWindow1.class.getResource("/").getPath() + "/source/icon.jpg");
+        ImageIcon icon = new ImageIcon(Chat.class.getResource("/").getPath() + "/source/icon.jpg");
         Image image = icon.getImage();
         jFrame.setIconImage(image);
         jFrame.setResizable(false);
