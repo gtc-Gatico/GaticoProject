@@ -27,7 +27,7 @@
 <div id="chat-page" class="hidden">
     <div class="chat-container">
         <div class="chat-header">
-            <h2>Spring WebSocket Chat Demo</h2>
+            <h2>在线聊天</h2>
         </div>
         <div class="connecting">
             Connecting...
@@ -38,7 +38,7 @@
         <form id="messageForm" name="messageForm" nameForm="messageForm">
             <div class="form-group">
                 <div class="input-group clearfix">
-                    <div type="text" id="message" contenteditable="true" placeholder="Type a message..." autocomplete="off" class="form-control"></div>
+                    <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
                     <button type="submit" class="primary">Send</button>
                 </div>
             </div>
@@ -51,33 +51,5 @@
 <script src="/js/sockjs.min.js"></script>
 <script src="/js/stomp.min.js"></script>
 <script src="/js/main.js"></script>
-<script>
-    function myFunction(event) {
-        var items = (event.clipboardData || event.originalEvent.clipboardData).items;
-        if (items.length > 0 && items[0].kind === "file") {
-            var blob = items[0].getAsFile();
-            var reader = new FileReader();
-            var filename = new Date().getTime() + ".png";
-            reader.onload = function (e) {
-                var base64 = e.target.result;
-                base64 = base64.replace(/^data:image\/(png|jpg);base64,/, "");
-                var path = writeImg(filename, base64);
-
-            };
-            reader.readAsDataURL(blob);
-        }
-    }
-
-    function writeImg(filename, base64) {
-        console.log(base64)
-        return filename;
-    }
-
-    document.querySelector('#message').addEventListener('paste', function (even) {
-        console.log(even);
-        console.log(even.clipboardData.files)
-        myFunction(even);
-    })
-</script>
 </body>
 </html>
