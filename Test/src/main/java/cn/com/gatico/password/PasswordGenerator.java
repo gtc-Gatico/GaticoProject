@@ -20,6 +20,7 @@ public class PasswordGenerator {
         genpwd("7x-networks", "7x-networks");
         genpwd("watsons", "W@ts0ns2018");
         genpwd("test", "test");
+        genpwd("admin", "admin");
     }
 
     public static void genpwd(String username, String password) {

@@ -18,16 +18,32 @@ public class APIController {
 
     @Mapping(url = "/getUser")
     public String getUser(String user) {
-        System.out.println(user);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("serverPort", "9999");
-        jsonObject.put("serverHost", "127.0.0.1");
-        JSONObject userInfo = new JSONObject();
-        userInfo.put("userId", "10001");
-        userInfo.put("name", "zhangsan");
-        userInfo.put("password", "123456");
-        jsonObject.put("resource", userInfo);
-        return jsonObject.toJSONString();
+        if (user.equals("zhangsan")) {
+            System.out.println(user);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("serverPort", "9999");
+            jsonObject.put("serverHost", "192.168.1.177");
+            JSONObject userInfo = new JSONObject();
+            userInfo.put("userId", "10001");
+            userInfo.put("name", "zhangsan");
+            userInfo.put("nickName", "张三");
+            userInfo.put("password", "123456");
+            jsonObject.put("resource", userInfo);
+            return jsonObject.toJSONString();
+        } else if (user.equals("lisi")) {
+            System.out.println(user);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("serverPort", "9999");
+            jsonObject.put("serverHost", "192.168.1.177");
+            JSONObject userInfo = new JSONObject();
+            userInfo.put("userId", "10002");
+            userInfo.put("name", "lisi");
+            userInfo.put("nickName", "李四");
+            userInfo.put("password", "123456");
+            jsonObject.put("resource", userInfo);
+            return jsonObject.toJSONString();
+        }
+        return null;
     }
 
     @Mapping(url = "/hello")

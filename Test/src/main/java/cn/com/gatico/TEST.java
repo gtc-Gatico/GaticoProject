@@ -1,20 +1,18 @@
 package cn.com.gatico;
 
 
+import java.io.File;
 import java.nio.ByteBuffer;
 
 public class TEST {
     private static ByteBuffer buffer = ByteBuffer.allocate(8);
 
-    public static void main(String[] args) {
-        byte[] bytes = "张三".getBytes();
-        byte b = Integer.valueOf(bytes.length).byteValue();
-        byte[] bytes1 = longToBytes(bytes.length);
-        System.out.println(bytes1);
-        long a = 11111;
-        Temp t = new Temp();
-        t.setTimestamp(a);
-        System.out.println(t.getTimestamp().toString());
+    public static void main(String[] args) throws Exception {
+        File file1 = new File("F://test", "dsd/fileName.md");
+        if (!file1.exists()) {
+            file1.mkdirs();
+            file1.createNewFile();
+        }
     }
 
     //byte 数组与 int 的相互转换

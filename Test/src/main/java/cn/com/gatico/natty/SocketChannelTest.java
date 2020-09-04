@@ -29,6 +29,7 @@ public class SocketChannelTest {
 
     Map<SocketChannel, Protocol> socketChannelProtocolMap = new HashMap<>();
 
+    Map<Long, SocketChannel> userIdSocketChannelMap = new HashMap<>();
     int connectionSize = 0;
 
     public void init() {
@@ -53,39 +54,42 @@ public class SocketChannelTest {
                                 socketChannel = serverSocketChannel.accept();
                                 socketChannel.configureBlocking(false);
                                 System.out.println("新的连接:" + socketChannel);
-                                socketChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                                Protocol p = new Protocol();
+                                socketChannel.register(selector, SelectionKey.OP_READ, p);
                             } else if (key.isConnectable()) {
                                 // a connection was established with a remote server.
                             } else if (key.isReadable()) {
                                 // a channel is ready for reading
                                 socketChannel = (SocketChannel) key.channel();
-                                Protocol p = socketChannelProtocolMap.get(socketChannel);
+                                Protocol p = (Protocol) key.attachment();
                                 if (p == null) {
                                     p = new Protocol();
-                                    socketChannelProtocolMap.put(socketChannel, p);
                                 }
                                 if (p.type == 0) {
                                     ByteBuffer byteBuffer = ByteBuffer.allocate(1);
                                     byteBuffer.clear();
                                     int res = socketChannel.read(byteBuffer);
                                     byteBuffer.flip();
-                                    byte type = byteBuffer.get();
-                                    p.type = type;
-                                    if (res > 1) {
-                                        byteBuffer = ByteBuffer.allocate(Long.SIZE);
-                                        byteBuffer.clear();
-                                        res = socketChannel.read(byteBuffer);
-                                        byteBuffer.flip();
-                                        p.length = byteBuffer.getLong();
-                                    }
-                                    if (res > 1) {
-                                        byteBuffer = ByteBuffer.allocate(Long.valueOf(p.length).intValue());
-                                        byteBuffer.clear();
-                                        res = socketChannel.read(byteBuffer);
-                                        p.data = byteBuffer.array();
-                                        onRead(p);
-                                        p = new Protocol();
-                                        socketChannelProtocolMap.put(socketChannel, p);
+                                    if (byteBuffer.hasRemaining()) {
+                                        byte type = byteBuffer.get();
+                                        p.type = type;
+                                        if (res > 1) {
+                                            byteBuffer = ByteBuffer.allocate(8);
+                                            byteBuffer.clear();
+                                            res = socketChannel.read(byteBuffer);
+                                            byteBuffer.flip();
+                                            p.length = byteBuffer.getLong();
+                                        }
+                                        if (res > 1) {
+                                            byteBuffer = ByteBuffer.allocate(Long.valueOf(p.length).intValue());
+                                            byteBuffer.clear();
+                                            res = socketChannel.read(byteBuffer);
+                                            byteBuffer.flip();
+                                            p.data = byteBuffer.array();
+                                            onRead(p);
+                                            p = new Protocol();
+                                            key.attach(p);
+                                        }
                                     }
                                 } else {
                                     if (p.type == ProtocolType.HEART.getType() || p.type == ProtocolType.DATA.getType()) {
@@ -98,18 +102,24 @@ public class SocketChannelTest {
                                             byteBuffer = ByteBuffer.allocate(Long.valueOf(p.length).intValue());
                                             byteBuffer.clear();
                                             res = socketChannel.read(byteBuffer);
+                                            byteBuffer.flip();
                                             p.data = byteBuffer.array();
-                                            onRead(p);
+                                            if (p.type == ProtocolType.HEART.getType()) {
+                                                onHeart(p, socketChannel);
+                                            } else if (p.type == ProtocolType.DATA.getType()) {
+                                                onRead(p);
+                                            }
                                             p = new Protocol();
-                                            socketChannelProtocolMap.put(socketChannel, p);
+                                            key.attach(p);
                                         }
                                     } else if (p.data.length < p.length) {
                                         ByteBuffer byteBuffer = ByteBuffer.allocate(Long.valueOf(p.length - p.data.length).intValue());
                                         socketChannel.read(byteBuffer);
+                                        byteBuffer.flip();
                                         p.data = byteBuffer.array();
                                         onRead(p);
                                         p = new Protocol();
-                                        socketChannelProtocolMap.put(socketChannel, p);
+                                        key.attach(p);
                                     }
                                 }
                             } else if (key.isWritable()) {
@@ -130,6 +140,17 @@ public class SocketChannelTest {
         }
     }
 
+    public void onHeart(Protocol p, SocketChannel socketChannel) {
+        System.out.println(p.type);
+        System.out.println(p.length);
+        if (p.type == ProtocolType.HEART.getType()) {
+            ByteBuffer byteBuffer = ByteBuffer.wrap(p.data);
+            Long userId = byteBuffer.getLong();
+            System.out.println(userId);
+            userIdSocketChannelMap.put(userId, socketChannel);
+        }
+    }
+
     public void onRead(Protocol p) {
         System.out.println(p.type);
         System.out.println(p.length);
@@ -141,16 +162,22 @@ public class SocketChannelTest {
             String s = new String(p.data);
             JSONObject jsonObject = JSONObject.parseObject(s);
             System.out.println(jsonObject.toJSONString());
+            Long toUserId = jsonObject.getLong("toUserId");
+            SocketChannel socketChannel = userIdSocketChannelMap.get(toUserId);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(jsonObject.toJSONString().getBytes());
+            Protocol p2 = new Protocol();
+            p2.data = byteBuffer.array();
+            try {
+                int write = socketChannel.write(p2.toBytes());
+                System.out.println(write);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void onWriter(Protocol p) {
-        System.out.println(p.type);
-        System.out.println(p.length);
-        System.out.println(new String(p.data));
-        String s = new String(p.data);
-        JSONObject jsonObject = JSONObject.parseObject(s);
-        System.out.println(jsonObject.toJSONString());
+    public void onWriter(SocketChannel socketChannel) {
+        System.out.println("发送");
     }
 }
 
@@ -158,6 +185,15 @@ class Protocol {
     byte type;
     long length;
     byte[] data;
+
+    public ByteBuffer toBytes() {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(this.data.length + 9);
+        byteBuffer.put((byte) 2);
+        byteBuffer.putLong(this.data.length);
+        byteBuffer.put(this.data);
+        byteBuffer.flip();
+        return byteBuffer;
+    }
 }
 
 enum ProtocolType {
