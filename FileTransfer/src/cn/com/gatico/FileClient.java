@@ -150,6 +150,7 @@ public class FileClient {
             e.printStackTrace();
             return false;
         }
+        Log.i(tga, "----------结束----------");
         return true;
     }
 
