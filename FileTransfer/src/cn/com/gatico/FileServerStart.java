@@ -14,6 +14,7 @@ public class FileServerStart {
                 Properties config = new Properties();
                 String path0 = FileServerStart.class.getResource("/").getPath() + "config.properties";
                 config.load(new FileInputStream(path0));
+                Log.writerFileFlag = true;
                 Log.path = config.getProperty("logpath");
                 FileServerStart.path = config.getProperty("path");
                 FileServerStart.port = Integer.parseInt(config.getProperty("port"));
