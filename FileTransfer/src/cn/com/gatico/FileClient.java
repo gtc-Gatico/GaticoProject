@@ -10,6 +10,7 @@ public class FileClient {
     public String address;
     public int port;
     public OutputStream os = null;
+    String tga = Thread.currentThread().getName() + "_" + FileClient.class.getSimpleName();
 
     public FileClient() {
 
@@ -48,6 +49,8 @@ public class FileClient {
             }
             return false;
         }
+        long startTime = System.currentTimeMillis();
+        Log.i(tga, "----------开始----------");
         Protocol protocol = new Protocol();
         byte[] arr = new byte[]{(byte) 70, (byte) 84, (byte) 0, (byte) 1};
         protocol.setProtocolTitle(Util.byteToInt(arr));
@@ -62,17 +65,24 @@ public class FileClient {
             protocol.setNameLength((byte) fileName.length);
             protocol.setFileName(fileName);
             protocol.setFileLength(file.length());
-            System.out.println(file.length());
             try {
-                sendProtocol(protocol);
+                os.write(Util.intToByte(protocol.getProtocolTitle()));
+                os.write(protocol.getType());
+                os.write(protocol.getNameLength());
+                os.write(protocol.getFileName());
+                os.write(Util.longToByte(protocol.getFileLength()));
+                os.flush();
+                Log.i(tga, "文件名：" + new String(protocol.getFileName(), "UTF8"));
+                Log.i(tga, "文件大小：" + protocol.getFileLength());
                 FileInputStream fileInputStream = new FileInputStream(file);//8388608
                 int length = 0;
-                byte temp[] = new byte[file.length() > 8388608 ? 8388608 : (int) file.length()];
+                byte temp[] = new byte[file.length() > 1 << 23 ? 1 << 23 : (int) file.length()];
                 while ((length = fileInputStream.read(temp, 0, temp.length)) > 0) {
                     os.write(temp, 0, length);
                     os.flush();
                 }
                 fileInputStream.close();
+                Log.i(tga, "文件" + file.getName() + "已发送完成");
             } catch (IOException e) {
                 e.printStackTrace();
                 try {
@@ -111,12 +121,16 @@ public class FileClient {
                     os.write(tmp.getName().getBytes());
                     os.write(Util.longToByte(tmp.length()));
                     os.flush();
+                    Log.i(tga, "文件名：" + new String(tmp.getName().getBytes(), "UTF8"));
+                    Log.i(tga, "文件大小：" + tmp.length());
                     FileInputStream fileInputStream = new FileInputStream(tmp);
-                    byte[] temp = new byte[tmp.length() > 8388608 ? 8388608 : (int) tmp.length()];
+                    byte[] temp = new byte[tmp.length() > 1 << 23 ? 1 << 23 : (int) tmp.length()];
                     while (fileInputStream.read(temp) != -1) {
                         os.write(temp);
                         os.flush();
                     }
+                    fileInputStream.close();
+                    Log.i(tga, "文件" + tmp.getName() + "已发送完成");
                 } catch (IOException e) {
                     e.printStackTrace();
                     try {
@@ -128,8 +142,10 @@ public class FileClient {
                 }
             }
         }
+        Log.i(tga, "发送完成：用时" + (System.currentTimeMillis() - startTime) + "ms");
         try {
             socket.close();
+            Log.i(tga, "关闭连接");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -137,87 +153,8 @@ public class FileClient {
         return true;
     }
 
-    public void sendProtocol(Protocol protocol) {
-        try {
-            os.write(Util.intToByte(protocol.getProtocolTitle()));
-            os.write(protocol.getType());
-            if (protocol.getType() == 2) {
-                os.write(Util.intToByte(protocol.getSplitByte()));
-            } else {
-                os.write(protocol.getNameLength());
-                os.write(protocol.getFileName());
-                os.write(Util.longToByte(protocol.getFileLength()));
-            }
-            os.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public byte[] getFileByte(byte[] filearr, String filename) {
-        byte[] namearr = filename.getBytes();
-        System.out.println("客户端:获取的文件名长度:" + namearr.length);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(namearr.length + filearr.length + 4);
-        try {
-            bos.write(Util.intToByte(filearr.length));
-            bos.write(filearr);
-            bos.write(namearr);
-            bos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bos.toByteArray();
-    }
-
-    /**
-     * 上传字节数组
-     *
-     * @param arr
-     * @return
-     */
-    public boolean uploadByte(byte[] arr) {
-        OutputStream os = null;
-        try {
-            this.init();
-            os = socket.getOutputStream();
-            os.write(arr);
-            os.flush();
-            socket.close();
-            socket = null;
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (os != null) {
-                    os.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public int getPort() {
-        return port;
     }
 
     public void setPort(int port) {
