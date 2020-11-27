@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>记事本</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .findStr {
+        background-color: yellow;
+        color: black;
+    }
+
+    .str {
+        color: green;
+    }
+</style>
+<body class="" style="overflow-y: hidden">
+<div style="display:block;height: 50px;min-height: 50px;width: 100vw;background-color: #D9D9D1">
+    1
+</div>
+<div style="display:flex;justify-items: flex-start;flex-direction: row; width: 100vw;height:calc(100vh - 50px); ">
+    <div style="min-width:20vw;height:calc(100vh - 50px); background-color: #D9D9D1">
+
+        2
+    </div>
+    <div contenteditable="true" id="textContext" style="min-width: 80vw;height:calc(100vh - 50px);overflow: auto;background-color: #D9D9D1">
+    </div>
+</div>
+<script>
+    function log() {
+        Object.keys(editor).forEach((k, i) => {
+            console.log(k, editor[k])
+        })
+    }
+
+    let Editor = function (id) {
+        this.textElement = document.getElementById(id),
+            this.currentOperationIndex = 0,
+            this.operation = [],
+            this.isChange = false,
+            this.isfocus = false,
+            this.keyWordsMap = new Map(),
+            this.keySetting = new Map(),
+            this.loadSetting = function (obj) {
+                let that = this;
+                this.textElement.addEventListener("change", function (e) {
+                    that.isChange = true;
+                });
+                this.textElement.addEventListener("focus", function (e) {
+                    that.isfocus = true;
+                });
+                this.textElement.addEventListener("blur", function (e) {
+                    if (that.isChange) {
+                        this.operation.push(that.getValue());
+                        this.currentOperationIndex = this.operation.length - 1;
+                        that.isChange = false;
+                    }
+                    that.isfocus = false;
+                });
+                this.textElement.addEventListener("keypress", function (e) {
+
+
+                });
+                if (obj != null) {
+                    for (let k in obj.keywords) {
+                        that.keyWordsMap.set(k, obj.keywords[k]);
+                    }
+                }
+            },
+            this.load = function (str, settingObj) {
+                this.loadSetting(settingObj);
+                this.formatTextColor(str);
+                this.operation.push(this.getValue());
+                this.currentOperationIndex = 1;
+            },
+            this.setValue = function (str) {
+                this.textElement.innerHTML = str;
+            },
+            this.getValue = function () {
+                return this.textElement.innerHTML;
+            },
+            this.find = function (str) {
+                let value = this.getValue();
+                if (value.indexOf(str) != -1) {
+                    var reg = new RegExp(str, "g");
+                    value = value.replace(reg, "<font class='findStr'>" + str + "</font>");
+                    this.setValue(value);
+                }
+            },
+            this.replace = function (str1, str2) {
+                if (this.getValue().indexOf(str1) != -1) {
+                    let value = this.getValue().replace(str1, str2);
+                    this.setValue(value);
+                    this.operation.push(value);
+                    this.currentOperationIndex = this.operation.length - 1;
+                }
+            },
+            this.replaceAll = function (str1, str2) {
+                if (this.getValue().indexOf(str1) != -1) {
+                    let value = this.getValue().replaceAll(str1, str2);
+                    this.setValue(value);
+                    this.operation.push(value);
+                    this.currentOperationIndex = this.operation.length - 1;
+                }
+            },
+            this.back = function () {
+                if (this.currentOperationIndex > 0) {
+                    this.currentOperationIndex--;
+                    let value = this.operation[this.currentOperationIndex];
+                    this.setValue(value);
+                    this.operation.push(value);
+                }
+            },
+            this.go = function () {
+                if (this.currentOperationIndex < this.operation.length - 1) {
+                    this.currentOperationIndex++;
+                    let value = this.operation[this.currentOperationIndex];
+                    this.setValue(value)
+                    this.operation.push(value);
+                }
+            },
+            this.getSelectText = function () {
+                let selection = window.getSelection();
+                if (!selection.isCollapsed) {
+                    if (selection.focusNode.parentElement == this.textElement) {
+                        return selection.toString();
+                    }
+                } else {
+                    if (selection.focusNode.parentElement == this.textElement) {
+                        return selection.focusNode.data;
+                    }
+                }
+            },
+            this.formatTextColor = function (str) {
+                let newStr = "";
+                str.split("\n").forEach(value1 => {
+                    value1.split(" ").forEach(value => {
+                        let temp = "";
+                        if (this.keyWordsMap.has(value)) {
+                            let style = "";
+                            let styles = this.keyWordsMap.get(value);
+                            for (let s in styles) {
+                                style += `${s}:${styles[s]};`;
+                            }
+                            temp = `<font style='${style}'>${value}</font>&nbsp;`;
+                        } else {
+                            temp = value + "&nbsp;";
+                        }
+                        newStr += temp;
+                    });
+                    newStr += '</br>';
+                });
+
+                this.setValue(newStr);
+            }
+    };
+    let settingJson = {
+        keywords: {
+            "package": {
+                "color": "blue",
+                "font-weight": "bold"
+            },
+            "class": {
+                "color": "blue",
+                "font-weight": "bold"
+            },
+            "private": {
+                "color": "blue",
+                "font-weight": "bold"
+            },
+            "public": {
+                "color": "blue",
+                "font-weight": "bold"
+            },
+            "void": {
+                "color": "blue",
+                "font-weight": "bold"
+            },
+            "return": {
+                "color": "blue",
+                "font-weight": "bold",
+            },
+            '"\s"': {
+                "color": "green",
+                "font-weight": "bold",
+            }
+        }
+    };
+    let editor = new Editor("textContext");
+    let txt = "package com.sevenXnetworks.colossus.bean;\n" +
+        "\n" +
+        "public class LevelBean {\n" +
+        "\n" +
+        "    private Long id;\n" +
+        "\n" +
+        "    private Long upstreamLevelId;\n" +
+        "\n" +
+        "    private String levelName = \"此账户\";\n" +
+        "\n" +
+        "    public Long getId() {\n" +
+        "        return id;\n" +
+        "    }\n" +
+        "\n" +
+        "    public void setId(Long id) {\n" +
+        "        this.id = id;\n" +
+        "    }\n" +
+        "\n" +
+        "    public Long getUpstreamLevelId() {\n" +
+        "        return upstreamLevelId;\n" +
+        "    }\n" +
+        "\n" +
+        "    public void setUpstreamLevelId(Long upstreamLevelId) {\n" +
+        "        this.upstreamLevelId = upstreamLevelId;\n" +
+        "    }\n" +
+        "\n" +
+        "    public String getLevelName() {\n" +
+        "        return levelName;\n" +
+        "    }\n" +
+        "\n" +
+        "    public void setLevelName(String levelName) {\n" +
+        "        this.levelName = levelName;\n" +
+        "    }\n" +
+        "}\n"
+    editor.load(txt, settingJson);
+    console.log(editor.getValue());
+    let fmtCode = function (txt) {
+        this.symbolList = new Array(',;.=?:[]{}<>()/\\+-*/%&^!@'.split(""));
+        let lines = new Array();
+        txt.split("\n").forEach(value1 => {
+            value1.split(" ").forEach(value => {
+                let res = value.indexOf(this.symbolList);
+                console.log(res)
+                //value.length>0?lines.push(value):'';
+            })
+        });
+        console.log(lines)
+
+
+    }(txt);
+
+    function toJava(lines) {
+        var tmp = "";
+        lines.forEach(line => {
+            tmp += line;
+            if (line === ';') {
+                tmp += "\n"
+            }
+        })
+    }
+
+</script>
+</body>
+</html>
