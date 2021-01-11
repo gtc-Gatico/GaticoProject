@@ -6,6 +6,17 @@ package cn.com.gatico.entity;
  * @date 2019/11/19 10:29
  */
 public class Test2 {
+    public Test2() {
+    }
+
+    public void start(){
+        System.out.println(111);
+    }
+
+    public Test2(Long t2) {
+        this.t2 = t2;
+    }
+
     private Long t2;
 
     public Long getT2() {

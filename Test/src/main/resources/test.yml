@@ -1,0 +1,19 @@
+server:
+  port: 8081
+spring:
+  profiles:
+    active: prod #激活对应的文档块
+
+---
+server:
+  port: 8083
+spring:
+  profiles: dev #指定属于哪个环境
+
+
+---
+
+server:
+  port: 8084
+spring:
+  profiles: prod  #指定属于哪个环境

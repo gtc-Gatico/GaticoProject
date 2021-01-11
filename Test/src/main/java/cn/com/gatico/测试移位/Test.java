@@ -2,6 +2,10 @@ package cn.com.gatico.测试移位;
 
 public class Test {
     public static void main(String[] args) {
+        System.out.println(String.format("%08d",1));
+        System.out.println(Integer.toBinaryString(Integer.valueOf("ff",16)));
+        int aa = (int) (1 & 0xff);
+        System.out.println(aa);
         int num = Integer.MAX_VALUE;
         System.out.println(num);
         System.out.println(Integer.toBinaryString((num)));
@@ -52,5 +56,11 @@ public class Test {
         bytes[2] = (byte) ((num >> 8) & 0xff);
         bytes[3] = (byte) (num & 0xff);
         return bytes;
+    }
+
+    public static byte[] i2b(int num) {
+        byte[] arr = new byte[4];
+        arr[0] =(byte)((num >> 24) & 0xff);
+        return new byte[10];
     }
 }

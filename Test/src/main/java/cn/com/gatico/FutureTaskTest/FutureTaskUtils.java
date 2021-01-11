@@ -1,5 +1,7 @@
 package cn.com.gatico.FutureTaskTest;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.FutureTask;
@@ -8,7 +10,8 @@ import java.util.stream.Collectors;
 public class FutureTaskUtils {
     private static boolean autoRun = false;
     private static ConcurrentHashMap<Object, FutureTask> futureTaskMap = new ConcurrentHashMap<>();
-
+    private static List<FutureTask> doneFutureTaskList = Collections.synchronizedList(new ArrayList<>());
+    private static List<FutureTask> cancelFutureTaskList = Collections.synchronizedList(new ArrayList<>());
     public static void addTask(FutureTask futureTask) {
         addTask(futureTask.hashCode(), futureTask);
     }
@@ -22,8 +25,20 @@ public class FutureTaskUtils {
         }
         futureTaskMap.put(key, futureTask);
         if (isAutoRun()) {
-            futureTask.run();
+            new Thread(() -> {
+                futureTask.run();
+            }).start();
         }
+        new Thread(()->{
+            futureTaskMap.values().forEach(futureTask1 -> {
+                if(futureTask1.isDone()){
+                    doneFutureTaskList.add(futureTask);
+                }
+                if(futureTask1.isCancelled()){
+                    cancelFutureTaskList.add(futureTask);
+                }
+            });
+        }).start();
         return true;
     }
 
@@ -37,7 +52,9 @@ public class FutureTaskUtils {
 
     public static void start() {
         futureTaskMap.values().stream().forEach(futureTask -> {
-            futureTask.run();
+            new Thread(() -> {
+                futureTask.run();
+            }).start();
         });
     }
 

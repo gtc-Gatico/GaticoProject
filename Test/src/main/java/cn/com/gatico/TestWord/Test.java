@@ -1,10 +1,9 @@
 package cn.com.gatico.TestWord;
 
-import org.convert.PDFConvert;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        PDFConvert pdfConvert = new PDFConvert();
+       // PDFConvert pdfConvert = new PDFConvert();
         /*String fileName = "分发和操作文档.docx";
         Process exec = Runtime.getRuntime().exec("explorer.exe C:\\Users\\48909\\Desktop\\" + fileName);
         System.out.println(fileName);

@@ -21,6 +21,14 @@ public class PasswordGenerator {
         genpwd("watsons", "W@ts0ns2018");
         genpwd("test", "test");
         genpwd("admin", "admin");
+        genpwd("BPCC", "BPCC@BPCC!");
+        genpwd("BPPC", "BPPC@BPPC!");//BPCC  4ab5e290a3fe63cd64095a082add1cac
+        genpwd("zhongjian-", "zhongjian@zhongjian!");//zhongjian-   f06fc23c8b76264633eb76902a1331f3
+        genpwd("zhongjian", "zhongjian@zhongjian!");
+        genpwd("xunkun.cai", "woaikunkun");
+        genpwd("kaiyu.rao", "123456");
+        System.out.println("----------------------");
+        genpwd("greenland", "greenland@greenland!");//a9f931f0d9c2e5cc31789a7570193af7
     }
 
     public static void genpwd(String username, String password) {

@@ -1,18 +1,38 @@
 package cn.com.gatico;
 
 
-import java.io.File;
+import cn.com.gatico.entity.Test2;
+
 import java.nio.ByteBuffer;
 
 public class TEST {
     private static ByteBuffer buffer = ByteBuffer.allocate(8);
 
-    public static void main(String[] args) throws Exception {
-        File file1 = new File("F://test", "dsd/fileName.md");
-        if (!file1.exists()) {
-            file1.mkdirs();
-            file1.createNewFile();
+
+
+    public static int countDigitOne(int n) {
+        if(n==0){
+            return n;
         }
+        StringBuffer s = new StringBuffer();
+        for (int i = 1; i <= n; i++) {
+            s.append(i);
+        }
+        String s1 = s.toString();
+        return s1.length() - s1.replaceAll("1", "").length();
+    }
+    public static void main(String[] args) throws Exception {
+        System.out.println(Integer.toBinaryString(5));
+        System.out.println(Integer.toBinaryString(-6));
+        System.out.println(Integer.toBinaryString(1));
+        System.out.println(Integer.valueOf("010",2));
+
+
+        //System.out.println(countDigitOne(20000));
+
+//        Test2 test = Test2.class.newInstance();
+//        test.setT2(11L);
+//        System.out.println(test.getT2());
     }
 
     //byte 数组与 int 的相互转换

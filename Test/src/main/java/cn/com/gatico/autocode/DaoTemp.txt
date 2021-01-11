@@ -1,0 +1,8 @@
+package ${packageName}.dao;
+
+import ${packageName}.entity.${className}Entity;
+
+public interface ${className}Dao extends BaseDao<${className}Entity, Long>{
+
+
+}

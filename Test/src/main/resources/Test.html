@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>部门</title>
+</head>
+<body>
+
+</body>
+<script>
+    // 某用户所在的部门id
+    const departmentsId = [5, 2, 10];
+    // 部门模拟数据
+    const departmentTree = [
+        {
+            name: "技术部",
+            id: 0,
+            children: [
+                {
+                    id: 1,
+                    name: "前端",
+                    children: [
+                        {
+                            id: 4,
+                            name: "前端一组",
+                            children: [],
+                        },
+                        {
+                            id: 5,
+                            name: "前端二组",
+                            children: [
+                                {
+                                    id: 9,
+                                    name: "前端-移动端一组",
+                                    children: [],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    id: 2,
+                    name: "UI",
+                    children: [
+                        {
+                            id: 6,
+                            name: "UI一组",
+                            children: [{id: 10, name: "视觉设计", children: []}],
+                        },
+                    ],
+                },
+                {
+                    id: 3,
+                    name: "后端",
+                    children: [
+                        {
+                            id: 7,
+                            name: "后端一组",
+                            children: [],
+                        },
+                        {
+                            id: 8,
+                            name: "后端二组",
+                            children: [],
+                        },
+                    ],
+                },
+            ],
+        },
+    ];
+
+    function test(departmentTree, departmentsId) {
+        let arr = [];
+        function getDept(data, deep) {
+            data.forEach((o) => {
+                departmentsId.includes(o.id) && arr.push({deep: deep, name: o.name});
+                o.children && getDept(o.children, ++deep);
+            });
+        };
+        getDept(departmentTree, 0);
+        return arr.sort((o1, o2) => {
+            return o1.deep - o2.deep
+        }).map((item)=>{return item.name});
+    }
+
+    function test2(departmentTree, departmentsId) {
+        let arr = [];
+        let queue = [...departmentTree];
+        while (queue.length > 0) {
+            let dept = queue.shift();
+            departmentsId.includes(dept.id) && arr.push(dept.name);
+            dept.children && queue.push(...dept.children);
+        }
+        return arr;
+    }
+
+</script>
+</html>

@@ -9,7 +9,6 @@ import java.sql.Timestamp;
  */
 public class Ipv42Int {
     public static void main(String[] args) {
-
         System.out.println(new Timestamp(System.currentTimeMillis()).getTime() / 1000);
         Integer integer = 1568;
         System.out.println(integer.byteValue());
@@ -66,5 +65,9 @@ public class Ipv42Int {
         String[] array1 = currentVersion.split("\\.");
         String[] array2 = targetVersion.split("\\.");
         return Long.valueOf(array1[2]) + Long.valueOf(array1[1]) * 1000L + Long.valueOf(array1[0]) * 1000000L >= Long.valueOf(array2[2]) + Long.valueOf(array2[1]) * 1000L + Long.valueOf(array2[0]) * 1000000L;
+    }
+
+    public void Test(String str) {
+        System.out.println(str);
     }
 }

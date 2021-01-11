@@ -4,13 +4,14 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CodeImage/CodeImage.iml" filepath="$PROJECT_DIR$/CodeImage/CodeImage.iml" />
       <module fileurl="file://$PROJECT_DIR$/Excel/Excel.iml" filepath="$PROJECT_DIR$/Excel/Excel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FileTransfer/FileTransfer.iml" filepath="$PROJECT_DIR$/FileTransfer/FileTransfer.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/GaticoProject.iml" filepath="$PROJECT_DIR$/.idea/GaticoProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JMETest/JMETest.iml" filepath="$PROJECT_DIR$/JMETest/JMETest.iml" />
       <module fileurl="file://$PROJECT_DIR$/Mail/Mail.iml" filepath="$PROJECT_DIR$/Mail/Mail.iml" />
       <module fileurl="file://$PROJECT_DIR$/Test/Test.iml" filepath="$PROJECT_DIR$/Test/Test.iml" />
       <module fileurl="file://$PROJECT_DIR$/WebSocket/WebSocket.iml" filepath="$PROJECT_DIR$/WebSocket/WebSocket.iml" />
       <module fileurl="file://$PROJECT_DIR$/WebSocketTest/WebSocketTest.iml" filepath="$PROJECT_DIR$/WebSocketTest/WebSocketTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/splunk/splunk.iml" filepath="$PROJECT_DIR$/splunk/splunk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Websocket-demo/websocket-demo.iml" filepath="$PROJECT_DIR$/Websocket-demo/websocket-demo.iml" />
     </modules>
   </component>
 </project>

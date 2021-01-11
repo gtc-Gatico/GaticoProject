@@ -18,6 +18,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="cannon" level="project" />
     <orderEntry type="library" name="pageoffice" level="project" />
+    <orderEntry type="library" name="jxbrowser-7.10" level="project" />
+    <orderEntry type="library" name="jxbrowser-win64-7.10" level="project" />
+    <orderEntry type="library" name="mysql-connector-java-5.1.44" level="project" />
     <orderEntry type="library" name="Maven: org.rrd4j:rrd4j:2.2" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.58" level="project" />
     <orderEntry type="library" name="Maven: eu.medsea.mimeutil:mime-util:2.1.3" level="project" />
@@ -47,10 +50,17 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-annotations-api:9.0.12" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.javassist:javassist:3.24.0-GA" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains:annotations:20.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:20.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.snmp4j:snmp4j:2.7.0" level="project" />
-    <orderEntry type="library" name="jxbrowser-7.10" level="project" />
-    <orderEntry type="library" name="jxbrowser-win64-7.10" level="project" />
-    <orderEntry type="library" name="mysql-connector-java-5.1.44" level="project" />
+    <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.23" level="project" />
+    <orderEntry type="library" name="Maven: io.projectreactor:reactor-core:3.2.2.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:30.1-jre" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.checkerframework:checker-qual:3.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.3.4" level="project" />
+    <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
   </component>
 </module>

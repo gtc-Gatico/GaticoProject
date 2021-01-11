@@ -3,6 +3,7 @@ package cn.com.gatico.natty;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -151,7 +152,7 @@ public class SocketChannelTest {
         }
     }
 
-    public void onRead(Protocol p) {
+    public void onRead(Protocol p) throws UnsupportedEncodingException {
         System.out.println(p.type);
         System.out.println(p.length);
         if (p.type == ProtocolType.HEART.getType()) {
@@ -164,7 +165,7 @@ public class SocketChannelTest {
             System.out.println(jsonObject.toJSONString());
             Long toUserId = jsonObject.getLong("toUserId");
             SocketChannel socketChannel = userIdSocketChannelMap.get(toUserId);
-            ByteBuffer byteBuffer = ByteBuffer.wrap(jsonObject.toJSONString().getBytes());
+            ByteBuffer byteBuffer = ByteBuffer.wrap(jsonObject.toJSONString().getBytes("UTF8"));
             Protocol p2 = new Protocol();
             p2.data = byteBuffer.array();
             try {

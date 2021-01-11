@@ -1,11 +1,12 @@
 package cn.com.gatico.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "a_b_c_d_e_f")
-public class ABCDEFEntity {
+public class ABCDEFEntity implements Serializable {
 
 	private Long id;
 
@@ -22,6 +23,18 @@ public class ABCDEFEntity {
 	private Timestamp createTime;
 
 	private Long priority;
+
+	public ABCDEFEntity() {
+	}
+
+	public ABCDEFEntity(Long id) {
+		this.id = id;
+	}
+
+	public ABCDEFEntity(Long id, String action) {
+		this.id = id;
+		this.action = action;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

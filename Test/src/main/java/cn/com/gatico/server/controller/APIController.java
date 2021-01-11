@@ -4,6 +4,7 @@ import cn.com.gatico.server.ApplicationContext;
 import cn.com.gatico.server.Response;
 import cn.com.gatico.server.annotattions.API;
 import cn.com.gatico.server.annotattions.Mapping;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonArray;
 import org.apache.commons.io.FileUtils;
@@ -12,9 +13,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.SimpleFormatter;
 
 @API(url = "/api")
 public class APIController {
+ UserItem zs = new UserItem("https://gatico.com.cn/image/icon.jpg",getDate(),getTime(),10001L,"zhangsan","张三","1","nssb");
+ UserItem ls = new UserItem("https://gatico.com.cn/image/icon2.gif",getDate(),getTime(),10002L,"lisi","李四","1","nssb");
 
     @Mapping(url = "/getUser")
     public String getUser(String user) {
@@ -22,24 +28,34 @@ public class APIController {
             System.out.println(user);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("serverPort", "9999");
-            jsonObject.put("serverHost", "192.168.1.177");
+            jsonObject.put("serverHost", "192.168.1.211");
             JSONObject userInfo = new JSONObject();
-            userInfo.put("userId", "10001");
-            userInfo.put("name", "zhangsan");
-            userInfo.put("nickName", "张三");
+            userInfo.put("userId", zs.getUserId());
+            userInfo.put("userName", zs.getUserName());
+            userInfo.put("nickName", zs.getTitle());
+            userInfo.put("img", zs.getImg());
+            userInfo.put("userDescription", "这个人很懒，什么也没留下");
             userInfo.put("password", "123456");
+            JSONArray objects = new JSONArray();
+            objects.add(ls);
+            userInfo.put("userItemList", objects);
             jsonObject.put("resource", userInfo);
             return jsonObject.toJSONString();
         } else if (user.equals("lisi")) {
             System.out.println(user);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("serverPort", "9999");
-            jsonObject.put("serverHost", "192.168.1.177");
+            jsonObject.put("serverHost", "192.168.1.211");
             JSONObject userInfo = new JSONObject();
-            userInfo.put("userId", "10002");
-            userInfo.put("name", "lisi");
-            userInfo.put("nickName", "李四");
+            userInfo.put("userId", ls.getUserId());
+            userInfo.put("userName", ls.getUserName());
+            userInfo.put("nickName", ls.getTitle());
+            userInfo.put("img", ls.getImg());
+            userInfo.put("userDescription", "这个人很懒，什么也没留下");
             userInfo.put("password", "123456");
+            JSONArray objects = new JSONArray();
+            objects.add(zs);
+            userInfo.put("userItemList", objects);
             jsonObject.put("resource", userInfo);
             return jsonObject.toJSONString();
         }
@@ -110,4 +126,10 @@ public class APIController {
         return response;
     }
 
+    public String getDate(){
+        return new SimpleDateFormat("yyyy-mm-dd").format(new Date());
+    }
+    public String getTime(){
+        return new SimpleDateFormat("HH:mm:ss").format(new Date());
+    }
 }

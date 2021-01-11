@@ -97,6 +97,7 @@ public class FileClient {
             Double d = Math.random() * 1000000000;
             File[] files = file.listFiles();
             protocol.setSplitByte(d.intValue());
+            System.out.println(protocol.getSplitByte());
             try {
                 os.write(Util.intToByte(protocol.getProtocolTitle()));
                 os.write(protocol.getType());

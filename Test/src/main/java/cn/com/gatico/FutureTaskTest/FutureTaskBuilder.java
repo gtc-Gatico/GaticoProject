@@ -10,7 +10,7 @@ public class FutureTaskBuilder {
     }
 
     public static FutureTaskBuilder addTask(FutureTask futureTask) {
-        FutureTaskUtils.getFutureTaskMap().put("", futureTask);
+        FutureTaskUtils.getFutureTaskMap().put(futureTask.hashCode(), futureTask);
         if (FutureTaskUtils.isAutoRun()) {
             futureTask.run();
         }

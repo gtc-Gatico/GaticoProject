@@ -1,9 +1,16 @@
 package cn.com.gatico.CMD;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import cn.com.gatico.窗体.UserItem;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.*;
 import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Gatico
@@ -11,7 +18,21 @@ import java.nio.ByteBuffer;
  * @date 2020/1/9 18:13
  */
 public class SyncCommand {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        File file = new File(SyncCommand.class.getClass().getResource("/").toURI());
+        String files[] = file.list((dir, name) -> {
+            return name.endsWith("properties");
+        });
+        for (int i = 0; i < files.length; i++) {
+            Properties properties = new Properties();
+            properties.load(new FileInputStream(file + File.separator + files[i]));
+            properties.entrySet().forEach(objectObjectEntry -> {
+                System.setProperty(objectObjectEntry.getKey().toString(), objectObjectEntry.getValue().toString());
+            });
+        }
+
+        System.out.println(file.getAbsolutePath());
+        System.exit(1);
         String command = "chdir";
         System.out.println(command);
         ByteBuffer byteBuffer = ByteBuffer.allocate(100);
