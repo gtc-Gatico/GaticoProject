@@ -33,8 +33,12 @@ public class Test {
 //        int arr[] = {1, 1, 2};
 //        System.out.println(removeDuplicates(arr));
 
-        String s = "aaa";
-        System.out.println(largeGroupPositions(s));
+//        String s = "aaa";
+//        System.out.println(largeGroupPositions(s));
+        String s1 = "6994";
+        String s2 = "36";
+        String s3 = addStrings(s1, s2);
+        System.out.println(s3);
     }
 
     public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
@@ -240,5 +244,50 @@ public class Test {
 //            listList.add(integers);
 //        }
         return listList;
+    }
+
+    public static String addStrings(String num1, String num2) {
+        String n1[] = num1.split("");
+        String n2[] = num2.split("");
+        int i1 = n1.length - 1;
+        int i2 = n2.length - 1;
+        if (i1 < i2) {
+            String[] c1 = n1;
+            n1 = n2;
+            n2 = c1;
+            i1 = n1.length - 1;
+            i2 = n2.length - 1;
+        }
+        boolean flag = false;
+        while (i1 >= 0 && i2 >= 0) {
+            Integer val = Integer.valueOf(n1[i1]) + Integer.valueOf(n2[i2]);
+            if (val >= 10) {
+                n1[i1] = Integer.valueOf(val - 10).toString();
+                if (i1 - 1 < 0) {
+                    flag = true;
+                } else {
+                    Integer r1 = Integer.valueOf(Integer.valueOf(n1[i1 - 1]) + 1);
+                    n1[i1 - 1] = r1.toString();
+
+                    int i3 = i1 - 1;
+                    while (r1 >= 10) {
+                        n1[i3] = Integer.valueOf(r1 - 10).toString();
+                        Integer r2 = r1 - 10 + 1;
+                        n1[i3 - 1] = Integer.valueOf(Integer.valueOf(n1[i3 - 1]) + r2).toString();
+                        r1 = Integer.valueOf(n1[i3 - 1]);
+                        i3--;
+                    }
+                }
+            } else {
+                n1[i1] = val.toString();
+            }
+            i1--;
+            i2--;
+        }
+        String res = String.join("", n1);
+        if (flag) {
+            res = "1" + res;
+        }
+        return res;
     }
 }

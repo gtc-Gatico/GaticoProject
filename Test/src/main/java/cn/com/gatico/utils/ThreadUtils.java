@@ -9,7 +9,6 @@ public class ThreadUtils {
         new Thread(() -> {
             SimpleBindings data = new SimpleBindings();
             data.put("data", f);
-
             Js.eval(r, data);
         }).start();
     }

@@ -9,10 +9,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonArray;
 import org.apache.commons.io.FileUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.SimpleFormatter;
@@ -23,7 +21,7 @@ public class APIController {
  UserItem ls = new UserItem("https://gatico.com.cn/image/icon2.gif",getDate(),getTime(),10002L,"lisi","李四","1","nssb");
 
     @Mapping(url = "/getUser")
-    public String getUser(String user) {
+    public String getUser(String user) throws UnsupportedEncodingException {
         if (user.equals("zhangsan")) {
             System.out.println(user);
             JSONObject jsonObject = new JSONObject();
@@ -51,7 +49,7 @@ public class APIController {
             userInfo.put("userName", ls.getUserName());
             userInfo.put("nickName", ls.getTitle());
             userInfo.put("img", ls.getImg());
-            userInfo.put("userDescription", "这个人很懒，什么也没留下");
+            userInfo.put("userDescription","这个人很懒，什么也没留下".getBytes());
             userInfo.put("password", "123456");
             JSONArray objects = new JSONArray();
             objects.add(zs);

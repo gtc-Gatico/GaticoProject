@@ -1,13 +1,46 @@
 package ${packageName}.service.impl;
 
-import ${packageName}.service.${className}Service;
+import ${packageName}.bean.${ClassName}Bean;
+import ${packageName}.dao.${ClassName}Dao;
+import ${packageName}.service.${ClassName}Service;
+import ${packageName}.vo.${ClassName}Vo;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-public class ${className}ServiceImpl implements ${className}Service{
+public class ${ClassName}ServiceImpl implements ${ClassName}Service{
 
+    @Autowired
+    private ${ClassName}Dao ${className}Dao;
+
+    @Override
+    public List<${ClassName}Vo> list${ClassName}() {
+
+        return null;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void create${ClassName}(${ClassName}Bean ${className}Bean) {
+
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void update${ClassName}(${ClassName}Bean ${className}Bean) {
+
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void delete${ClassName}() {
+
+    }
 
 }

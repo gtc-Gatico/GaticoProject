@@ -1,56 +1,52 @@
 package cn.com.gatico.窗体;
 
-import com.sun.imageio.plugins.png.PNGImageWriter;
-import com.sun.imageio.plugins.png.PNGImageWriterSpi;
-import com.sun.jndi.ldap.BerEncoder;
-import com.sun.management.GcInfo;
-import com.sun.org.apache.bcel.internal.classfile.ClassParser;
-import com.sun.org.apache.bcel.internal.classfile.JavaClass;
-import com.sun.org.apache.bcel.internal.util.Class2HTML;
-import com.sun.org.apache.bcel.internal.util.SecuritySupport;
 import javafx.application.Application;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.DataFormat;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.net.BCodec;
-import org.apache.commons.codec.net.QCodec;
-import sun.management.LazyCompositeData;
-import sun.management.MemoryUsageCompositeData;
 
-import javax.imageio.IIOImage;
-import javax.imageio.spi.ImageWriterSpi;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryType;
-import java.lang.management.MemoryUsage;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.charset.Charset;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.TemporalAmount;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class TestJfx extends Application {
 
     public static void main(String[] args) throws Exception {
-       launch(args);
+        launch(args);
         //System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("你好");
+        /**
+         * 首先我们创建一个Button，当我们点击Button的时候，改变Button的内容。
+         */
+
+        Button btnHello = new Button("Hello");
+        /**
+         * 设置btnHello按钮点击事件
+         * 这里使用了Java8的Lambda表达式。setOnAction的参数为EventHandler<ActionEvent> value
+         * EventHandler为一个接口，所以我们有三种方式实现EventHandler接口：
+         * 1. 创建一个内部类
+         * 2. 创建一个匿名类
+         * 3. 使用Lambda表达式（适用于函数体不大的情况）
+         */
+        btnHello.setOnAction(event -> {
+            btnHello.setText("Hello World, I am JavaFX!");
+        });
+
+        /**
+         *  BorderPane是一个用于布局的Pane，BoerderPane将面板分割为上下左右中五部分。
+         *  我们可以将UI控件放置在BorderPane的上下左右和中间。
+         *  这里将将Button放置在中间。
+         */
+        BorderPane pane = new BorderPane();
+        pane.setTop(btnHello);
+
+        // 将pane加入到Scen中
+        Scene scene = new Scene(pane, 500, 500);
+
+        // 设置stage的scen，然后显示我们的stage
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Hello World");
         primaryStage.show();
     }
 }

@@ -4,95 +4,247 @@
     <meta charset="UTF-8">
     <title>部门</title>
 </head>
-<body>
+<style>
+    .box {
+        width: 100px;
+        border: 1px solid black;
+        height: 300px;
+        overflow: scroll;
+        float: left;
+    }
 
+    .box::-webkit-scrollbar {
+        display: none;
+    }
+
+    #ul1 {
+        position: relative;
+        top: -62px;
+        margin: 0px;
+        width: 100px;
+        /*height: 500px;*/
+        text-align: center;
+        overflow: hidden;
+        background-color: cadetblue;
+        padding: 0px;
+    }
+
+    #ul1 li {
+        display: block;
+        width: 100px;
+        height: 50px;
+        padding: 5px;
+        border: solid 1px black;
+        background-color: darkcyan;
+        list-style: none;
+        line-height: 50px;
+
+    }
+
+    #ul2 {
+        position: relative;
+        margin: 0px;
+        width: 100px;
+        /*height: 500px;*/
+        text-align: center;
+        overflow: hidden;
+        background-color: cadetblue;
+        padding: 0px;
+    }
+
+    #ul2 li {
+        display: block;
+        width: 100px;
+        height: 50px;
+        padding: 5px;
+        border: solid 1px black;
+        background-color: darkcyan;
+        list-style: none;
+        line-height: 50px;
+
+    }
+
+    #ul1 li:first-child {
+        animation: 500ms scroll_hide;
+        animation-delay: 1500ms;
+    }
+
+    #ul1 li:nth-child(2) {
+        background-color: rebeccapurple;
+    }
+
+    @keyframes scroll_hide {
+        from {
+            height: 50px;
+        }
+        to {
+            height: 0px;
+            padding: 0px;
+            opacity: 0;
+        }
+    }
+
+    .active {
+        background-color: greenyellow !important;
+    }
+
+    .ul {
+        margin: 0px;
+        width: 100px;
+        /*height: 500px;*/
+        text-align: center;
+        overflow: hidden;
+        background-color: cadetblue;
+        padding: 0px;
+    }
+
+    .ul li {
+        display: block;
+        width: 100px;
+        height: 50px;
+        padding: 5px;
+        border: solid 1px black;
+        background-color: #56d642;
+        list-style: none;
+        line-height: 50px;
+    }
+</style>
+<body>
+<div class="box">
+    <ul id="ul2">
+    </ul>
+</div>
+<div class="box">
+        <ul id="ul1">
+
+        </ul>
+</div>
+<div class="box" style="height: 500px;">
+    <ul id="ul3" class="ul">
+
+    </ul>
+</div>
 </body>
 <script>
-    // 某用户所在的部门id
-    const departmentsId = [5, 2, 10];
-    // 部门模拟数据
-    const departmentTree = [
-        {
-            name: "技术部",
-            id: 0,
-            children: [
-                {
-                    id: 1,
-                    name: "前端",
-                    children: [
-                        {
-                            id: 4,
-                            name: "前端一组",
-                            children: [],
-                        },
-                        {
-                            id: 5,
-                            name: "前端二组",
-                            children: [
-                                {
-                                    id: 9,
-                                    name: "前端-移动端一组",
-                                    children: [],
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    id: 2,
-                    name: "UI",
-                    children: [
-                        {
-                            id: 6,
-                            name: "UI一组",
-                            children: [{id: 10, name: "视觉设计", children: []}],
-                        },
-                    ],
-                },
-                {
-                    id: 3,
-                    name: "后端",
-                    children: [
-                        {
-                            id: 7,
-                            name: "后端一组",
-                            children: [],
-                        },
-                        {
-                            id: 8,
-                            name: "后端二组",
-                            children: [],
-                        },
-                    ],
-                },
-            ],
-        },
-    ];
+    let userData = [{
+        name: "华氏",
+        data: [
+            "test1",
+            "test2",
+            "test3",
+            "test4",
+            "test5",
+            "test6",
+            "test7",
+            "test8",
+        ]
+    }, {
+        name: "屈臣氏",
+        data: [
+            "test9",
+            "test10",
+            "test11",
+            "test12",
+            "test13",
+            "test14",
+            "test15",
+            "test16",
+        ]
+    }, {
+        name: "上药集团",
+        data: [
+            "test17",
+            "test18",
+            "test19",
+            "test20",
+            "test21",
+            "test22",
+            "test23",
+            "test24",
+        ]
+    }];
 
-    function test(departmentTree, departmentsId) {
-        let arr = [];
-        function getDept(data, deep) {
-            data.forEach((o) => {
-                departmentsId.includes(o.id) && arr.push({deep: deep, name: o.name});
-                o.children && getDept(o.children, ++deep);
-            });
-        };
-        getDept(departmentTree, 0);
-        return arr.sort((o1, o2) => {
-            return o1.deep - o2.deep
-        }).map((item)=>{return item.name});
-    }
+    let data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let userIndex = 0;
+    let endElement;
+    let startTime = new Date().getTime();
+    let timeInterval;
+    let scrollUl = function () {
+        let elementUl = document.getElementById("ul1");
+        timeInterval = setInterval(function () {
+            let tmp = elementUl.firstElementChild;
+            if (tmp != null) {
+                if (endElement.getAttribute("index") === tmp.getAttribute("index")) {
+                    loadNext();
+                } else {
+                    elementUl.appendChild(elementUl.firstElementChild);
+                }
+            }
+        }, 2000);
+    };
 
-    function test2(departmentTree, departmentsId) {
-        let arr = [];
-        let queue = [...departmentTree];
-        while (queue.length > 0) {
-            let dept = queue.shift();
-            departmentsId.includes(dept.id) && arr.push(dept.name);
-            dept.children && queue.push(...dept.children);
+    function loadNext() {
+        window.clearInterval(timeInterval);
+        let elementUl = document.getElementById("ul1");
+        let first = elementUl.firstElementChild;
+        while (first) {
+            first.remove();
+            first = elementUl.firstElementChild;
         }
-        return arr;
+        if (userIndex > userData.length - 1 || new Date().getTime() - startTime > 30 * 60 * 60 * 1000) {
+            //window.location.reload();
+            userIndex = 0;
+        }
+        for (let i = 0; i < userData[userIndex].data.length; i++) {
+            let htmlliElement = document.createElement("li");
+            htmlliElement.textContent = userData[userIndex].data[i];
+            htmlliElement.setAttribute("index", i);
+            elementUl.appendChild(htmlliElement);
+        }
+        elementUl.insertBefore(elementUl.lastElementChild, elementUl.firstChild);
+        endElement = elementUl.lastElementChild;
+        let userul = document.getElementById("ul2").children;
+        for (let i = 0; i < userul.length; i++) {
+            document.getElementById("ul2").children[i].classList.remove("active");
+        }
+        document.getElementById("ul2").children[userIndex].classList.add("active");
+        scrollUl();
+        userIndex++;
     }
+
+    let init = function () {
+        let elementul2 = document.getElementById("ul2");
+        for (let i = 0; i < userData.length; i++) {
+            let htmlliElement = document.createElement("li");
+            htmlliElement.textContent = userData[i].name;
+            elementul2.appendChild(htmlliElement);
+        }
+        loadNext();
+    }();
+
+    let elementul3 = document.getElementById("ul3");
+    let ul3div = elementul3.parentElement;
+    let init2 = function () {
+        for (let i = 0; i < data.length; i++) {
+            let htmlliElement = document.createElement("li");
+            htmlliElement.textContent = data[i].toString();
+            elementul3.appendChild(htmlliElement);
+        }
+        for (let i = 0; i < data.length; i++) {
+            let htmlliElement = document.createElement("li");
+            htmlliElement.textContent = data[i].toString();
+            elementul3.appendChild(htmlliElement);
+        }
+        ul3div.addEventListener("mousewheel", function (e) {
+            console.log(ul3div.scrollTop)
+            if (e.wheelDelta < 0) {//往下滚
+                elementul3.appendChild(elementul3.firstElementChild);
+            } else {//往上滚
+                elementul3.insertBefore(elementul3.lastElementChild, elementul3.firstElementChild);
+                ul3div.scrollTop = ul3div.scrollTop - elementul3.firstElementChild . clientHeight
+            }
+        })
+    }()
 
 </script>
 </html>

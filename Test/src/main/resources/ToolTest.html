@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ToolTest</title>
+    <script src="js/Tool.js"></script>
+</head>
+<body>
+<script>
+    setDefaultConfig({delay: 2000});
+    let auto = start();
+
+    function log() {
+        auto.next(function () {
+            try {
+                let title = $("#question-detail-main-tabs [data-cypress='QuestionTitle']").textContent;
+                let context = $("#question-detail-main-tabs .notranslate").textContent;
+                console.log(title);
+                console.log(context);
+            } catch (e) {
+                console.error(e)
+            }
+            click()
+        });
+    }
+
+    function click() {
+        auto.next(function () {
+            if($("#next-question-btn").disabled){
+                auto.end();
+            }else{
+                $("#next-question-btn").click();
+            }
+            log()
+        });
+    }
+
+    log();
+
+</script>
+</body>
+</html>

@@ -16,7 +16,7 @@ public class Response {
 
     public Response() {
         if (contentType == null || contentType.length() <= 0) {
-            contentType = "text/html;charset=utf8";
+            contentType = "text/html; charset=UTF8";
         }
     }
 
@@ -35,13 +35,13 @@ public class Response {
 
     public void setContentType(String contentType) {
         if (contentType == null || contentType.length() <= 0) {
-            contentType = "text/html;charset=utf8";
+            contentType = "text/html; charset=UTF8";
         }
         this.contentType = contentType;
     }
 
     public void setContentType() {
-        this.contentType = "text/html;charset=utf8";
+        this.contentType = "text/html; charset=UTF8";
     }
 
     public byte[] getBody() {

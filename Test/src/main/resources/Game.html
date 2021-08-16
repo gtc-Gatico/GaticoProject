@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=.5, maximum-scale=.5, minimum-scale=.5, user-scalable=no">
+    <title>Game</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            user-select: none;
+            overflow: hidden;
+            /*background-color: lightslategray;*/
+            /*background-image: url("bg.gif");*/
+            background-repeat: repeat;
+        }
+
+        .tank {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50px;
+            height: 50px;
+            background-color: #95ff72;
+            display: block;
+            margin: 0;
+            padding: 0;
+
+        }
+
+        #userTank {
+            background-color: #ff4439;
+            z-index: 99;
+        }
+
+        .bullet {
+            position: absolute;
+            width: 500px;
+            height: 14px;
+            /*border: 1px solid black;*/
+            background-color: transparent;
+            overflow: hidden;
+        }
+
+        .bullet span {
+            color: blue;
+            /*text-shadow: black 1px 2px;*/
+            position: relative;
+            display: inline-block;
+            width: 10px;
+            height: 14px;
+            vertical-align: top;
+            line-height: .7;
+            text-align: center;
+            animation: bulletFrames;
+            animation-timing-function: linear;
+            animation-duration: 1000ms;
+            z-index: 99999;
+        }
+
+        .user_bullet {
+            position: absolute;
+            width: 500px;
+            height: 14px;
+            /*border: 1px solid black;*/
+            background-color: transparent;
+            overflow: hidden;
+        }
+
+        .user_bullet span {
+            color: red;
+            /*text-shadow: black 1px 2px;*/
+            position: relative;
+            display: inline-block;
+            width: 10px;
+            height: 14px;
+            vertical-align: top;
+            line-height: .7;
+            text-align: center;
+            animation: bulletFrames;
+            animation-timing-function: linear;
+            /*animation-duration: 1000ms;*/
+            z-index: 99999;
+        }
+
+        @keyframes bulletFrames {
+            0% {
+                left: 500px;
+            }
+            100% {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<!--<div style="width: 100vw;height:100vh;font-size: 30px; margin: 0 auto;padding: 0;position: absolute; line-height:100vh; text-align: center;" onclick="init();this.remove()">点击屏幕开始游戏</div>-->
+<script>
+    const $ = function (e) {
+        let elements = document.querySelectorAll(e);
+        return elements.length > 1 ? elements : elements[0];
+    };
+</script>
+<script>
+    let canvas, context, width = window.innerWidth, height = window.innerHeight, mouse = {down: false, up: false, x: 0, y: 0};
+    let selectKey;
+    let drawObjects = new Map();
+
+    let lastFrame = new Date();
+    let obj1 = {
+        key: "obj1",
+        x: 100,
+        y: 100,
+        color: "red",
+        width: 100,
+        height: 100,
+        draw: function (ctx) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.strokeStyle = this.color;
+            ctx.rect(this.x, this.y, this.width, this.height);
+            ctx.closePath();
+            ctx.stroke();
+        },
+        onMouseOver: function (ctx) {
+            ctx.fillStyle = 'red';
+            ctx.fill();
+        },
+        onMouseDown: function (ctx, e) {
+            this.x = e.x - this.width / 2;
+            this.y = e.y - this.height / 2;
+        },
+        onMouseUp: function (ctx) {
+            console.log("onMouseUp", this.key);
+        },
+    };
+    drawObjects.set(obj1.key, obj1);
+
+    let obj2 = {
+        key: "obj2",
+        x: 300,
+        y: 150,
+        color: "red",
+        radius: 50,
+        draw: function (ctx) {
+            ctx.beginPath();
+            ctx.strokeStyle = this.color;
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.stroke();
+        },
+        onMouseOver: function (ctx, e) {
+            ctx.fillStyle = this.color;
+            ctx.fill();
+
+        },
+        onMouseDown: function (ctx, e) {
+            this.x = e.x;
+            this.y = e.y;
+            ctx.fillStyle = 'yellow';
+            ctx.fill();
+        },
+        onMouseUp: function (ctx, e) {
+            console.log("onMouseUp", this.key);
+        },
+    };
+    drawObjects.set(obj2.key, obj2);
+
+    let obj3 = {
+        key: "obj3",
+        x: 400,
+        y: 100,
+        width: 100,
+        height: 150,
+        draw: function (ctx) {
+            ctx.beginPath();
+            ctx.strokeStyle = "#F0F";
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x + this.width, this.y);
+            ctx.lineTo(this.x + this.width / 2, this.y + this.height / 2);
+            ctx.closePath();
+            ctx.stroke();
+        },
+        onMouseOver: function (ctx, e) {
+            ctx.fillStyle = 'blue';
+            ctx.fill();
+        },
+        onMouseDown: function (ctx, e) {
+            this.x = e.x - this.width / 2;
+            this.y = e.y - this.height / 6;
+        },
+        onMouseUp: function (ctx, e) {
+            console.log("onMouseUp", this.key);
+        }
+    };
+    drawObjects.set(obj3.key, obj3);
+
+
+    function initDom() {
+        canvas = document.createElement("canvas");
+        canvas.height = height;
+        canvas.width = width;
+        context = canvas.getContext("2d");
+        document.body.appendChild(canvas);
+        canvas.onmousemove = function (e) {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        };
+        canvas.onmousedown = function (e) {
+            mouse.down = true;
+            mouse.up = false;
+        };
+        canvas.onmouseup = function (e) {
+            mouse.down = false;
+            mouse.up = true;
+        };
+        window.onresize = function () {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.height = height;
+            canvas.width = width;
+        };
+    }
+
+    function drawBackground() {
+        context.fillStyle = "#FFF";
+        context.fillRect(0, 0, width, height);
+    }
+
+    function init() {
+        initDom();
+        render();
+    }
+
+    function drawObject() {
+        drawObjects.forEach((value, key) => {
+            if (value.radius) {
+                if (value.radius < 100) {
+                    value.radius++;
+                } else {
+                    if (value.color === "red") {
+                        value.color = "blue";
+                    } else {
+                        value.color = "red"
+                    }
+
+                    value.radius = 0;
+                }
+            }
+            value.radius++;
+            value.draw(context);
+            if (context.isPointInPath(mouse.x, mouse.y)) {
+                value.selected = true;
+                value.onMouseOver(context);
+                if (mouse.down) {
+                    value.onMouseDown(context, mouse);
+                }
+                if (mouse.up) {
+                    value.onMouseUp(context);
+                    mouse.up = false;
+                }
+            } else {
+                value.selected = false;
+            }
+        });
+    }
+
+    function drawFps() {
+        context.save();
+        context.fillStyle = "#000";
+        context.fillText("Fps:" + (1000 / (new Date().getTime() - lastFrame)).toFixed(2), 0, 10);
+        context.restore();
+    }
+
+    function render() {
+        drawBackground();
+        drawObject();
+        drawFps();
+        lastFrame = new Date().getTime();
+        requestAnimationFrame(render);
+    }
+
+    init();
+</script>
+</body>
+</html>

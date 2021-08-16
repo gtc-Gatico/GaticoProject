@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试表格</title>
+    <script src="js/template.js"></script>
+    <style type="text/css">
+        .tab {
+            border-collapse: collapse;
+            border: 2px solid #0094ff;
+            margin: 10px auto;
+            text-align: center;
+        }
+
+        .tab th, tr, td {
+            padding: 10px;
+            border: 1px solid #0094ff;
+        }
+
+        .w-10 {
+            width: 10vw;
+        }
+    </style>
+</head>
+<body>
+<div id="content"></div>
+<script id="tabHtmlTemplate" type="text/html">
+    <!--    <table class="tab">-->
+    <!--        <thead>-->
+    <!--        <td>序号</td>-->
+    <!--        <td>日期</td>-->
+    <!--        <td>收营员</td>-->
+    <!--        <td>票亭地点</td>-->
+    <!--        <td>销售类型</td>-->
+    <!--        <td>票种</td>-->
+    <!--        <td>单价</td>-->
+    <!--        <td>收款方式</td>-->
+    <!--        <td>数量</td>-->
+    <!--        <td>小计</td>-->
+    <!--        <td>合计</td>-->
+    <!--        <td>总计</td>-->
+    <!--        </thead>-->
+    <!--        <tbody>-->
+    <!--        </tbody>-->
+    <!--    </table>-->
+    <div class="tab" style="border: 1px solid red">
+        {{each data object index}}
+        <div>{{index+1}}</div>
+        {{if object.data.length>0}}
+        <div rowspan="{{object.data.length + object.data[index].sale.length}}">{{object.printDate}}</div>
+        {{each object.data dd index2}}
+        {{if dd.sale.length>0}}
+        <div rowspan="">{{dd.printUser}}</div>
+        <div rowspan="">{{dd.siteName}}</div>
+        {{each dd.sale ddd index3}}
+        <div class="w-10">{{ddd.payStatus}}</div>
+        {{if ddd.saleList.length>0}}
+        {{each ddd.saleList dddd index4}}
+        <div class="w-10">{{dddd.ticketName}}</div>
+        <div class="w-10">{{dddd.price}}</div>
+        {{if dddd.payWayList.length>0}}
+        {{each dddd.payWayList ddddd index5}}
+        <div class="w-10">{{ddddd.payWay}}</div>
+        <div class="w-10">{{ddddd.num}}</div>
+        <div class="w-10">{{ddddd.payWayTotal}}</div>
+        {{/each}}
+        {{/if}}
+        {{/each}}
+        {{/if}}
+        {{/each}}
+        {{/if}}
+        {{/each}}
+        {{/if}}
+        {{/each}}
+    </div>
+</script>
+<table class="tab">
+    <thead>
+    <td>序号</td>
+    <td>日期</td>
+    <td>收营员</td>
+    <td>票亭地点</td>
+    <td>销售类型</td>
+    <td>票种</td>
+    <td>单价</td>
+    <td>收款方式</td>
+    <td>数量</td>
+    <td>小计</td>
+    <td>合计</td>
+    <td>总计</td>
+    </thead>
+    <tbody>
+    <tr>
+        <td rowspan="8">1</td>
+        <td rowspan="8">2021-02-12</td>
+        <td rowspan="8">杜方琴</td>
+        <td rowspan="8">湖光序曲</td>
+        <td rowspan="3">1</td>
+        <td>优惠票</td>
+        <td>20.00</td>
+        <td>1</td>
+        <td>53</td>
+        <td>1060.00</td>
+        <td rowspan="3">4560.00</td>
+        <td rowspan="8">10800.00</td>
+    </tr>
+    <tr>
+        <td>优惠票</td>
+        <td>20.00</td>
+        <td>2</td>
+        <td>44</td>
+        <td>880.00</td>
+    </tr>
+    <tr>
+        <td>优惠票</td>
+        <td>20.00</td>
+        <td>3</td>
+        <td>131</td>
+        <td>2620.00</td>
+    </tr>
+
+    <tr>
+        <td rowspan="3">1</td>
+        <td>全程票</td>
+        <td>40.00</td>
+        <td>1</td>
+        <td>48</td>
+        <td>1920.00</td>
+        <td rowspan="3">6160.00</td>
+    </tr>
+    <tr>
+        <td>全程票</td>
+        <td>40.00</td>
+        <td>2</td>
+        <td>36</td>
+        <td>1440.00</td>
+    </tr>
+    <tr>
+        <td>全程票</td>
+        <td>40.00</td>
+        <td>3</td>
+        <td>70</td>
+        <td>2800.00</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>听涛专票</td>
+        <td>20.00</td>
+        <td>3</td>
+        <td>2</td>
+        <td>40.00</td>
+        <td rowspan="2">80.00</td>
+    </tr>
+
+    <tr>
+        <td>2</td>
+        <td>优惠票</td>
+        <td>20.00</td>
+        <td>3</td>
+        <td>2</td>
+        <td>40.00</td>
+    </tr>
+    </tbody>
+</table>
+<script>
+
+    let data = [{
+        "printDate": "2021-02-12 00:00:00",
+        "data": [{
+            "printUser": "杜方琴",
+            "siteName": "湖光序曲",
+            "sale": [{
+                "saleList": [{
+                    "ticketName": "优惠票",
+                    "price": 20.00,
+                    "payWayList": [
+                        {"payWay": "1", "num": 53, "payWayTotal": 1060.00},
+                        {"payWay": "2", "num": 44, "payWayTotal": 880.00},
+                        {"payWay": "3", "num": 131, "payWayTotal": 2620.00}
+                    ]
+                }, {
+                    "ticketName": "全程票",
+                    "price": 40.00,
+                    "payWayList": [
+                        {"payWay": "1", "num": 48, "payWayTotal": 1920.00},
+                        {"payWay": "2", "num": 36, "payWayTotal": 1440.00},
+                        {"payWay": "3", "num": 70, "payWayTotal": 2800.00}
+                    ]
+                }, {
+                    "ticketName": "听涛专票",
+                    "price": 20.00,
+                    "payWayList": [
+                        {"payWay": "3", "num": 2, "payWayTotal": 40.00}
+                    ]
+                }],
+                "payStatus": "1"
+            }, {
+                "saleList": [{
+                    "ticketName": "优惠票",
+                    "price": 20.00,
+                    "payWayList": [
+                        {"payWay": "3", "num": 2, "payWayTotal": 40.00}
+                    ]
+                }],
+                "payStatus": "2"
+            }
+            ]
+        }]
+    }];
+
+    let html = template('tabHtmlTemplate', {data: data});
+    document.getElementById('content').innerHTML = html;
+</script>
+</body>
+</html>

@@ -2,13 +2,51 @@ package cn.com.gatico.测试多线程;
 
 import cn.com.gatico.控制台颜色.ColorFontPrint;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class Test {
     public static long e = 0L;
     public static long b = 0L;
     public static boolean flag = false;
     public static long c = 0;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        LinkedBlockingQueue linkedBlockingQueue = new LinkedBlockingQueue();
+        linkedBlockingQueue.poll();
+        List<Object> obj = new ArrayList<>();
+        obj.add(1);
+        obj.add(2);
+        obj.add(3);
+        obj.add(4);
+        obj.add(5);
+        obj.add(6);
+        obj.add(7);
+        obj.add(8);
+        obj.add(9);
+        obj.add(10);
+        obj.forEach(o -> {
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    //调用service 方法
+                    System.out.println(Thread.currentThread().getName() + ":"+o);
+                }
+            });
+        });
+
+        Thread.sleep(1000l);
+        System.exit(1);
+
+
+
+
+
+
         long size = Integer.MAX_VALUE;
         int[] arr = new int[]{0};
 

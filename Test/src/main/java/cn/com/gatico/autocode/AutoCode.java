@@ -1,7 +1,15 @@
 package cn.com.gatico.autocode;
 
 import com.alibaba.fastjson.JSONObject;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserManager;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.Select;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,31 +21,186 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AutoCode {
+public class AutoCode extends JFrame {
+    public AutoCode() {
+        this.setTitle("自动生成代码工具");
+        this.setSize(500, 520 + 27);
+        this.setLayout(null);
+        this.setLocationRelativeTo(null);// 设置居中显示
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+    }
+
     public static void main(String[] args) {
-        String sql = "CREATE TABLE `metric_dictionary` (\n" +
+        AutoCode autoCode = new AutoCode();
+        JLabel sqlLabel = new JLabel("Sql脚本：");
+        sqlLabel.setBounds(10, 20, 70, 20);
+        autoCode.add(sqlLabel);
+        JScrollPane jScrollPane = new JScrollPane();
+        JTextArea sqlTextArea = new JTextArea();
+//        sqlTextArea.setBounds(70, 20, 400, 300);
+        jScrollPane.setBounds(70, 20, 400, 300);
+        jScrollPane.setViewportView(sqlTextArea);
+        autoCode.add(jScrollPane);
+
+        JLabel packageNameLabel = new JLabel("包名：");
+        packageNameLabel.setBounds(10, 340, 70, 20);
+        autoCode.add(packageNameLabel);
+        JTextField packageNameField = new JTextField();
+        packageNameField.setBounds(70, 340, 400, 30);
+        packageNameField.setText("com.sevenXnetworks.colossus");
+        autoCode.add(packageNameField);
+
+        JLabel filePathLabel = new JLabel("文件目录：");
+        filePathLabel.setBounds(10, 390, 70, 20);
+        autoCode.add(filePathLabel);
+
+        JTextField filePathField = new JTextField();
+        filePathField.setBounds(70, 390, 400, 30);
+        filePathField.setText("F:\\Workspaces\\IDEA\\colossus\\src\\main\\java\\");
+        filePathField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JFileChooser jFileChooser = new JFileChooser();
+                jFileChooser.setCurrentDirectory(new File("d://"));// 文件选择器的初始目录定为d盘
+                FileSystemView fsv = FileSystemView.getFileSystemView();  //注意了，这里重要的一句
+                jFileChooser.setCurrentDirectory(fsv.getHomeDirectory());
+                jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);//只能选择目录
+                jFileChooser.setDialogTitle("请选择要生成文件的目录");
+                jFileChooser.setApproveButtonText("确定");
+//                jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int result = jFileChooser.showOpenDialog(autoCode);
+                if (JFileChooser.APPROVE_OPTION == result) {
+                    String path = jFileChooser.getSelectedFile().getPath() + "\\";
+                    System.out.println("path: " + path);
+                    filePathField.setText(path);
+                }
+            }
+        });
+        autoCode.add(filePathField);
+
+        JLabel fileTypeLabel = new JLabel("文件类型：");
+        fileTypeLabel.setBounds(10, 440, 70, 20);
+        autoCode.add(fileTypeLabel);
+
+        List<JCheckBox> jCheckBoxes = new ArrayList<>();
+        JCheckBox entiyTypeBox = new JCheckBox();
+        entiyTypeBox.setText("entity");
+        entiyTypeBox.setBounds(70, 440, 100, 20);
+        autoCode.add(entiyTypeBox);
+        jCheckBoxes.add(entiyTypeBox);
+
+        JCheckBox beanTypeBox = new JCheckBox();
+        beanTypeBox.setText("bean");
+        beanTypeBox.setBounds(170, 440, 100, 20);
+        autoCode.add(beanTypeBox);
+        jCheckBoxes.add(beanTypeBox);
+
+        JCheckBox voTypeBox = new JCheckBox();
+        voTypeBox.setText("vo");
+        voTypeBox.setBounds(270, 440, 80, 20);
+        autoCode.add(voTypeBox);
+        jCheckBoxes.add(voTypeBox);
+
+        JCheckBox daoTypeBox = new JCheckBox();
+        daoTypeBox.setText("dao");
+        daoTypeBox.setBounds(70, 460, 100, 20);
+        autoCode.add(daoTypeBox);
+        jCheckBoxes.add(daoTypeBox);
+
+        JCheckBox daoImplTypeBox = new JCheckBox();
+        daoImplTypeBox.setText("daoImpl");
+        daoImplTypeBox.setBounds(170, 460, 100, 20);
+        autoCode.add(daoImplTypeBox);
+        jCheckBoxes.add(daoImplTypeBox);
+
+        JCheckBox serviceTypeBox = new JCheckBox();
+        serviceTypeBox.setText("service");
+        serviceTypeBox.setBounds(270, 460, 100, 20);
+        autoCode.add(serviceTypeBox);
+        jCheckBoxes.add(serviceTypeBox);
+
+        JCheckBox serviceImplTypeBox = new JCheckBox();
+        serviceImplTypeBox.setText("serviceImpl");
+        serviceImplTypeBox.setBounds(350, 440, 100, 20);
+        autoCode.add(serviceImplTypeBox);
+        jCheckBoxes.add(serviceImplTypeBox);
+
+        JButton createButton = new JButton("生成");
+        createButton.setBounds(370, 470, 100, 30);
+        createButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (sqlTextArea.getText().length() <= 0) {
+                    JOptionPane.showMessageDialog(autoCode, "请输入SQL");
+                    return;
+                }
+                String sql = sqlTextArea.getText();
+                List<Map<String, Object>> obj = AnalysisSql(sql);
+                if (packageNameField.getText().length() <= 0) {
+                    JOptionPane.showMessageDialog(autoCode, "请输入包名");
+                    return;
+                }
+                String packName = packageNameField.getText();
+                final String filePath = filePathField.getText().length() > 0 ? filePathField.getText() : "/";
+                jCheckBoxes.stream().filter(AbstractButton::isSelected).forEach(jCheckBox -> {
+                    System.out.println(jCheckBox.getText());
+                    CreateFile(filePath, jCheckBox.getText(), packName, obj, "java");
+                });
+            }
+        });
+        autoCode.add(createButton);
+        autoCode.show();
+
+        /*String sql = "CREATE TABLE `collection_snmp_condition` (\n" +
                 "\t`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
-                "\t`metric` VARCHAR ( 255 ) DEFAULT NULL COMMENT '指标',\n" +
-                "\t`description` VARCHAR ( 255 ) DEFAULT NULL COMMENT '描述',\n" +
+                "\t`key` VARCHAR ( 32 ) DEFAULT NULL COMMENT 'index或者oid',\n" +
+                "\t`value` VARCHAR ( 32 ) DEFAULT NULL COMMENT '结果名称或值',\n" +
+                "\t`op` VARCHAR ( 32 ) DEFAULT NULL COMMENT '按条件时的运算符',\n" +
                 "PRIMARY KEY ( `id` ) \n" +
-                ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4;";
+                ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'snmp 筛选条件'";
         List<Map<String, Object>> obj = AnalysisSql(sql);
         String filePath = "F:\\Workspaces\\IDEA\\colossus\\src\\main\\java\\";
+        filePath = "F:\\Workspaces\\IDEA\\GaticoProject\\Test\\src\\main\\java\\";
         String packName = "com.sevenXnetworks.colossus";
+        packName = "cn.com.gatico";
         CreateFile(filePath, "entity", packName, obj, "java");
         CreateFile(filePath, "dao", packName, obj, "java");
         CreateFile(filePath, "daoImpl", packName, obj, "java");
-//        CreateFile(filePath, "bean", packName, obj, "java");
+        CreateFile(filePath, "bean", packName, obj, "java");
         CreateFile(filePath, "vo", packName, obj, "java");
         CreateFile(filePath, "service", packName, obj, "java");
-        CreateFile(filePath, "serviceImpl", packName , obj, "java");
+        CreateFile(filePath, "serviceImpl", packName , obj, "java");*/
     }
 
     //解析sql
-    public static List<Map<String, Object>> AnalysisSql(String sql) {
+    public static List<Map<String, Object>> AnalysisSql(String sql){
         if (sql == null || sql.length() <= 0) {
             return null;
         }
+//        CCJSqlParserManager parser = new CCJSqlParserManager();
+//        Statement stmt = null;
+//        try {
+//            stmt = parser.parse(new StringReader(sql));
+//        } catch (JSQLParserException e) {
+//            e.printStackTrace();
+//        }
+//        if (stmt instanceof Select) {
+//            List withItemsList = ((Select) stmt).getWithItemsList();
+//            withItemsList.forEach(o -> {
+//                System.out.println(o.toString());
+//            });
+//        }
+//        System.exit(1);
+        //return list;
+
+
         sql = sql.replace("`", "");
         sql = sql.replace("\n", " ");
         sql = sql.replace("\t", " ");
@@ -99,7 +262,6 @@ public class AutoCode {
     }
 
     //生成文件
-
     public static void CreateFile(String filePAth, String type, String packageName, List<Map<String, Object>> param, String suffix) {
         String path = filePAth;
         File root = new File(path + packageName.replace(".", "/"));
@@ -111,7 +273,6 @@ public class AutoCode {
         File file = null;
         if ("entity".equals(type.toLowerCase())) {
             file = new File(root + "/entity/" + className + "Entity." + suffix);
-            System.out.println(file.getPath());
             fileText = getEntityTemp(packageName, param);
         } else if ("bean".equals(type.toLowerCase())) {
             file = new File(root + "/bean/" + className + "Bean." + suffix);
@@ -293,9 +454,11 @@ public class AutoCode {
     }
 
     private static String getDaoTemp(String packageName, List<Map<String, Object>> param) {
-        String className = ToName((String) param.get(0).get("tableName"), true);
+        String ClassName = ToName((String) param.get(0).get("tableName"), true);
+        String className = ToName((String) param.get(0).get("tableName"), false);
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("packageName", packageName);
+        paramMap.put("ClassName", ClassName);
         paramMap.put("className", className);
 
         try {
@@ -311,9 +474,11 @@ public class AutoCode {
     }
 
     private static String getDaoImplTemp(String packageName, List<Map<String, Object>> param) {
-        String className = ToName((String) param.get(0).get("tableName"), true);
+        String ClassName = ToName((String) param.get(0).get("tableName"), true);
+        String className = ToName((String) param.get(0).get("tableName"), false);
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("packageName", packageName);
+        paramMap.put("ClassName", ClassName);
         paramMap.put("className", className);
 
         try {
@@ -329,9 +494,11 @@ public class AutoCode {
     }
 
     private static String getServiceTemp(String packageName, List<Map<String, Object>> param) {
-        String className = ToName((String) param.get(0).get("tableName"), true);
+        String ClassName = ToName((String) param.get(0).get("tableName"), true);
+        String className = ToName((String) param.get(0).get("tableName"), false);
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("packageName", packageName);
+        paramMap.put("ClassName", ClassName);
         paramMap.put("className", className);
 
         try {
@@ -347,9 +514,11 @@ public class AutoCode {
     }
 
     private static String getServiceImplTemp(String packageName, List<Map<String, Object>> param) {
-        String className = ToName((String) param.get(0).get("tableName"), true);
+        String ClassName = ToName((String) param.get(0).get("tableName"), true);
+        String className = ToName((String) param.get(0).get("tableName"), false);
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("packageName", packageName);
+        paramMap.put("ClassName", ClassName);
         paramMap.put("className", className);
 
         try {

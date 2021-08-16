@@ -1,11 +1,11 @@
 package ${packageName}.dao.impl;
 
-import ${packageName}.dao.${className}Dao;
-import ${packageName}.entity.${className}Entity;
+import ${packageName}.dao.${ClassName}Dao;
+import ${packageName}.entity.${ClassName}Entity;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ${className}DaoImpl extends BaseDaoImpl<${className}Entity, Long> implements ${className}Dao{
+public class ${ClassName}DaoImpl extends BaseDaoImpl<${ClassName}Entity, Long> implements ${ClassName}Dao{
 
 
 }

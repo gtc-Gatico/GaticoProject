@@ -30,6 +30,8 @@ public class SyncCommand {
                 System.setProperty(objectObjectEntry.getKey().toString(), objectObjectEntry.getValue().toString());
             });
         }
+        Properties properties = System.getProperties();
+        System.out.println(properties);
 
         System.out.println(file.getAbsolutePath());
         System.exit(1);

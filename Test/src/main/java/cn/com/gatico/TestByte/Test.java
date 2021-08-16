@@ -1,16 +1,21 @@
 package cn.com.gatico.TestByte;
 
 
+import sun.java2d.pipe.ShapeSpanIterator;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-
-
+        byte[] decode = Base64.getDecoder().decode("Bbq=");
+        System.out.println(new String(decode));
+        System.out.println(Integer.valueOf(new String(decode),2));
+        exit();
 //        byte[] arr = intToByte(180);
 //        for (int i = 0; i < arr.length; i++) {
 //            System.out.print(arr[i] + " ");
@@ -171,4 +176,5 @@ public class Test {
         return new byte[]{(byte) (b & 0xff), (byte) (b >> 8 & 0xff)};
     }
 
+    public static void exit(){System.exit(1);}
 }

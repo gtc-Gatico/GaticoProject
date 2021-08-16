@@ -1,0 +1,170 @@
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>w3cshool(w3cschool.cn)</title>
+</head>
+
+<body>
+
+<div id='e' style='border:1px solid;width:100px;height:100px;position:relative;'></div>
+
+<button id='b'>取消执行动画</button>
+
+<button id='c'>执行动画</button>
+
+<script>
+
+    //用来兼容不同浏览器
+
+    window.requestAnimat = (function () {
+        return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame || function (callback) {
+                setTimeout(callback, 1000 / 60);
+            }
+    })();
+    let e = document.getElementById('e'), b = document.getElementById('b'), c = document.getElementById('c');
+    //便宜量
+    let left = 0;
+    //正反向
+    let flag = true;
+    let ret = 0;
+
+    //渲染方法
+    function render() {
+        if (flag) {
+            e.style.left = `${left++}`;
+            if (left == 100) flag = false;
+        } else {
+            e.style.left = `${left--}`;
+            if (left == 0) flag = true;
+        }
+    }
+
+    function loopAnim() {
+        render();
+        ret = requestAnimat(loopAnim);
+    };
+    //在点了多次c之后，动画速度比较快的情况下点b，则动画效果一点点减慢直到停止
+    b.onclick = function () {
+        window.cancelAnimationFrame(ret);
+    };
+    //如果一直点c，动画会越来越快
+    c.onclick = function () {
+        loopAnim();
+    };
+    (loopAnim())();
+</script>
+<style>
+    aside {
+        background: #fe9;
+        border-radius: 1em;
+        display: inline-block;
+        padding: 1em;
+        transform: scale(.9);
+        transform-origin: 0 0;
+        transition: transform .6s;
+        user-select: none;
+    }
+
+    .large {
+        transform: scale(1.3);
+    }
+
+    .small {
+        transform: scale(.5);
+    }
+</style>
+<aside>
+    <h3>My Card</h3>
+    <p>Double click to make me big.</p>
+</aside>
+<script>
+    const card = document.querySelector('aside');
+
+    card.addEventListener('dblclick', function (e) {
+        card.classList.toggle('large');
+    });
+    card.oncontextmenu = function (e) {
+        return false;
+    };
+
+    card.onmousedown = function (e) {
+        if ((e.button & 2) === 2) {
+            card.classList.toggle('small');
+            e.preventDefault();
+            return false;
+        }
+    };
+
+    function m1() {
+        let arguments = this.arguments;
+
+        console.log(arguments)
+        console.log("Ctrl + " + this.key);
+    }
+
+    function m2() {
+        console.log("Ctrl + Alt + " + this.key);
+    }
+
+    function m3() {
+        console.log("Ctrl + Alt + " + this.key);
+    }
+
+    let keyMap = [
+        {key: "Ctrl + a", func: m1},
+        {key: "Ctrl + Alt + 2", func: m2},
+        {key: "Ctrl + Alt + 3", func: m3}
+    ];
+
+    let keyMapMap = new Map();
+    keyMap.forEach(value => {
+        keyMapMap.set(value.key, value.func);
+    });
+
+    document.onkeydown = function (e) {
+        let codeStr = "";
+        if (e.ctrlKey) {
+            codeStr += "Ctrl + ";
+        }
+        if (e.shiftKey) {
+            codeStr += "Shift + ";
+        }
+        if (e.altKey) {
+            codeStr += "Alt + ";
+        }
+        if (e.key !== "Ctrl" && e.key !== "Shift" && e.key !== "Alt") {
+            codeStr += e.key;
+        }
+        if (keyMapMap.has(codeStr)) {
+            keyMapMap.get(codeStr).call(e);
+            return false;
+        }
+    };
+    let a = 'dsadjasjdio123asda'
+    let arr = a.split("");
+    let map = new Map();
+    let key = '';
+    let value = 0;
+    for(let i =0;i<arr.length;i++){
+        if(map.has(arr[i])){
+            map.set(arr[i],map.get(arr[i])+1);
+        }else{
+            map.set(arr[i],1);
+        }
+    }
+    map.forEach(function(v,k){
+            if(v > value){
+                key = k;
+                value = v;
+            }
+        }
+    );
+    console.log(key,value);
+
+
+</script>
+</body>
+
+</html>

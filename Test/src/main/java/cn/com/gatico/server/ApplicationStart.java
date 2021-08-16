@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class ApplicationStart {
@@ -22,13 +23,11 @@ public class ApplicationStart {
                 apis.add(aClass);
             }
         });
-        System.out.println(apis.size());
-        apis.forEach(aClass -> {
+        Iterator<Class<?>> iterator = apis.iterator();
+        while (iterator.hasNext()) {
+            Class<?> aClass = iterator.next();
             API annotation = aClass.getAnnotation(API.class);
-            String url = "";
-            if (annotation.url() != null) {
-                url = annotation.url();
-            }
+            String url = annotation.url();
             Method[] methods = aClass.getDeclaredMethods();
 
             for (int i = 0; i < methods.length; i++) {
@@ -43,10 +42,8 @@ public class ApplicationStart {
                     logger.info(ColorFontPrint.convertLine(url + mapping.url() + ";" + mapping.method(), ";", ColorFontPrint.GREEN, ColorFontPrint.RED));
                 }
             }
-        });
-        new Thread(() -> {
-            HttpServer1.Start(ApplicationContext.port);
-        }).start();
+        }
+        SimpleHttpServer.Start(ApplicationContext.port);
 
            /* urlsSet.forEach(urls -> {
                 System.out.println(urls.getUrl());

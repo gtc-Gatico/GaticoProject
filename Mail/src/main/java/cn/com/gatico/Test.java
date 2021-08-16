@@ -1,14 +1,23 @@
 package cn.com.gatico;
 
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
+import javax.mail.util.ByteArrayDataSource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Test {
     public static void main(String[] args) {
-        String mail="jimmy.guo@watsons.com.cn";
-        Pattern pattern = Pattern.compile("^[\\w!#$%&'*+/=?'{|}~^-]+(?:\\.[\\w!#$%&'*+/=?'{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
-        Matcher matcher = pattern.matcher(mail);
-        System.out.println(matcher.matches());
+//        String mail="jimmy.guo@watsons.com.cn";
+//        Pattern pattern = Pattern.compile("^[\\w!#$%&'*+/=?'{|}~^-]+(?:\\.[\\w!#$%&'*+/=?'{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
+//        Matcher matcher = pattern.matcher(mail);
+//        System.out.println(matcher.matches());
 
        /* ContentType ct = null;
         try {
@@ -19,7 +28,7 @@ public class Test {
         String charset = ct.getParameter("charset");
         System.out.println(charset);*/
         try {
-            /*
+
             Properties properties = new Properties();
             properties.setProperty("mail.debug", "true");// 是否显示调试信息(可选)
             properties.setProperty("mail.smtp.starttls.enable", "false");
@@ -28,11 +37,13 @@ public class Test {
             properties.setProperty("mail.smtp.auth", "true");
             properties.put("mail.smtp.timeout ", " 25000 ");
 
-            String []tos = new String[]{"48909084@qq.com"};
+            String []tos = new String[]{"tianci.gao@7x-networks.com"};
             String host = "smtp.qq.com";
+            host = "mail.7cloud-networks.net";
             String username = "48909084@qq.com";
+            username = "service";
             String password = "awbgzktpzagjkbhhbz";
-            File osFile = new File("/home/tianci.gao/test/test.PNG");
+            password = "7xNetworks.c0M";
             JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
             //mailSender.setJavaMailProperties(properties);
             mailSender.setUsername(username);
@@ -45,18 +56,18 @@ public class Test {
             mailHelper.setFrom(username);
             mailHelper.setTo(tos);
             mailHelper.setSubject("测试");
-            mailHelper.setText("", false);
-            */
-            /*FileSystemResource file = new FileSystemResource(new File(userFile.getPath()));
-            String AttachName = MimeUtility.encodeText("用户使用记录报表.xlsx");
-            mailHelper.addAttachment(AttachName, file);*//*
+            mailHelper.setText("12345678", false);
+
+//            FileSystemResource file = new FileSystemResource(new File(userFile.getPath()));
+//            String AttachName = MimeUtility.encodeText("用户使用记录报表.xlsx");
+//            mailHelper.addAttachment(AttachName, file);
             //System.setProperty("mail.mime.splitlongparameters", "false");
-            byte[]arr=new byte[1024];
-            mailHelper.addAttachment("测试.PNG", osFile);
-            mailHelper.addAttachment(MimeUtility.encodeText("用户使用记录报表_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx","utf-8","B"),new ByteArrayDataSource(arr,"application/vnd.ms-excel"));
-            mailHelper.addAttachment(MimeUtility.encodeText("店铺人流量统计表_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx","utf-8","B"),new  ByteArrayDataSource(arr,"application/vnd.ms-excel"));
-            mailHelper.addAttachment(MimeUtility.encodeText("设备操作系统统计表_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx","utf-8","B"),new  ByteArrayDataSource(arr,"application/vnd.ms-excel"));
-            mailSender.send(mimeMessage);*/
+//            byte[]arr=new byte[1024];
+            //mailHelper.addAttachment("测试.PNG", osFile);
+//            mailHelper.addAttachment(MimeUtility.encodeText("用户使用记录报表_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx","utf-8","B"),new ByteArrayDataSource(arr,"application/vnd.ms-excel"));
+//            mailHelper.addAttachment(MimeUtility.encodeText("店铺人流量统计表_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx","utf-8","B"),new  ByteArrayDataSource(arr,"application/vnd.ms-excel"));
+//            mailHelper.addAttachment(MimeUtility.encodeText("设备操作系统统计表_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx","utf-8","B"),new  ByteArrayDataSource(arr,"application/vnd.ms-excel"));
+            mailSender.send(mimeMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }

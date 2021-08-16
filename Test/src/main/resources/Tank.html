@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=.5, maximum-scale=.5, minimum-scale=.5, user-scalable=no">
+    <title>Tank</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            user-select: none;
+            overflow: hidden;
+            background-color: lightslategray;
+            background-image: url("bg.gif");
+            background-repeat: repeat;
+        }
+
+        .tank {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50px;
+            height: 50px;
+            background-color: #95ff72;
+            display: block;
+            margin: 0;
+            padding: 0;
+
+        }
+
+        #userTank {
+            background-color: #ff4439;
+            z-index: 99;
+        }
+
+        .bullet {
+            position: absolute;
+            width: 500px;
+            height: 14px;
+            /*border: 1px solid black;*/
+            background-color: transparent;
+            overflow: hidden;
+        }
+
+        .bullet span {
+            color: blue;
+            /*text-shadow: black 1px 2px;*/
+            position: relative;
+            display: inline-block;
+            width: 10px;
+            height: 14px;
+            vertical-align: top;
+            line-height: .7;
+            text-align: center;
+            animation: bulletFrames;
+            animation-timing-function: linear;
+            animation-duration: 1000ms;
+            z-index: 99999;
+        }
+
+        .user_bullet {
+            position: absolute;
+            width: 500px;
+            height: 14px;
+            /*border: 1px solid black;*/
+            background-color: transparent;
+            overflow: hidden;
+        }
+
+        .user_bullet span {
+            color: red;
+            /*text-shadow: black 1px 2px;*/
+            position: relative;
+            display: inline-block;
+            width: 10px;
+            height: 14px;
+            vertical-align: top;
+            line-height: .7;
+            text-align: center;
+            animation: bulletFrames;
+            animation-timing-function: linear;
+            /*animation-duration: 1000ms;*/
+            z-index: 99999;
+        }
+
+        @keyframes bulletFrames {
+            0% {
+                left: 500px;
+            }
+            100% {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div style="width: 100vw;height:100vh;font-size: 30px; margin: 0 auto;padding: 0;position: absolute; line-height:100vh; text-align: center;" onclick="init();this.remove()">点击屏幕开始游戏</div>
+<script>
+    const $ = function (e) {
+        let elements = document.querySelectorAll(e);
+        return elements.length > 1 ? elements : elements[0];
+    };
+</script>
+<script>
+    // 0 1 2 4 8 16
+    // |= 加值
+    // ^= 减值
+    // & 比较 等于0 没有权限，等于权限值的就有权限
+
+    let gameConfig = {
+        overFlag: false,
+        robot: 10,
+        minSpeed: 1,
+        maxSpeed: 5,
+        bulletSpeed: 5,
+        reloadBulletTime: 2,//3秒
+    };
+    let tankConfig = {
+        width: 50,
+        height: 50,
+    };
+
+    let userConfig = {
+        score: 0,
+        level: 1,
+        speed: 5,
+        bulletSpeed: 30,
+        mousePosition: [],
+        lastFireTime: 0,
+        reloadBulletTime: .1,//3秒
+        keyPressCode: 0,
+    };
+
+    let Direction = {
+        up: "up",
+        down: "down",
+        left: "left",
+        right: "right",
+    };
+    let userTank = $("#userTank");
+    let tanks = [];
+
+    function tankMove(tank, direction) {
+        let top = Number.parseInt(tank.style.top);
+        let left = Number.parseInt(tank.style.left);
+        if (direction === Direction.up && top > 0) {
+            tank.style.top = top - userConfig.speed + "px";
+        }
+        if (direction === Direction.down && top < window.innerHeight - tankConfig.height) {
+            tank.style.top = top + userConfig.speed + "px";
+        }
+        if (direction === Direction.left && left > 0) {
+            tank.style.left = left - userConfig.speed + "px";
+        }
+        if (direction === Direction.right && left < window.innerWidth - tankConfig.width) {
+            tank.style.left = left + userConfig.speed + "px";
+        }
+    }
+
+    function userTankMove() {
+        let top = Number.parseInt(userTank.style.top);
+        let left = Number.parseInt(userTank.style.left);
+        if ((userConfig.keyPressCode & 1) === 1 && top > 0) {
+            userTank.style.top = top - userConfig.speed + "px";
+        }
+        if ((userConfig.keyPressCode & 4) === 4 && top < window.innerHeight - tankConfig.height) {
+            userTank.style.top = top + userConfig.speed + "px";
+        }
+        if ((userConfig.keyPressCode & 2) === 2 && left > 0) {
+            userTank.style.left = left - userConfig.speed + "px";
+        }
+        if ((userConfig.keyPressCode & 8) === 8 && left < window.innerWidth - tankConfig.width) {
+            userTank.style.left = left + userConfig.speed + "px";
+        }
+    }
+
+    //生成从minNum到maxNum的随机数
+    function randomNum(minNum, maxNum) {
+        switch (arguments.length) {
+            case 1:
+                return parseInt("" + (Math.random() * minNum + 1), 10);
+            case 2:
+                return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+            default:
+                return 0;
+        }
+    }
+
+    function randomDirection() {
+        let x = randomNum(1, 4);
+        if (x === 4) {
+            return Direction.up;
+        } else if (x === 3) {
+            return Direction.down;
+        } else if (x === 2) {
+            return Direction.left;
+        } else if (x === 1) {
+            return Direction.right;
+        }
+    }
+
+    function randomPosition() {
+        let x = randomNum(tankConfig.width / 2, window.innerWidth);
+        let y = randomNum(tankConfig.height / 2, window.innerHeight);
+
+        while (x < 0 || x > window.innerWidth - tankConfig.width / 2) {
+            x = randomNum(tankConfig.width / 2, window.innerWidth);
+        }
+        while (y < 0 || y > window.innerHeight - tankConfig.height / 2) {
+            y = randomNum(tankConfig.height / 2, window.innerHeight);
+        }
+        return {x: x, y: y};
+    }
+
+    function initRobotTank() {
+        let tankElement = document.createElement("div");
+        tankElement.classList.add("tank");
+        tankElement.setAttribute("datatype", "robot");
+        tankElement.setAttribute("datadelete", "false");
+        document.body.appendChild(tankElement);
+        let position = randomPosition();
+        tankElement.style.left = position.x + "px";
+        tankElement.style.top = position.y + "px";
+        tanks.push({
+            e: tankElement,
+            d: randomDirection(),
+            s: randomNum(10, 30),
+            lastFireTime: new Date().getTime(),
+            updateTime: new Date().getTime(),
+        });
+    }
+
+    function initTanks() {
+        for (let i = 0; i < gameConfig.robot; i++) {
+            initRobotTank();
+        }
+        let tankElement = document.createElement("div");
+        tankElement.classList.add("tank");
+        tankElement.id = "userTank";
+        tankElement.style.left = window.innerWidth / 2 + "px";
+        tankElement.style.top = window.innerHeight - (window.innerHeight / 5) + "px";
+        userTank = tankElement;
+        document.body.appendChild(tankElement);
+    }
+
+    function fire(tanks, endPoint) {
+        let tankType;
+        let angle;
+        if (tanks.e !== undefined && tanks.e.getAttribute("datatype") === "robot") {
+            tankType = "robot";
+            if (new Date().getTime() - tanks.lastFireTime < gameConfig.reloadBulletTime * 1000) {
+                return;
+            }
+        } else {
+            tankType = "user";
+            if (new Date().getTime() - userConfig.lastFireTime < userConfig.reloadBulletTime * 1000) {
+                return;
+            }
+        }
+        // <div class="bullet"><span>●</span></div>
+        let divElement = document.createElement("div");
+        let spanElement = document.createElement("span");
+        if (tankType === "robot") {
+            divElement.classList.add("bullet");
+            spanElement.style.animationDuration = 10 / gameConfig.bulletSpeed * 1000 + "ms";
+            divElement.style.top = tanks.e.style.top;
+            divElement.style.left = Number.parseInt(tanks.e.style.left) - 500 + "px";
+            let a = [0, Number.parseInt(tanks.e.style.top) + (tankConfig.height / 2)];
+            let b = [Number.parseInt(tanks.e.style.left) + (tankConfig.width / 2), Number.parseInt(tanks.e.style.top) + (tankConfig.height / 2)];
+            let c = [endPoint[0] - 7, endPoint[1]];
+            angle = bulletRotate(a, b, c);
+            if (endPoint[1] > Number.parseInt(tanks.e.style.top) + (tankConfig.height / 2)) {
+                angle *= -1;
+            }
+            setTimeout(function () {
+                divElement.remove();
+            }, 10 / gameConfig.bulletSpeed * 1000)
+        } else {
+            divElement.classList.add("user_bullet");
+            spanElement.style.animationDuration = 10 / userConfig.bulletSpeed * 1000 + "ms";
+            divElement.style.top = Number.parseInt(tanks.style.top) + (tankConfig.height / 2) + "px";
+            divElement.style.left = Number.parseInt(tanks.style.left) + (tankConfig.width / 2) - 500 + "px";
+            let a = [0, Number.parseInt(tanks.style.top) + (tankConfig.height / 2)];
+            let b = [Number.parseInt(tanks.style.left) + (tankConfig.width / 2), Number.parseInt(tanks.style.top) + (tankConfig.height / 2)];
+            let c = [endPoint[0] - 7, endPoint[1]];
+            angle = bulletRotate(a, b, c);
+            if (endPoint[1] > Number.parseInt(tanks.style.top) + (tankConfig.height / 2)) {
+                angle *= -1;
+            }
+            setTimeout(function () {
+                divElement.remove();
+            }, 10 / userConfig.bulletSpeed * 1000)
+        }
+        spanElement.textContent = "●";
+        divElement.appendChild(spanElement);
+
+        divElement.style.transform = "rotateZ(" + angle + "deg)";
+        divElement.style.transformOrigin = "right";
+        document.body.appendChild(divElement);
+        userConfig.lastFireTime = new Date().getTime();
+
+        //不清除子弹痕迹
+        // setTimeout(function () {
+        //     divElement.remove();
+        // }, 10 / userConfig.bulletSpeed * 1000)
+    }
+
+    //三个坐标
+    function bulletRotate(first, cen, second) {
+        let ma_x = first[0] - cen[0];
+        let ma_y = first[1] - cen[1];
+        let mb_x = second[0] - cen[0];
+        let mb_y = second[1] - cen[1];
+        let v1 = (ma_x * mb_x) + (ma_y * mb_y);
+        let ma_val = Math.sqrt(ma_x * ma_x + ma_y * ma_y);
+        let mb_val = Math.sqrt(mb_x * mb_x + mb_y * mb_y);
+        let cosM = v1 / (ma_val * mb_val);
+        return Math.acos(cosM) * 180 / Math.PI;
+    }
+
+    function init() {
+        let browser = {
+            versions: function () {
+                let u = navigator.userAgent, app = navigator.appVersion;
+                return {
+                    trident: u.indexOf('Trident') > -1, //IE内核
+                    presto: u.indexOf('Presto') > -1, //opera内核
+                    webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                    gecko: (u.indexOf('Gecko') > -1) && (u.indexOf('KHTML') == -1), //火狐内核
+                    mobile: !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/), //是否为移动终端
+                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+                    iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器
+                    iPad: u.indexOf('iPad') > -1, //是否iPad
+                    webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+                };
+            }
+        };
+        if (browser.versions.mobile) {
+            userConfig.speed *= 2;
+        }
+
+        initTanks();
+        document.addEventListener("mousemove", function (e) {
+            userConfig.mousePosition = [e.x, e.y];
+        });
+        document.addEventListener("click", function (e) {
+            userConfig.mousePosition = [e.x, e.y];
+            fire(userTank, userConfig.mousePosition);
+        });
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "w" || e.key === "ArrowUp") {
+                userConfig.keyPressCode |= 1;
+            }
+            if (e.key === "a" || e.key === "ArrowLeft") {
+                userConfig.keyPressCode |= 2;
+            }
+            if (e.key === "s" || e.key === "ArrowDown") {
+                userConfig.keyPressCode |= 4;
+            }
+            if (e.key === "d" || e.key === "ArrowRight") {
+                userConfig.keyPressCode |= 8;
+            }
+            if (e.key === " ") {
+                fire(userTank, userConfig.mousePosition);
+            }
+        });
+        document.addEventListener("keyup", function (e) {
+            if (e.key === "w" || e.key === "ArrowUp") {
+                userConfig.keyPressCode ^= 1;
+            }
+            if (e.key === "a" || e.key === "ArrowLeft") {
+                userConfig.keyPressCode ^= 2;
+            }
+            if (e.key === "s" || e.key === "ArrowDown") {
+                userConfig.keyPressCode ^= 4;
+            }
+            if (e.key === "d" || e.key === "ArrowRight") {
+                userConfig.keyPressCode ^= 8;
+            }
+            if (e.key === " ") {
+                fire(userTank, userConfig.mousePosition);
+            }
+        });
+        window.addEventListener('deviceorientation', function (event) {
+            console.log(event.alpha);
+            console.log(event.beta);
+            console.log(event.gamma);
+            if (event.gamma <= -5) {
+                userConfig.keyPressCode |= 2;
+            }
+            if (event.gamma >= 5) {
+                userConfig.keyPressCode |= 8;
+            }
+            if (event.gamma > -5 && event.gamma < 5) {
+                if ((userConfig.keyPressCode & 2) === 2) {
+                    userConfig.keyPressCode ^= 2;
+                }
+                if ((userConfig.keyPressCode & 8) === 8) {
+                    userConfig.keyPressCode ^= 8;
+                }
+            }
+            if (event.beta > 5) {
+                userConfig.keyPressCode |= 4;
+            }
+            if (event.beta < -5) {
+                userConfig.keyPressCode |= 1;
+            }
+            if (event.beta < 5 && event.beta > -5) {
+                if ((userConfig.keyPressCode & 1) === 1) {
+                    userConfig.keyPressCode ^= 1;
+                }
+                if ((userConfig.keyPressCode & 4) === 4) {
+                    userConfig.keyPressCode ^= 4;
+                }
+            }
+        });
+        update();
+        pz();
+        updateTanksConfig();
+    }
+
+    function updateTanksConfig() {
+        for (let i = 0; i < tanks.length; i++) {
+            if (tanks[i].e.getAttribute("datadelete") === "true") {
+                tanks[i].e.remove();
+                initRobotTank();
+                tanks.splice(i, 1);
+                i--;
+            } else if (new Date().getTime() - tanks[i].updateTime > gameConfig.reloadBulletTime * 1000) {
+                tanks[i].d = randomDirection();
+                tanks[i].s = randomNum(gameConfig.minSpeed, gameConfig.maxSpeed) / 10;
+                let fireFlag = randomNum(1, 10);
+                let position = randomPosition();
+                if (fireFlag >= 5) {
+                    fire(tanks[i], [position.x, position.y]);
+                }
+                tanks[i].updateTime = new Date().getTime();
+            }
+        }
+        requestAnimationFrame(updateTanksConfig)
+    }
+
+    function pz() {
+        let userBulletArray = $(".user_bullet span");
+        let robotTankArray = $(".tank[datatype='robot']");
+        if (userBulletArray !== undefined && userBulletArray.length > 0) {
+            userBulletArray.forEach(userBullet => {
+                if (robotTankArray !== undefined && robotTankArray.length > 0) {
+                    robotTankArray.forEach(robotTank => {
+                        let rect1 = userBullet.getBoundingClientRect();
+                        let rect2 = robotTank.getBoundingClientRect();
+                        if (rect1.bottom >= rect2.top + 7 && rect1.right >= rect2.left + 7 && rect1.top <= rect2.bottom - 7 && rect1.left <= rect2.right - 7) {
+                            robotTank.setAttribute("datadelete", "true");
+                            userBullet.remove();
+                            userConfig.score++;
+                        }
+                    });
+                }
+            });
+        }
+
+        let node1 = userTank;
+        let node2Array = $(".bullet span");
+        if (node2Array !== undefined && node2Array.length > 0) {
+            node2Array.forEach(value => {
+                let rect1 = value.getBoundingClientRect();
+                let rect2 = node1.getBoundingClientRect();
+                if (rect1.bottom >= rect2.top + 7 && rect1.right >= rect2.left + 7 && rect1.top <= rect2.bottom - 7 && rect1.left <= rect2.right - 7) {
+                    gameConfig.overFlag = true;
+                }
+            });
+        }
+        requestAnimationFrame(pz);
+    }
+
+
+    function update() {
+        for (let i = 0; i < tanks.length; i++) {
+            tankMove(tanks[i].e, tanks[i].d);
+        }
+        userTankMove();
+        if (gameConfig.overFlag) {
+            alert("游戏结束, 得分: " + userConfig.score);
+            let name = prompt("敢问尊姓大名？");
+            if (name !== null && name !== undefined) {
+
+            }
+            location.reload();
+        } else {
+            requestAnimationFrame(update);
+        }
+    }
+
+
+</script>
+</body>
+</html>

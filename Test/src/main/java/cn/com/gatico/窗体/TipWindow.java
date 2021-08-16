@@ -99,7 +99,7 @@ public class TipWindow {
             opacity -= 2;
             AWTUtilities.setWindowOpacity(frame, opacity / 100);
             try {
-                Thread.sleep(150);
+                Thread.sleep(50);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -111,7 +111,7 @@ public class TipWindow {
         initialize();
         show();
         try {
-            Thread.sleep(stayTime * 1000);
+            Thread.sleep(stayTime * 500);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,8 +120,8 @@ public class TipWindow {
 
     public static void main(String[] args) {
         String title = "友情提示！";
-        String message = "主人!<br />该休息了！";
-        TipWindow tipWindow = new TipWindow(2, JRootPane.QUESTION_DIALOG, title, message);
+        String message = "主人!<br/>该休息了！";
+        TipWindow tipWindow = new TipWindow(2*2, JRootPane.QUESTION_DIALOG, title, message);
         tipWindow.run();
     }
 }

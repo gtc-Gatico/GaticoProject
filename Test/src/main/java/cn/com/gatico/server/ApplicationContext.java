@@ -2,13 +2,19 @@ package cn.com.gatico.server;
 
 import cn.com.gatico.server.annotattions.Urls;
 import com.sun.net.httpserver.HttpExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ApplicationContext {
+    public static Logger logger = LoggerFactory.getLogger(ApplicationContext.class);
     public static Integer port = 8080;
     public static String staticPath = "F:\\web\\MyWebSite\\";
     public static String uploadPath = "F:\\web\\MyWebSite\\upload\\";
@@ -56,6 +62,8 @@ public class ApplicationContext {
                     exchange.sendResponseHeaders(response.getCode(), bytes.length);
                     exchange.getResponseBody().write(bytes);
                     exchange.getResponseBody().flush();
+                    exchange.close();
+                    logger.info("" + response.getCode());
                 } catch (Exception e) {
                     response = response.getError();
                     response.setContentType(request.getContentType());
@@ -70,10 +78,17 @@ public class ApplicationContext {
                                 stringBuffer.append(html);
                             }
                             html = stringBuffer.toString();
-                            String errorStr = "";
-
-                            errorStr += e;
-
+                            StringWriter sw = new StringWriter();
+                            PrintWriter pw = new PrintWriter(sw);
+                            try {
+                                e.printStackTrace(pw);
+                            } finally {
+                                pw.close();
+                            }
+                            String errorStr = sw.toString();
+                            errorStr = errorStr.replaceAll(System.lineSeparator(), "<br>");
+                            errorStr = errorStr.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                            logger.error("异常", e);
                             String htmlTemplate = html.replace("${errormsg}", errorStr);
                             File tempFile = File.createTempFile("500", ".html");
                             e.printStackTrace(new PrintWriter(tempFile));
@@ -106,18 +121,15 @@ public class ApplicationContext {
     }
 
     public static void writerFile(File file, Response response, HttpExchange exchange) {
-        FileInputStream writeHtml = null;
         try {
-            writeHtml = new FileInputStream(file);
-            byte[] htmlBuffer = new byte[writeHtml.available()];
-            if (writeHtml != null) {
-                writeHtml.read(htmlBuffer);
-                response.setBody(htmlBuffer);
-                response.setAttr(exchange);
-                exchange.sendResponseHeaders(response.getCode(), htmlBuffer.length);
-                exchange.getResponseBody().write(response.getBody());
-                exchange.getResponseBody().flush();
-            }
+            byte[] htmlBuffer = Files.readAllBytes(Paths.get(file.getPath()));
+            response.setBody(htmlBuffer);
+            response.setAttr(exchange);
+            exchange.sendResponseHeaders(response.getCode(), htmlBuffer.length);
+            exchange.getResponseBody().write(response.getBody());
+            exchange.getResponseBody().flush();
+            exchange.close();
+            logger.info("" + response.getCode());
         } catch (Exception e) {
 
         }

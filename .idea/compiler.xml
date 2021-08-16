@@ -6,22 +6,26 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="CodeImage" />
-        <module name="JMETest" />
-        <module name="WebSocket" />
+        <module name="demo" />
         <module name="Test" />
-        <module name="splunk" />
         <module name="Mail" />
+        <module name="JMETest" />
+        <module name="Restful" />
+        <module name="splunk" />
+        <module name="WebSocket" />
+        <module name="CodeImage" />
         <module name="Excel" />
         <module name="WebSocketTest" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="CodeImage" target="1.8" />
+      <module name="demo" target="1.8" />
       <module name="Excel" target="1.8" />
       <module name="GaticoProject" target="1.8" />
       <module name="JMETest" target="1.8" />
       <module name="Mail" target="1.8" />
+      <module name="Restful" target="1.8" />
       <module name="splunk" target="1.8" />
       <module name="Test" target="1.8" />
       <module name="WebSocket" target="1.8" />
@@ -34,9 +38,11 @@
       <module name="Excel" options="-parameters" />
       <module name="JMETest" options="-parameters" />
       <module name="Mail" options="-parameters" />
+      <module name="Restful" options="-parameters" />
       <module name="Test" options="-parameters -verbose -bootclasspath &quot;C:/Program Files/Java/jdk1.8.0_191/jre\lib\rt.jar;C:/Program Files/Java/jdk1.8.0_191/jre\lib\jce.jar&quot;" />
       <module name="WebSocket" options="-parameters" />
       <module name="WebSocketTest" options="-parameters" />
+      <module name="demo" options="-parameters" />
       <module name="splunk" options="-parameters" />
     </option>
   </component>

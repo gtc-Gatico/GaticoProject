@@ -9,9 +9,13 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args) {
+        System.setProperty("datasource.scanner.package", "cn.com.gatico.orm");
         DataSourceScanner.scannerDao();
         TestEntityDaoImpl dataSource = (TestEntityDaoImpl) DataSourceCache.dataSourceCache.get(TestEntityDaoImpl.class);
         List<TestEntity> list = dataSource.findAllEntity();
+        list.forEach(testEntity -> {
+            System.out.println(testEntity.getId()+"\t"+testEntity.getName());
+        });
         System.out.println(list);
 //        TestEntity testEntity = dataSource.findOne(1L);
 //        System.out.println(testEntity.getName());
