@@ -6,7 +6,9 @@
 /splunk/target
 /Test/target
 /WebSocket/target
+/Restful/target
 /WebSocketTest/target
+/JMETest/target
 
 /CodeImage/*.iml
 /Excel/*.iml
