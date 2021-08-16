@@ -35,6 +35,5 @@
         <module>WebSocket</module>
         <module>JMETest</module>
         <module>Restful</module>
-        <module>demo</module>
     </modules>
 </project>
