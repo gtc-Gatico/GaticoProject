@@ -1,21 +1,26 @@
 package cn.com.gatico.controller;
 
+import cn.com.gatico.service.TestService;
+import com.d2rabbit.exception.annotation.CheckExceptionx;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-@ControllerAdvice
-@RestController
+@Controller
 @RequestMapping("/test")
 public class TestController {
     @Autowired
     private Environment environment;
+
+    @Autowired
+    private TestService service;
 
     @Value("${test.port}")
     private int testPort;
@@ -55,6 +60,8 @@ public class TestController {
     public ResponseEntity<Object> listAlarmRecords(Integer interval) {
         System.out.println(testPort);
         System.out.println(System.getProperty("testIp"));
+        System.out.println(service.getRes());
         return ResponseEntity.ok(environment.getProperty("test.ip"));
     }
+
 }
