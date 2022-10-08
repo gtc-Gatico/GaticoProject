@@ -31,12 +31,12 @@ public class Ipv42Int {
 
     }
 
-    public static long ipv4ToInt(String ipv4) {
-        long result = 0;
+    public static int ipv4ToInt(String ipv4) {
+        int result = 0;
         String[] ipv4Arr = ipv4.split("\\.");
 
         for (int i = 3; i >= 0; --i) {
-            long seg = Long.parseLong(ipv4Arr[3 - i]);
+            int seg = Integer.parseInt(ipv4Arr[3 - i]);
             result = (result | seg << i * 8);
         }
 

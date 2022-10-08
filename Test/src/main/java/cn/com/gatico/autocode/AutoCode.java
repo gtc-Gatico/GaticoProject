@@ -1,16 +1,15 @@
 package cn.com.gatico.autocode;
 
 import com.alibaba.fastjson.JSONObject;
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserManager;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.select.Select;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Blob;
@@ -22,8 +21,39 @@ import java.util.List;
 import java.util.Map;
 
 public class AutoCode extends JFrame {
+    public static String packageName = "com.sevenXnetworks.sdwan.server";
+    public static String filePath = "D:\\Project\\Java\\modules_master\\module-snmp\\server-snmp\\src\\main\\java\\";
+
     public AutoCode() {
-        this.setTitle("自动生成代码工具");
+        String title = "自动生成代码工具";
+        new Thread(() -> {
+            BufferedImage bufferedImage = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics = null;
+            int x = 0;
+            while (true) {
+                x-=32;
+                if (x <= -32*title.length()) {
+                    x = 0;
+                }
+                graphics = (Graphics2D) bufferedImage.getGraphics();
+                graphics.setColor(Color.GREEN);
+                graphics.fillRect(0, 0, 32, 32);
+                graphics.setColor(Color.RED);
+                graphics.setStroke(new BasicStroke(2));
+                graphics.setFont(new Font(Font.SERIF, Font.PLAIN,32));
+                graphics.drawString(title,x,28);
+                graphics.dispose();
+                bufferedImage.flush();
+                this.setIconImage(bufferedImage);
+                try {
+                    Thread.sleep(1000 / 2);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
+        this.setTitle(title);
         this.setSize(500, 520 + 27);
         this.setLayout(null);
         this.setLocationRelativeTo(null);// 设置居中显示
@@ -34,13 +64,14 @@ public class AutoCode extends JFrame {
             e.printStackTrace();
         }
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false);
+//        this.setResizable(false);
     }
 
     public static void main(String[] args) {
+
         AutoCode autoCode = new AutoCode();
-        JLabel sqlLabel = new JLabel("Sql脚本：");
-        sqlLabel.setBounds(10, 20, 70, 20);
+        JLabel sqlLabel = new JLabel("<html>美化后的<br>SQL脚本：</html>");
+        sqlLabel.setBounds(10, 20, 70, 40);
         autoCode.add(sqlLabel);
         JScrollPane jScrollPane = new JScrollPane();
         JTextArea sqlTextArea = new JTextArea();
@@ -54,7 +85,7 @@ public class AutoCode extends JFrame {
         autoCode.add(packageNameLabel);
         JTextField packageNameField = new JTextField();
         packageNameField.setBounds(70, 340, 400, 30);
-        packageNameField.setText("com.sevenXnetworks.colossus");
+        packageNameField.setText(packageName);
         autoCode.add(packageNameField);
 
         JLabel filePathLabel = new JLabel("文件目录：");
@@ -63,7 +94,7 @@ public class AutoCode extends JFrame {
 
         JTextField filePathField = new JTextField();
         filePathField.setBounds(70, 390, 400, 30);
-        filePathField.setText("F:\\Workspaces\\IDEA\\colossus\\src\\main\\java\\");
+        filePathField.setText(filePath);
         filePathField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -158,29 +189,29 @@ public class AutoCode extends JFrame {
         autoCode.add(createButton);
         autoCode.show();
 
-        /*String sql = "CREATE TABLE `collection_snmp_condition` (\n" +
-                "\t`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
-                "\t`key` VARCHAR ( 32 ) DEFAULT NULL COMMENT 'index或者oid',\n" +
-                "\t`value` VARCHAR ( 32 ) DEFAULT NULL COMMENT '结果名称或值',\n" +
-                "\t`op` VARCHAR ( 32 ) DEFAULT NULL COMMENT '按条件时的运算符',\n" +
-                "PRIMARY KEY ( `id` ) \n" +
-                ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'snmp 筛选条件'";
-        List<Map<String, Object>> obj = AnalysisSql(sql);
-        String filePath = "F:\\Workspaces\\IDEA\\colossus\\src\\main\\java\\";
-        filePath = "F:\\Workspaces\\IDEA\\GaticoProject\\Test\\src\\main\\java\\";
-        String packName = "com.sevenXnetworks.colossus";
-        packName = "cn.com.gatico";
-        CreateFile(filePath, "entity", packName, obj, "java");
-        CreateFile(filePath, "dao", packName, obj, "java");
-        CreateFile(filePath, "daoImpl", packName, obj, "java");
-        CreateFile(filePath, "bean", packName, obj, "java");
-        CreateFile(filePath, "vo", packName, obj, "java");
-        CreateFile(filePath, "service", packName, obj, "java");
-        CreateFile(filePath, "serviceImpl", packName , obj, "java");*/
+//        String sql = "CREATE TABLE `ips_category` (\n" +
+//                "\t`id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
+//                "\t`name` VARCHAR ( 50 ) DEFAULT NULL COMMENT '名称',\n" +
+//                "\t`value` BIGINT ( 20 ) DEFAULT NULL COMMENT '值',\n" +
+//                "PRIMARY KEY ( `id` ) \n" +
+//                ") ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'IPS 分类表';";
+
+//        List<Map<String, Object>> obj = AnalysisSql(sql);
+//        String filePath = "D:\\Project\\Java\\module-ips\\server-ips\\src\\main\\java\\";
+////        filePath = "F:\\Workspaces\\IDEA\\GaticoProject\\Test\\src\\main\\java\\";
+//        String packName = "com.sevenXnetworks.server";
+//        packName = "cn.com.gatico";
+//        CreateFile(filePath, "entity", packName, obj, "java");
+//        CreateFile(filePath, "dao", packName, obj, "java");
+//        CreateFile(filePath, "daoImpl", packName, obj, "java");
+//        CreateFile(filePath, "bean", packName, obj, "java");
+//        CreateFile(filePath, "vo", packName, obj, "java");
+//        CreateFile(filePath, "service", packName, obj, "java");
+//        CreateFile(filePath, "serviceImpl", packName , obj, "java");
     }
 
     //解析sql
-    public static List<Map<String, Object>> AnalysisSql(String sql){
+    public static List<Map<String, Object>> AnalysisSql(String sql) {
         if (sql == null || sql.length() <= 0) {
             return null;
         }
@@ -298,7 +329,7 @@ public class AutoCode extends JFrame {
         try {
             FileWriter fw = new FileWriter(file);
             BufferedWriter bufferedWriter = new BufferedWriter(fw);
-            bufferedWriter.write(new String(fileText.getBytes(), "UTF-8"));
+            bufferedWriter.write(new String(fileText.getBytes(), StandardCharsets.UTF_8));
             bufferedWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -307,15 +338,16 @@ public class AutoCode extends JFrame {
 
     public static String getEntityTemp(String packageName, List<Map<String, Object>> param) {
         String packageText = "package " + packageName + ".entity" + ";\r\n\r\n";
-        StringBuffer importText = new StringBuffer();
+        StringBuilder importText = new StringBuilder();
         importText.append("import javax.persistence.*;\r\n");
-        StringBuffer classText = new StringBuffer();
-        classText.append("\r\n@Entity\r\n" +
-                "@Table(name = \"" + param.get(0).get("tableName") + "\")\r\n");
+        StringBuilder classText = new StringBuilder();
+        classText.append("\r\n@Entity\r\n" + "@Table(name = \"")
+                 .append(param.get(0).get("tableName")).append("\")\r\n");
         String className = ToName((String) param.get(0).get("tableName"), true);
-        classText.append("public class " + className + "Entity {\r\n\r\n");
+        classText.append("public class ")
+                 .append(className).append("Entity {\r\n\r\n");
 
-        StringBuffer classGetSetText = new StringBuffer();
+        StringBuilder classGetSetText = new StringBuilder();
         boolean apppended = false;
         for (int i = 0; i < param.size(); i++) {
             Map map = param.get(i);
@@ -362,17 +394,18 @@ public class AutoCode extends JFrame {
         classText.append(classGetSetText);
         classText.append("}");
         importText.append(classText);
-        return packageText + importText.toString();
+        return packageText + importText;
     }
 
     public static String getBeanTemp(String packageName, List<Map<String, Object>> param) {
         String packageText = "package " + packageName + ".bean" + ";\r\n\r\n";
-        StringBuffer importText = new StringBuffer();
-        StringBuffer classText = new StringBuffer();
+        StringBuilder importText = new StringBuilder();
+        StringBuilder classText = new StringBuilder();
         String className = ToName((String) param.get(0).get("tableName"), true);
-        classText.append("public class " + className + "Bean {\r\n\r\n");
+        classText.append("public class ")
+                 .append(className).append("Bean {\r\n\r\n");
 
-        StringBuffer classGetSetText = new StringBuffer();
+        StringBuilder classGetSetText = new StringBuilder();
         boolean apppended = false;
         for (int i = 0; i < param.size(); i++) {
             Map map = param.get(i);
@@ -406,17 +439,17 @@ public class AutoCode extends JFrame {
         classText.append(classGetSetText);
         classText.append("}");
         importText.append(classText);
-        return packageText + importText.toString();
+        return packageText + importText;
     }
 
     public static String getVoTemp(String packageName, List<Map<String, Object>> param) {
         String packageText = "package " + packageName + ".vo" + ";\r\n\r\n";
-        StringBuffer importText = new StringBuffer();
-        StringBuffer classText = new StringBuffer();
+        StringBuilder importText = new StringBuilder();
+        StringBuilder classText = new StringBuilder();
         String className = ToName((String) param.get(0).get("tableName"), true);
-        classText.append("public class " + className + "Vo {\r\n\r\n");
+        classText.append("public class ").append(className).append("Vo {\r\n\r\n");
 
-        StringBuffer classGetSetText = new StringBuffer();
+        StringBuilder classGetSetText = new StringBuilder();
         boolean apppended = false;
         for (int i = 0; i < param.size(); i++) {
             Map map = param.get(i);
@@ -450,7 +483,7 @@ public class AutoCode extends JFrame {
         classText.append(classGetSetText);
         classText.append("}");
         importText.append(classText);
-        return packageText + importText.toString();
+        return packageText + importText;
     }
 
     private static String getDaoTemp(String packageName, List<Map<String, Object>> param) {
@@ -462,11 +495,8 @@ public class AutoCode extends JFrame {
         paramMap.put("className", className);
 
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get("F:\\Workspaces\\IDEA\\GaticoProject\\Test\\src\\main\\java\\cn\\com\\gatico\\autocode\\DaoTemp.txt"));
-            String res = formatTemp(new String(bytes), paramMap);
-            return res;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            byte[] bytes = Files.readAllBytes(Paths.get("D:\\Project\\Java\\GaticoProject\\Test\\src\\main\\java\\cn\\com\\gatico\\autocode\\DaoTemp.txt"));
+            return formatTemp(new String(bytes), paramMap);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -482,11 +512,8 @@ public class AutoCode extends JFrame {
         paramMap.put("className", className);
 
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get("F:\\Workspaces\\IDEA\\GaticoProject\\Test\\src\\main\\java\\cn\\com\\gatico\\autocode\\DaoImplTemp.txt"));
-            String res = formatTemp(new String(bytes), paramMap);
-            return res;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            byte[] bytes = Files.readAllBytes(Paths.get("D:\\Project\\Java\\GaticoProject\\Test\\src\\main\\java\\cn\\com\\gatico\\autocode\\DaoImplTemp.txt"));
+            return formatTemp(new String(bytes), paramMap);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -502,11 +529,8 @@ public class AutoCode extends JFrame {
         paramMap.put("className", className);
 
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get("F:\\Workspaces\\IDEA\\GaticoProject\\Test\\src\\main\\java\\cn\\com\\gatico\\autocode\\ServiceTemp.txt"));
-            String res = formatTemp(new String(bytes), paramMap);
-            return res;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            byte[] bytes = Files.readAllBytes(Paths.get("D:\\Project\\Java\\GaticoProject\\Test\\src\\main\\java\\cn\\com\\gatico\\autocode\\ServiceTemp.txt"));
+            return formatTemp(new String(bytes), paramMap);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -522,11 +546,8 @@ public class AutoCode extends JFrame {
         paramMap.put("className", className);
 
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get("F:\\Workspaces\\IDEA\\GaticoProject\\Test\\src\\main\\java\\cn\\com\\gatico\\autocode\\ServiceImplTemp.txt"));
-            String res = formatTemp(new String(bytes), paramMap);
-            return res;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            byte[] bytes = Files.readAllBytes(Paths.get("D:\\Project\\Java\\GaticoProject\\Test\\src\\main\\java\\cn\\com\\gatico\\autocode\\ServiceImplTemp.txt"));
+            return formatTemp(new String(bytes), paramMap);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -42,7 +42,7 @@ public class RedTeaTest {
         SSLSocketFactory sslSocketFactory = ssl.getSocketFactory();//得到sslSocketFactory实例
 
         String str = redTeaUrl + "/api/v1/query/card_usage";
-//        str = redTeaUrl + "/api/v1/query/device_infos";
+        str = redTeaUrl + "/api/v1/query/device_infos";
         URL realUrl = new URL(str);
         HttpsURLConnection conn = (HttpsURLConnection) realUrl.openConnection();
         conn.setRequestMethod("POST");
@@ -53,18 +53,18 @@ public class RedTeaTest {
 //        conn.setHostnameVerifier((arg0, arg1) -> true);
         JSONObject param = new JSONObject();
         //card_usage
-        JSONArray cardIds = new JSONArray();
-        cardIds.add("89023022000010000000000036877298");
-        param.put("card_ids", cardIds);
-        JSONArray months = new JSONArray();
-        months.add("202104");
-        months.add("202103");
-        param.put("months", months);
+//        JSONArray cardIds = new JSONArray();
+//        cardIds.add("89023022000010000000000036877298");
+//        param.put("card_ids", cardIds);
+//        JSONArray months = new JSONArray();
+//        months.add("202104");
+//        months.add("202103");
+//        param.put("months", months);
 
         //device_info
-//        JSONArray imeis = new JSONArray();
-//        imeis.add("867184037739764");
-//        param.put("imeis", imeis);
+        JSONArray imeis = new JSONArray();
+        imeis.add("867184037723776");
+        param.put("imeis", imeis);
 
         String requestId = UUID.randomUUID().toString();
         Long timestamp = new Timestamp(System.currentTimeMillis()).getTime();

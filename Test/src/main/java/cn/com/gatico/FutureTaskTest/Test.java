@@ -1,9 +1,5 @@
 package cn.com.gatico.FutureTaskTest;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,9 +48,7 @@ public class Test {
             FutureTaskUtils.getDoneTask().forEach(futureTask -> {
                 try {
                     System.out.println(futureTask.get());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             });

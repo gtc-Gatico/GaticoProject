@@ -28,10 +28,10 @@ public class Hello {
         System.out.println();
 
         List<ABCDEFEntity> abcdefEntities = new ArrayList<>();
-        abcdefEntities.add(new ABCDEFEntity(3L, "hhh"));
-        abcdefEntities.add(new ABCDEFEntity(2L, "jjj"));
-        abcdefEntities.add(new ABCDEFEntity(5L, "kkk"));
-        abcdefEntities.add(new ABCDEFEntity(4L, "lll"));
+//        abcdefEntities.add(new ABCDEFEntity(3L, "hhh"));
+//        abcdefEntities.add(new ABCDEFEntity(2L, "jjj"));
+//        abcdefEntities.add(new ABCDEFEntity(5L, "kkk"));
+//        abcdefEntities.add(new ABCDEFEntity(4L, "lll"));
         ABCDEFEntity nm1 = Collections.min(abcdefEntities, Comparator.comparing(ABCDEFEntity::getAction));
         System.out.println(nm1.getId());
 

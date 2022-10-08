@@ -1,22 +1,81 @@
 package cn.com.gatico;
 
 
-import cn.com.gatico.entity.Test2;
-import com.sun.org.apache.bcel.internal.util.ClassPath;
-import jdk.nashorn.api.scripting.ScriptUtils;
+import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.ComThread;
+import com.jacob.com.Dispatch;
+import com.jacob.com.Variant;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.ByteBuffer;
-import java.nio.file.Paths;
-import java.sql.SQLOutput;
 import java.util.*;
 
-public class TEST {
+public class TEST  {
+    public static void main(String[] args) {
+        ComThread.InitSTA();
+
+        ActiveXComponent xl = new ActiveXComponent("Excel.Application");
+        try {
+            System.out.println("version=" + xl.getProperty("Version"));
+            System.out.println("version=" + Dispatch.get(xl, "Version"));
+            Dispatch.put(xl, "Visible", new Variant(true));
+            Dispatch workbooks = xl.getProperty("Workbooks").toDispatch();
+            Dispatch workbook = Dispatch.get(workbooks, "Add").toDispatch();
+            Dispatch sheet = Dispatch.get(workbook, "ActiveSheet").toDispatch();
+            Dispatch a1 = Dispatch.invoke(sheet, "Range", Dispatch.Get,
+                    new Object[]{"A1"}, new int[1]).toDispatch();
+            Dispatch a2 = Dispatch.invoke(sheet, "Range", Dispatch.Get,
+                    new Object[]{"A2"}, new int[1]).toDispatch();
+            Dispatch.put(a1, "Value", "123.456");
+            Dispatch.put(a2, "Formula", "=A1*2");
+            System.out.println("a1 from excel:" + Dispatch.get(a1, "Value"));
+            System.out.println("a2 from excel:" + Dispatch.get(a2, "Value"));
+            Variant f = new Variant(false);
+            Dispatch.call(workbook, "Close", f);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            xl.invoke("Quit", new Variant[]{});
+            ComThread.Release();
+        }
+
+
+    }
+
+    public static boolean check(int i) {
+        return i > 10;
+    }
+
+    public static void out(int i) {
+        System.out.println(i);
+    }
+
+
+    public static int numberOfWeakCharacters(int[][] properties) {
+        int count = 0;
+        int index = 1;
+        while (index < properties.length) {
+            for (int i = index; i < properties.length; i++) {
+                if (intersection(properties[index - 1], properties[i])) {
+                    count++;
+                }
+            }
+            index++;
+        }
+        return count;
+    }
+
+    public static boolean intersection(int[] role1, int[] role2) {
+        if (role1[0] > role2[0] && role1[1] > role2[1]) {
+            return true;
+        } else if (role1[0] < role2[0] && role1[1] < role2[0]) {
+            return true;
+        }
+        return false;
+    }
+
     private static ByteBuffer buffer = ByteBuffer.allocate(8);
 
 
@@ -32,25 +91,30 @@ public class TEST {
         return s1.length() - s1.replaceAll("1", "").length();
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main1(String[] args) throws Exception {
+        BitSet bitSet = new BitSet();
+
         String str1 = "通话";
         String str2 = "重地";
-        Map map = new HashMap();
+        System.out.println(str1.hashCode());
+        System.out.println(str2.hashCode());
+        Map<String, String> map = new HashMap<>();
         map.put(str1, str1);
         map.put(str2, str2);
-        Collection values = map.values();
-        String str3 = (String)map.get(str2);
+        Collection<String> values = map.values();
+        System.out.println(values);
+        String str3 = map.get(str2);
         System.out.println(str3);
         exit();
         System.out.println(UUID.randomUUID().toString());
         List<String> argsList = Arrays.asList(args);
-        if(!argsList.isEmpty()){
+        if (!argsList.isEmpty()) {
             argsList.forEach(System.out::println);
         }
 
 //        System.out.println(new File("Test/src/main/resources/application.properties").getAbsolutePath());
 //        System.out.println(new File(Class.forName(TEST.class.getName()).getResource("/application.properties").getPath()).getPath());
-        System.getProperties().load(new BufferedReader(new FileReader(Class.class.getResource("/").getPath()+"application.properties")));
+        System.getProperties().load(new BufferedReader(new FileReader(Class.class.getResource("/").getPath() + "application.properties")));
         System.getProperties().setProperty("gtc1", "123");
 
         String[] data = new BufferedReader(new FileReader(new File("D:\\2进制文字.txt"))).readLine().split(" ");
@@ -59,7 +123,7 @@ public class TEST {
         for (int i = 0; i < data.length; i++) {
             String[] si = data[i].split("");
             for (int i1 = 0; i1 < si.length; i1++) {
-                arr[i] = (byte)Integer.parseInt(si[i1]);
+                arr[i] = (byte) Integer.parseInt(si[i1]);
             }
             System.out.println(new String(arr));
         }
@@ -133,7 +197,9 @@ public class TEST {
         System.out.println(n + "=" + Integer.toBinaryString(n));
         return n;
     }
-    public static void exit(){
+
+    public static void exit() {
         System.exit(0);
     }
 }
+

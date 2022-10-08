@@ -24,7 +24,7 @@ import java.security.cert.X509Certificate;
  **/
 public class HttpUtils {
 
-    public static String get(String url) {
+    public  String get(String url) {
         return get(url, "");
     }
 
@@ -36,7 +36,7 @@ public class HttpUtils {
      * @params : [url, param]
      * @date : 2019/10/17 15:53
      */
-    public static String get(String url, String param) {
+    public  String get(String url, String param) {
         StringBuilder result = new StringBuilder();
         BufferedReader in = null;
         try {
@@ -85,7 +85,7 @@ public class HttpUtils {
      * @params : [url, param]
      * @date : 2019/10/17 15:54
      */
-    public static String post(String url, String param) {
+    public  String post(String url, String param) {
         PrintWriter out = null;
         BufferedReader in = null;
         StringBuilder result = new StringBuilder();
@@ -145,7 +145,7 @@ public class HttpUtils {
      * @author : cwl
      * @date : 2019/10/17 16:00
      */
-    public static String sendSSLPost(String url, String param) {
+    public  String sendSSLPost(String url, String param) {
         StringBuilder result = new StringBuilder();
         String urlNameString = url + "?" + param;
         try {
@@ -186,7 +186,7 @@ public class HttpUtils {
         return result.toString();
     }
 
-    private static class TrustAnyTrustManager implements X509TrustManager {
+    private  class TrustAnyTrustManager implements X509TrustManager {
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType) {
         }
@@ -201,7 +201,7 @@ public class HttpUtils {
         }
     }
 
-    private static class TrustAnyHostnameVerifier implements HostnameVerifier {
+    private  class TrustAnyHostnameVerifier implements HostnameVerifier {
         @Override
         public boolean verify(String hostname, SSLSession session) {
             return true;

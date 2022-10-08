@@ -2,9 +2,6 @@ package cn.com.gatico.utils;
 
 
 public class IPPoolUtil {
-    public static void main(String[] args) {
-
-    }
 
     /**
      * 根据掩码位计算掩码
@@ -140,13 +137,23 @@ public class IPPoolUtil {
 
     private static StringBuffer toBin(int x) {
         StringBuffer result = new StringBuffer();
+        boolean f= false;
+        if(x<0){
+            f=true;
+            x*=-1;
+        }
         result.append(x % 2);
         x /= 2;
         while (x > 0) {
             result.append(x % 2);
             x /= 2;
         }
-        return result;
+        return f?(result.append("-").reverse()):result.reverse();
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println(Integer.toBinaryString(10));
     }
 }
 

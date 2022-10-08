@@ -88,20 +88,20 @@ public class BaseDaoImpl<T, I extends Serializable> extends DataSource {
             }
         }
         EntityInfo entityInfo = DataSourceCache.ENTITY_INFO_MAP.get(entity.name());
-        String sql = "insert into " + entityInfo.getTableName() + " (";
+        StringBuilder sql = new StringBuilder("insert into " + entityInfo.getTableName() + " (");
         PreparedStatement preparedStatement = null;
         try {
             List<Object> v = new LinkedList<>();
             Object[] objects = entityInfo.getField().keySet().toArray();
-            String valuesSql = "";
+            StringBuilder valuesSql = new StringBuilder();
             for (int i = 0; i < objects.length; i++) {
                 String key = objects[i].toString();
                 if (i != objects.length - 1) {
-                    sql += key + ", ";
-                    valuesSql += "?, ";
+                    sql.append(key).append(", ");
+                    valuesSql.append("?, ");
                 } else {
-                    sql += key + " ";
-                    valuesSql += "? ";
+                    sql.append(key).append(" ");
+                    valuesSql.append("? ");
                 }
                 Class<?> aClass = t.getClass();
                 Field field = aClass.getDeclaredField(key);
@@ -109,8 +109,8 @@ public class BaseDaoImpl<T, I extends Serializable> extends DataSource {
                 v.add(field.get(t));
             }
 
-            sql += " ) values ( " + valuesSql + " )";
-            preparedStatement = getDataSource().getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            sql.append(" ) values ( ").append(valuesSql).append(" )");
+            preparedStatement = getDataSource().getConnection().prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
             for (int i = 0; i < v.size(); i++) {
                 preparedStatement.setObject(i + 1, v.get(i));
             }
@@ -122,11 +122,7 @@ public class BaseDaoImpl<T, I extends Serializable> extends DataSource {
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             generatedKeys.next();
             field.set(t, generatedKeys.getObject(1));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+        } catch (SQLException | IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
 

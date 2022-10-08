@@ -123,6 +123,9 @@ public class MD5Utils {
         return encrypt(str, salt);
     }
 
+    public static void main(String[] args) {
+        System.out.println( encrypt(encrypt("123456")));
 
+    }
 
 }

@@ -15,15 +15,16 @@ import java.nio.file.Paths;
  * @date 2020/1/9 17:40
  */
 public class NattyTest {
+    /**
+     *char Header[3];    //必须为“ID3”否则认为标签不存在
+     *char Ver;         //版本号ID3V2.3 就记录3
+     *char Revision;     //副版本号此版本记录为0
+     *char Flag;        //标志字节，只使用高三位，其它位为0
+     *char Size[4];      //标签大小&NBSP;&emsp;12&#x000D;3
+     */
     public static void main(String[] args) {
         try {
-            /*
-            char Header[3];    //必须为“ID3”否则认为标签不存在
-            char Ver;         //版本号ID3V2.3 就记录3
-            char Revision;     //副版本号此版本记录为0
-            char Flag;        //标志字节，只使用高三位，其它位为0
-            char Size[4];      //标签大小
-             */
+
             FileChannel fileChannel = FileChannel.open(Paths.get("F:\\库\\音乐\\G.E.M.邓紫棋 - 泡沫.mp3"));
             ByteBuffer byteBuffer = ByteBuffer.allocate((int) fileChannel.size());
             byteBuffer.clear();
@@ -39,9 +40,7 @@ public class NattyTest {
             File file = new File("F:\\库\\音乐\\G.E.M.邓紫棋 - 泡沫.mp3");
             MP3File mp3File = new MP3File(file);
             System.out.println(mp3File.getID3v1Tag().toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TagException e) {
+        } catch (IOException | TagException e) {
             e.printStackTrace();
         }
     }

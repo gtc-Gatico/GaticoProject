@@ -1,9 +1,99 @@
 package cn.com.gatico.TestSet;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Test {
+
+
     public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("a");
+        list.add("a");
+        list.add("b");
+        list.add("b");
+        list.add("c");
+        list.add("c");
+        list.add("d");
+
+        System.out.println(list.stream().collect(Collectors.groupingBy(s -> s)).values().stream().filter(strings -> strings.size() >= 2).count());
+        System.out.println(list.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting())));
+
+
+        System.exit(1);
+        Map<String, Integer> map1 = new HashMap<>();
+        list.forEach(s -> {
+            Integer orDefault = map1.getOrDefault(s, 0);
+            map1.put(s, ++orDefault);
+        });
+        Map<String, Integer> list1 = new HashMap<>();
+        map1.forEach((s, integer) -> {
+            if (integer >= 2) {
+                list1.put(s, integer);
+            }
+        });
+
+        list1.forEach((s, integer) -> {
+            System.out.println(s);
+        });
+        System.exit(1);
+        System.out.println(new String(Base64.getDecoder().decode("BUY="), StandardCharsets.UTF_8));
+
+        System.exit(1);
+        String str = "1111";
+        long s, e;
+        int c = 1000_0000;
+        s = System.currentTimeMillis();
+        for (int i = 0; i < c; i++) {
+            boolean b = "".equals(str);
+        }
+        e = System.currentTimeMillis();
+        System.out.println(e - s);//5
+
+        s = System.currentTimeMillis();
+        for (int i = 0; i < c; i++) {
+            boolean b = str.length() == 0;
+        }
+        e = System.currentTimeMillis();
+        System.out.println(e - s);//3
+
+
+        s = System.currentTimeMillis();
+        for (int i = 0; i < c; i++) {
+            boolean b = str.isEmpty();
+        }
+        e = System.currentTimeMillis();
+        System.out.println(e - s);//3
+
+        s = System.currentTimeMillis();
+        for (int i = 0; i < c; i++) {
+            boolean b = str == "";
+        }
+        e = System.currentTimeMillis();
+        System.out.println(e - s);//2
+
+
+        Map<Long, Set<String>> map = new HashMap<>();
+        Set<String> set = new HashSet<>();
+        set.add("aaa");
+        set.add("bbb");
+        set.add("ccc");
+        set.add("1,1,1,111,1");
+        map.put(1L, set);
+        System.out.println(map);
+
+//        map.get(1L).remove("1,1,1,111,1");
+        test2(map, "1,1,1,111,1");
+        System.out.println(map);
+
+    }
+
+    public static void test2(Map<Long, Set<String>> map, String k) {
+        map.get(1L).remove(k);
+    }
+
+    public void test1() {
         List a = Arrays.asList(1, 2, 3, 4, 5);
         List b = Arrays.asList(1, 4, 6, 7, 8);
 
@@ -86,6 +176,7 @@ public class Test {
     /**
      * 取补集 返回 b 中 a 没有的数据<br>
      * a[123] b[234]
+     *
      * @return 4
      */
     public static Collection<?> complementarySet(Collection<?> a, Collection<?> b) {

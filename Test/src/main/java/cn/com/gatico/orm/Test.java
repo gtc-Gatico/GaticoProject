@@ -31,5 +31,8 @@ public class Test {
         Test2EntityDaoImpl test2EntityDao = (Test2EntityDaoImpl) DataSourceCache.dataSourceCache.get(Test2EntityDaoImpl.class);
         List<Test2Entity> allEntity = test2EntityDao.findAllEntity();
         System.out.println(allEntity);
+
+
+
     }
 }

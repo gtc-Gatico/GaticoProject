@@ -1,8 +1,9 @@
 package cn.com.gatico.回溯算法;
 
-import java.util.Arrays;
+import java.awt.*;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Test {
@@ -33,34 +34,91 @@ public class Test {
                 new char[]{'.', '6', '.', '.', '.', '.', '2', '8', '.'},     //["9","6","1","5","3","7","2","8","4"],
                 new char[]{'.', '.', '.', '4', '1', '9', '.', '.', '5'},     //["2","8","7","4","1","9","6","3","5"],
                 new char[]{'.', '.', '.', '.', '8', '.', '.', '7', '9'}};    //["3","4","5","2","8","6","1","7","9"]
-
-
+        int x = 0, y = 0;
+        start(board, x, y);
+        System.out.println(map);
     }
 
-    public boolean check(char[][] board) {
+    static Map<Point, Integer> map = new HashMap<>();
 
-        return true;
+    public static void start(char[][] board, int x, int y) {
+        map.put(new Point(x, y), 1);
+        board[x][y] = ("" + 1).charAt(0);
+        if (!isEnd(board)) {
+            map.entrySet().stream().iterator().forEachRemaining(point -> {
+                for (int i = 1; i <= 9; i++) {
+                    if (check(board, point.getKey().x, point.getKey().y)) {
+                        start(board, point.getKey().x, point.getKey().y);
+                    } else {
+                        board[point.getKey().x][point.getKey().y] = '.';
+                        map.remove(point.getKey());
+                    }
+                }
+            });
+        }
     }
-    public boolean checkRow(char[][] board){
+
+    public static boolean isEnd(char[][] board) {
         for (int i = 0; i < board.length; i++) {
-            Set<Character> set = new HashSet<>();
             for (int j = 0; j < board[i].length; j++) {
-                if(board[i][j]!='.'&&set.contains(board[i][j])){
-                    set.add(board[i][j]);
-                }else{
+                if (board[i][j] == '.') {
                     return false;
                 }
             }
         }
         return true;
     }
-    public boolean checkColumn(char[][] board){
+
+    public static boolean check(char[][] board, int x, int y) {
+        if (checkRow(board, x)) {
+            if (checkColumn(board, y)) {
+                return true;
+//                if (checkSquare(board, x, y)) {
+//                    return true;
+//                }
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean checkRow(char[][] board, int x) {
+        Set<Character> set = new HashSet<>();
+        int c = 0;
+        for (int j = 0; j < board[x].length; j++) {
+            if (board[x][j] != '.') {
+                set.add(board[x][j]);
+                c++;
+            }
+        }
+        if (set.size() != c) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkColumn(char[][] board, int y) {
+        Set<Character> set = new HashSet<>();
+        int c = 0;
+        for (int j = 0; j < board[y].length; j++) {
+            if (board[j][y] != '.') {
+                set.add(board[j][y]);
+                c++;
+            }
+        }
+        if (set.size() != c) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkSquare(char[][] board, int x, int y) {
         for (int i = 0; i < board.length; i++) {
             Set<Character> set = new HashSet<>();
             for (int j = 0; j < board[i].length; j++) {
-                if(board[j][i]!='.'&&set.contains(board[j][i])){
+                if (board[j][i] != '.') {
                     set.add(board[j][i]);
-                }else{
+                } else {
                     return false;
                 }
             }

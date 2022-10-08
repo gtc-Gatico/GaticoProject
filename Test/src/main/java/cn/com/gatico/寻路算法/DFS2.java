@@ -16,8 +16,8 @@ public class DFS2 extends JFrame {
             new int[]{0, 0, 0, 0, 0, 0},//4
             new int[]{0, 0, 0, 0, 3, 0},//5
     };
-    public static LinkedList openList = new LinkedList<RoadNode>();
-    public static LinkedList closeList = new LinkedList<RoadNode>();
+    public static LinkedList<RoadNode> openList = new LinkedList<>();
+    public static LinkedList<RoadNode> closeList = new LinkedList<>();
     JLabel imageIcon;
     static RoadNode current;
     static boolean endFlag = false;
@@ -65,13 +65,11 @@ public class DFS2 extends JFrame {
         }
 
         RoadNode startNode = new RoadNode();
-        Point start = new Point(0, 0);
-        startNode.point = start;
+        startNode.point = new Point(0, 0);
         startNode.loss = 0;
         openList.add(startNode);
         RoadNode endNode = new RoadNode();
-        Point end = new Point(5, 4);
-        endNode.point = end;
+        endNode.point = new Point(5, 4);
         do {
             current = getNext(openList);
             if (current == null) {

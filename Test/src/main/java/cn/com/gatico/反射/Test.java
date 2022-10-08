@@ -1,15 +1,18 @@
 package cn.com.gatico.反射;
 
+import cn.com.gatico.orm.TestEntity;
 import cn.com.gatico.反射.TestClass.Urls;
 import cn.com.gatico.反射.annotattions.API;
 import cn.com.gatico.反射.annotattions.Mapping;
+import cn.com.gatico.utils.FileUtil;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Column;
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -18,6 +21,18 @@ public class Test {
     private static final String EXT = "class";
 
     public static void main(String[] args) throws Exception {
+
+        Class<?> testEntity = TestEntity.class;
+        Object o = testEntity.newInstance();
+        for (int i = 0; i < testEntity.getDeclaredFields().length; i++) {
+            Field declaredField = testEntity.getDeclaredFields()[i];
+            Column annotation = declaredField.getAnnotation(Column.class);
+            if(annotation.name().equals("cpu_usage")){
+                declaredField.setAccessible(true);
+                declaredField.set( o,"1");
+            }
+        }
+
         Map<String, Object> pMap = new HashMap<>();
         pMap.put("str", "666777");
         Set<Class<?>> classSet = Scanner.getClasses(Test.class.getPackage().getName());
@@ -139,7 +154,7 @@ public class Test {
             return null;
         }
 
-        return FileUtils.listFiles(fPkgDir, new String[]{EXT}, recursive);
+        return FileUtil.listFiles(fPkgDir, new String[]{EXT}, recursive);
     }
 
     /**

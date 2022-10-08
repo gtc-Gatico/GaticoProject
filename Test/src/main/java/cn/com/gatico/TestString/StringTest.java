@@ -1,9 +1,11 @@
 package cn.com.gatico.TestString;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author Gatico
@@ -12,12 +14,24 @@ import java.util.regex.Pattern;
  */
 public class StringTest {
     public static void main(String[] args) {
+        String res = "212121";
+        res = res.concat("213");
+        System.out.println(res);
+
+        ArrayList<Integer> objects = new ArrayList<>();
+        objects.add(1);
+        objects.add(2);
+        objects.add(3);
+        String join = objects.stream().map(Object::toString).collect(Collectors.joining(","));
+        System.out.println(join);
+        System.exit(1);
+
         String s = new String(new byte[]{123, 34, 117, 115, 101, 114, 73, 100, 34, 58, 34, 49, 48, 48, 48, 49, 34, 44, 34, 116, 121, 112, 101, 34, 58, 48, 125});
         System.out.println(s);
 
         System.out.println(",0,23".contains(",2"));
 
-        String tmp = "1 2 3  4   5  6";
+        String tmp = "1 2 3  4  5  6";
         System.out.println(tmp.trim());
         String[] setValues = tmp.split(" ");
         System.out.println(setValues.length);

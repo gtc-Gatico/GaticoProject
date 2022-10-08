@@ -21,10 +21,11 @@ public class LearnMain {
         Map<String, Object> map = new ConcurrentHashMap<>();
         try {
             for (int i = 0; i < 10; i++) {
-                File file = new File(LearnMain.class.getResource("/").getPath() + "source/" + i + ".jpg");//字体
+                File file = new File(LearnMain.class.getResource("/").getPath() + "source/nums/" + i + ".jpg");//字体
+                System.out.println(file.getAbsolutePath());
                 //File file = new File("F:\\imgs\\tmp\\"+i+".png");//手写体
                 BufferedImage buff = ImageIO.read(file);
-                data data = getTmp(file.getPath());
+                data data = getTmp(file.getPath(), true);
                 map.put(String.valueOf(i), data);
             }
 
@@ -32,8 +33,8 @@ public class LearnMain {
 
 
             //匹配项
-            String name = "0";
-            data tmpdata = getTmp("F:\\imgs\\tmp\\" + name + ".png");
+            String name = "9";
+            data tmpdata = getTmp(LearnMain.class.getResource("/").getPath() + "source/" + "\\tmp\\" + name + ".png", false);
             Map<String, Double> xsd = new ConcurrentHashMap<>();
             System.out.println("重心x：\t" + tmpdata.getZxx());
             System.out.println("重心y：\t" + tmpdata.getZxy());
@@ -60,28 +61,29 @@ public class LearnMain {
                 }
                 double dx = xiangliangjuli(key, arrx, tmpx);
                 double dy = xiangliangjuli(key, arry, tmpy);
-                System.out.println("投影相似度：" + key + ":" + (100 - (dx + dy) / 2));
+                System.out.println(key + ":" + "投影相似度：" + (100 - (dx + dy) / 2));
 
                 //重心相似度
                 double zxx = Math.sqrt(Math.pow(o.getZxx() - tmpdata.getZxx(), 2));
                 double zxy = Math.sqrt(Math.pow(o.getZxy() - tmpdata.getZxy(), 2));
 
-                System.out.println("重心相似度：" + ((zxx + zxy) / 2));
+                System.out.println(key + ":" + "重心相似度：" + ((zxx + zxy) / 2));
 
-                double sum = (100 - (dx + dy)) / 2 + (100 - ((zxx + zxy) / 2));
+
+                double sum = (100 - (dx + dy) / 2) + (100 - ((zxx + zxy) / 2));
                 xsd.put(key, sum / 200);
+                System.out.println(key + ":" + "评分：" + sum / 200);
                 //hanshishi(key, arrx, arry);
                 //xiangliangjuli(key, arrx, arry);
             }
 
-            System.out.println(name);
-            xsd.forEach((s, aDouble) -> {
-                System.out.println(s + " = " + aDouble);
-            });
+            System.out.println("判断结果：" + xsd.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    ;
 
     public static double xiangliangjuli(String key, int[] arrx, int[] arry) {
         //d = √（x1-y1)2
@@ -110,7 +112,7 @@ public class LearnMain {
     }
 
 
-    public static data getTmp(String name) {
+    public static data getTmp(String name, boolean f) {
         try {
             File file = new File(name);//手写体
             BufferedImage buff = ImageIO.read(file);
@@ -118,12 +120,16 @@ public class LearnMain {
             for (int j = 0; j < buff.getWidth(); j++) {
                 for (int k = 0; k < buff.getHeight(); k++) {
                     Color c = new Color(buff.getRGB(j, k));
-                    if (c.getRed() >= 127 && c.getGreen() >= 127 && c.getBlue() >= 127) {
+                    if (c.getRed() >= 250 || c.getGreen() >= 250 || c.getBlue() >= 250) {
                         buff.setRGB(j, k, Color.WHITE.getRGB());
                     } else {
                         buff.setRGB(j, k, Color.BLACK.getRGB());
                     }
                 }
+            }
+            if (f) {
+                String tmpName = name.substring(name.lastIndexOf("\\") + 1, name.lastIndexOf("."));
+                ImageIO.write(buff, "png", new File("D:\\Project\\Java\\GaticoProject\\Test\\src\\main\\resources\\source\\nums\\tmp_" + tmpName + ".png"));
             }
             int yValue = 0;
             int yCount = 0;

@@ -5,9 +5,7 @@ import cn.com.gatico.utils.ImageUtil;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 
 /**
  * @author Gatico

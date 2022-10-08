@@ -4,6 +4,9 @@ import cn.com.gatico.utils.MD5Utils;
 
 public class PasswordGenerator {
     public static void main(String[] args) {
+
+
+        String name = "";
         System.out.println("old");
         genpwd("nexus", "6S590hImkvANkYui5M6Uy2F4cZhnOr6F");
         genpwd("nexus-watsons", "stZtunxorDUyDaTp3lALoEFbiK9bIqde");
@@ -17,7 +20,10 @@ public class PasswordGenerator {
         System.out.println("----");
         genpwd("7xops", "7xops@7xops!");
         genpwd("watson", "watson@watson!");
-        genpwd("7x-networks", "7x-networks");
+        System.out.println("----------7x-networks---");
+        genpwd("7x-networks", "7x-networks"); //生产账号密码7cfd6083948f384cfec37a4564805bc8   7ba0772b3caec589a67ea1ba3a1e24cb
+        genpwd("7x-networks", "AIOPSnetworks.c0M");
+        System.out.println("-------------");
         genpwd("watsons", "W@ts0ns2018");
         genpwd("test", "test");
         genpwd("admin", "admin");
@@ -43,7 +49,9 @@ public class PasswordGenerator {
         genpwd("tempest_hz_test253", "c1EsVew5WEAwO7c31FYceMVKU1WQPrU6");//
         genpwd("prism_hz_test253", "widWgr6Rc7zBh0KO3JQCGdQgcs2qvGv2");//
         genpwd("commom_hztest_collector", "0rXsiDFmK6FMN0PdNyMkFfIB7e2VZJxY");//
+        System.out.println("屈臣氏");
         genpwd("admin", "7x-networks");//
+        System.out.println("---");
         genpwd("7x001201607090168326f", "d51829ff2a543884a96a043e116ce0fa");//856158b237f972e7a4aa157f3e3fe5cb
         genpwd("tempest_hz_test241", "3BuoLPXu54SZvCsMHvJFAFmIxPKslMpB");//
         genpwd("prism_hz_test241", "Q8XE95nPDAUpVc30caDxYTVhDmzGUgZc");//
@@ -82,12 +90,51 @@ public class PasswordGenerator {
         genpwd("commom_jollibee_collector", "VR5Gt4lsqjLMK9gtzbQCs3IYsKGhgqYT");//
         genpwd("tempest_jollibee", "wJRLXKY78m7XH1z2KzHVVZNAP5vd6ic8");//
         genpwd("yuantong", "Yuantong@yuantong7");//
-        genpwd("yuantong", "Yuantong@yuantong7");//
-        genpwd("yuantong", "Yuantong@yuantong7");//
 
+        System.out.println("-----------------------");
+        genpwd("tempest_guangbai", "wST19ToXfFYkxZsm4hhSLJpoHgPFsiyg");//
+        genpwd("commom_guangbai_collector", "xiimOIvW0yvQBglPu9lLXn6WlpDCvf2T");//
+        genpwd("prism_guangbai", "at6Ss80YClnKJ5CiyIF0TffS51TBklqw");//
+        System.out.println("-----------------------");
         //序列号，原始云盒密码，数据库密码
         genpwd("7x00120200303011c24c6", "425a0b8e9c60ef3c84f19993c17da420");//11876656676752b2edafcac73671b0b5
         genpwd("7x0012376885a596b", "b9aafd54df0574e3216dc155cafbdfd3");//fc6d84db85a7ea0ea3c581480e70547a
+        genpwd("7x00120190510010fa92a", "66a8c00cefe7ee057dc4f196f4f11638");//0239848ffb0ada75f18b3ce81ffb96b0
+        genpwd("queen", "oKoVVmrLEtNGGaXtNbvXB0hTU6IPPLlA");//fc6d84db85a7ea0ea3c581480e70547a
+        genpwd("fc6d84db85a7ea0ea3c581480e70547a", "oKoVVmrLEtNGGaXtNbvXB0hTU6IPPLlA");//f
+
+        genpwd("tac_yali.an","7xNetworks#");// c6d84db85a7ea0ea3c581480e70547a
+
+        System.out.println(1111);
+        genpwd("7x-networks","7x-networks");// c6d84db85a7ea0ea3c581480e70547a
+
+
+        genpwd("7x12371974918324h","92f99f1740d7b3ae01db2402ec30843d");
+
+        genpwd("valor","c6d84db85a7ea0ea3c581480e70547a");
+        System.out.println("大家乐");
+        genpwd("CDC.China","Dajiale@dajiale7");
+        //UPDATE `nexus`.`security_user` SET `user_name` = 'dajiale', `user_password` = 'fe40ff02a1dc7654bb5940aeb164d6fe', `role_id` = 4, `is_enable` = 1, `logo` = NULL, `removed` = 0, `authority` = 0, `password_md5` = '0613d1b4ef2fb8d41ac85c016ef7958d', `ban_time` = NULL, `password_time` = '2049-07-12 21:26:53', `login_fail_count` = NULL, `contact_phone` = '19966546353', `is_sys_user` = 0 WHERE `id` = 748;
+        //UPDATE `nexus`.`security_user` SET `user_name` = 'CDC.China', `user_password` = 'abf2ad6494207b1649dadd7148d682b3', `password_md5` = '0613d1b4ef2fb8d41ac85c016ef7958d' WHERE `id` = 748
+        genpwd("kenny@CDC.China","7x-networks");
+        genpwd("linweiyuan@CDC.China","7x-networks");
+        genpwd("ronganan@CDC.China","7x-networks");
+
+        System.out.println("大家乐");
+        genpwd("tac_gaotianci","tac_gaotianci");
+
+
+        //INSERT INTO `tassadar2`.`security_user` (`id`, `user_name`, `title`, `user_password`, `role_id`, `is_enable`, `user_logo`, `removed`, `authority`, `password_md5`, `enable_app_acceleration`, `ban_time`, `password_time`, `login_fail_count`, `contact_phone`, `is_sys_user`) VALUES (418, 'zhongjian', '中国建筑第八工程局有限公司总承包公司', '6dfb3336a8501f017e8177d294668b99', 4, 1, NULL, 0, 7, '0b215bc20800e468f2008605ea2bdfba', 1, NULL, '2099-12-12 00:00:00', 0, '18017226503', 0);
+        genpwd("zhongjian","Abcd$1234");//zhongjian:d076ea75ef4a68a4c2d5561d0a294121:4c835b34653385ffcba4b240988f7cee
+        //INSERT INTO `tassadar2`.`security_user` (`id`, `user_name`, `title`, `user_password`, `role_id`, `is_enable`, `user_logo`, `removed`, `authority`, `password_md5`, `enable_app_acceleration`, `ban_time`, `password_time`, `login_fail_count`, `contact_phone`, `is_sys_user`) VALUES (281, 'chengjian', '隧道股份 城建国际', 'aba24b25502d79a3688a0bc65ffccb12', 4, 1, NULL, 0, 0, NULL, 1, NULL, '2099-12-12 00:00:00', 0, '18313863590', 0);
+        genpwd("chengjian","Abcd$1234");//chengjian:d076ea75ef4a68a4c2d5561d0a294121:bedc48d31a817b736c162b244628c45b
+
+        System.out.println("sase alarak");
+
+        genpwd("alarak_10.113.0.158","d3eb9fe78337144f4cb64c6595423563");
+        genpwd("alarak_10.11.22.50","68dbd10499c3467a287ca897ba5daa40");
+        genpwd("xuemei.wu@7x-networks","Abcd$1234");
+        genpwd("chengjian","chengjian");
 
     }
 

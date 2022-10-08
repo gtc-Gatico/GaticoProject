@@ -2,6 +2,8 @@ package cn.com.gatico;
 
 public class HashTest {
     public static void main(String[] args) {
+        System.out.println(Integer.toBinaryString(~182));
+        System.out.println(Integer.valueOf("01001001",2));
         int n = 1026 - 1;
         n |= n >>> 1;
         n |= n >>> 2;

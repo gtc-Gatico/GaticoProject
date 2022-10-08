@@ -18,12 +18,12 @@
         <dependency>
             <groupId>org.rrd4j</groupId>
             <artifactId>rrd4j</artifactId>
-            <version>2.2</version>
+            <version>3.8</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.58</version>
+            <version>1.2.78</version>
         </dependency>
 
         <dependency>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.8</version>
+            <version>4.5.13</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.12.1</version>
+            <version>1.14.3</version>
         </dependency>
 
         <dependency>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.1.6.RELEASE</version>
+            <version>5.3.10</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -75,13 +75,13 @@
         <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <version>20030203.000550</version>
             <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/net.sf.javamusictag/jid3lib -->
@@ -93,36 +93,36 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>4.1.0</version>
+            <version>5.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>log4j</groupId>-->
-<!--            <artifactId>log4j</artifactId>-->
-<!--            <version>1.2.17</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.24.0-GA</version>
+            <version>3.28.0-GA</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>22.0.0</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.snmp4j</groupId>
             <artifactId>snmp4j</artifactId>
-            <version>2.7.0</version>
+            <version>3.5.1</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
@@ -141,7 +141,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>5.8.1</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.usb4java/usb4java-javax -->
@@ -154,7 +154,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.13.1</version>
+            <version>1.14.3</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -163,7 +163,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>4.1.0</version>
+            <version>5.0.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -178,19 +178,73 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.jsqlparser/jsqlparser -->
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
-            <version>1.4</version>
+            <version>4.2</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.7.3</version>
+            <version>5.7.14</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.flume/flume-ng-core -->
+        <dependency>
+            <groupId>org.apache.flume</groupId>
+            <artifactId>flume-ng-core</artifactId>
+            <version>1.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.huawei.cloudcampus.api</groupId>
+            <artifactId>cloudcampus</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>2.7.5</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <version>2.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.9.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.10</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.kevinsawicki</groupId>
+            <artifactId>http-request</artifactId>
+            <version>6.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/ua_parser/ua-parser -->
+<!--        <dependency>-->
+<!--            <groupId>ua_parser</groupId>-->
+<!--            <artifactId>ua-parser</artifactId>-->
+<!--            <version>1.3.0</version>-->
+<!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.bytedeco/javacv-platform -->
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv-platform</artifactId>
+            <version>1.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.taosdata.jdbc</groupId>
+            <artifactId>taos-jdbcdriver</artifactId>
+            <version>2.0.18</version>
+        </dependency>
     </dependencies>
 
 

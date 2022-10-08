@@ -23,9 +23,8 @@ public class DFS {
             }
             System.out.println();
         }
-        Map map = new LinkedHashMap();
 
-        LinkedList linkedList = new LinkedList();
+        LinkedList<Point> linkedList = new LinkedList<>();
         Point start = new Point(0, 0);
         System.out.println("开始坐标x[" + start.x + "],y[" + start.y + "]");
         Point end = new Point(5, 0);

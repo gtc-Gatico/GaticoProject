@@ -9,19 +9,17 @@ import java.util.Scanner;
 public class Test {
     public static void main(String[] args) throws Exception {
         int size = 10;
-        Link root = new Link();
-        root.setValue("");
-        root.setId(0);
-        Link tmp = root;
-        for (int i = 1; i <= size; i++) {
-            Link link = new Link("");
-            link.setPrev(tmp);
-            link.setId(i);
-            tmp.setNext(link);
-            tmp = link;
-        }
-        root.setPrev(tmp);
-        tmp.setNext(root);
+//        Link root = new Link();
+//        root.setValue("");
+//        Link tmp = root;
+//        for (int i = 1; i <= size; i++) {
+//            Link link = new Link("");
+//            link.setPrev(tmp);
+//            tmp.setNext(link);
+//            tmp = link;
+//        }
+//        root.setPrev(tmp);
+//        tmp.setNext(root);
         Scanner scanner = new Scanner(System.in);
         Runtime runtime = Runtime.getRuntime();
 
@@ -42,9 +40,9 @@ public class Test {
             }
             String value = scanner.next();
             outputStream.write(value.getBytes());
-            tmp.getNext().setValue(value);
-            System.out.println(tmp.getNext().toString());
-            tmp = tmp.getNext();
+//            tmp.getNext().setValue(value);
+//            System.out.println(tmp.getNext().toString());
+//            tmp = tmp.getNext();
         }
     }
 }

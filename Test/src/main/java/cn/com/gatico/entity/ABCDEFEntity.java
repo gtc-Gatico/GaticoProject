@@ -24,17 +24,7 @@ public class ABCDEFEntity implements Serializable {
 
 	private Long priority;
 
-	public ABCDEFEntity() {
-	}
-
-	public ABCDEFEntity(Long id) {
-		this.id = id;
-	}
-
-	public ABCDEFEntity(Long id, String action) {
-		this.id = id;
-		this.action = action;
-	}
+	private ABCDEFEntity abcdefEntity;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -117,4 +107,11 @@ public class ABCDEFEntity implements Serializable {
 		this.priority = priority;
 	}
 
+	public ABCDEFEntity getAbcdefEntity() {
+		return abcdefEntity;
+	}
+
+	public void setAbcdefEntity(ABCDEFEntity abcdefEntity) {
+		this.abcdefEntity = abcdefEntity;
+	}
 }

@@ -1,9 +1,17 @@
 package cn.com.gatico.TestWord;
 
 
+import java.nio.ByteBuffer;
+
 public class Test {
+
+
     public static void main(String[] args) throws Exception {
-       // PDFConvert pdfConvert = new PDFConvert();
+
+        System.out.println(Runtime.getRuntime().freeMemory()/Runtime.getRuntime().totalMemory());
+        ByteBuffer directByteBuffer = ByteBuffer.allocate(10240);
+        System.out.println(Runtime.getRuntime().freeMemory()/Runtime.getRuntime().totalMemory());
+        // PDFConvert pdfConvert = new PDFConvert();
         /*String fileName = "分发和操作文档.docx";
         Process exec = Runtime.getRuntime().exec("explorer.exe C:\\Users\\48909\\Desktop\\" + fileName);
         System.out.println(fileName);

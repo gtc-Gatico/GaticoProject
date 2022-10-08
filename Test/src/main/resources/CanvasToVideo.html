@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas To Video</title>
+</head>
+<body>
+<div >
+    <canvas width="500" height="500"></canvas>
+</div>
+<div id="videoContainer">
+    <video autoplay="autoplay" controls="controls"></video>
+</div>
+</body>
+<script>
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    const {width, height} = canvas;
+
+    ctx.fillStyle = 'red';
+
+    function draw(rotation = 0) {
+        ctx.clearRect(0, 0, 1000, 1000);
+        ctx.save();
+        ctx.translate(width / 2, height / 2);
+        ctx.rotate(rotation);
+        ctx.translate(-width / 2, -height / 2);
+        ctx.beginPath();
+        ctx.rect(200, 200, 200, 200);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    const stream = canvas.captureStream(60);
+    // MediaRecorder.isTypeSupported('video/webm'); //true
+    // MediaRecorder.isTypeSupported('video/mp4');//false
+    const recorder = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('video/mp4')?'video/mp4':"video/webm" });
+    const data = [];
+    recorder.ondataavailable = function (event) {
+        if (event.data && event.data.size) {
+            data.push(event.data);
+        }
+    };
+
+    recorder.onstop = () => {
+        const url = URL.createObjectURL(new Blob(data, { type: MediaRecorder.isTypeSupported('video/mp4')?'video/mp4':"video/webm" }));
+        document.querySelector("#videoContainer").style.display = "block";
+        document.querySelector("video").src = url;
+    };
+
+
+
+
+    function update(t) {
+        draw(t / 500);
+        requestAnimationFrame(update);
+    }
+    update(0);
+
+    recorder.start();
+
+    setTimeout(() => {
+        recorder.stop();
+    }, 6000);
+</script>
+</html>

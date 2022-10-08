@@ -9,9 +9,9 @@ public interface ${ClassName}Service {
 
     List<${ClassName}Vo> list${ClassName}();
 
-    void create${ClassName}(${ClassName}Bean ${className}Bean);
+    void add${ClassName}(${ClassName}Bean ${className}Bean);
 
-    void update${ClassName}(${ClassName}Bean ${className}Bean);
+    void modify${ClassName}(${ClassName}Bean ${className}Bean);
 
-    void delete${ClassName}();
+    void remove${ClassName}(long id);
 }

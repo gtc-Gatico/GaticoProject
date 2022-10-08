@@ -2,6 +2,7 @@ package cn.com.gatico.UDP;
 
 import java.io.IOException;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class Test {
@@ -17,7 +18,7 @@ public class Test {
                 try {
                     datagramSocket.receive(datagramPacket);
                     byte[] data = datagramPacket.getData();
-                    System.out.println(new String(data, 0, datagramPacket.getLength(), "UTF8"));
+                    System.out.println(new String(data, 0, datagramPacket.getLength(), StandardCharsets.UTF_8));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -37,7 +38,7 @@ public class Test {
                 DatagramPacket datagramPacket1;
                 Scanner scanner = new Scanner(System.in);
                 while (scanner.hasNextLine()) {
-                    byte arr1[] = scanner.next().getBytes("UTF8");
+                    byte arr1[] = scanner.next().getBytes(StandardCharsets.UTF_8);
                     datagramPacket1 = new DatagramPacket(arr1, arr1.length, serverAddress, port);
                     client.send(datagramPacket1);
                 }

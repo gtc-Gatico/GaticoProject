@@ -2,6 +2,7 @@ package ${packageName}.service.impl;
 
 import ${packageName}.bean.${ClassName}Bean;
 import ${packageName}.dao.${ClassName}Dao;
+import ${packageName}.entity.${ClassName}Entity;
 import ${packageName}.service.${ClassName}Service;
 import ${packageName}.vo.${ClassName}Vo;
 
@@ -21,26 +22,32 @@ public class ${ClassName}ServiceImpl implements ${ClassName}Service{
 
     @Override
     public List<${ClassName}Vo> list${ClassName}() {
+        return ${className}Dao.findAll().stream().map(${className}Entity -> {
+            ${ClassName}Vo ${className}Vo = new ${ClassName}Vo();
 
-        return null;
+            return ${className}Vo;
+        }).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void create${ClassName}(${ClassName}Bean ${className}Bean) {
+    public void add${ClassName}(${ClassName}Bean ${className}Bean) {
 
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void update${ClassName}(${ClassName}Bean ${className}Bean) {
+    public void modify${ClassName}(${ClassName}Bean ${className}Bean) {
 
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void delete${ClassName}() {
-
+    public void remove${ClassName}(long id) {
+        ${ClassName}Entity ${className}Entity = ${className}Dao.findOne(id);
+        if(${className}Entity != null){
+            ${className}Dao.delete(${className}Entity);
+        }
     }
 
 }

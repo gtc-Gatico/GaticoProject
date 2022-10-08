@@ -6,21 +6,20 @@ import cn.com.gatico.utils.ThreadUtils;
 
 import javax.script.*;
 
-public class Js  {
+public class Js {
     static ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-    static ScriptEngine javascript = scriptEngineManager.getEngineByName("javascript");
+    static ScriptEngine javascript = scriptEngineManager.getEngineByName("JavaScript");
 
-    static {
+
+    public static void init() {
         javascript.put("file", new FileUtil());
         javascript.put("http", new HttpUtils());
         javascript.put("thread", new ThreadUtils());
+
     }
 
-    public static Bindings getBindings(){
-        return javascript.createBindings();
-    }
 
-    public static Object eval(String script){
+    public static Object eval(String script) {
         try {
             return javascript.eval(script);
         } catch (ScriptException e) {
@@ -29,9 +28,9 @@ public class Js  {
         return null;
     }
 
-    public static Object eval(String script, SimpleBindings bindings){
+    public static Object eval(String script, SimpleBindings bindings) {
         try {
-            return javascript.eval(script,bindings);
+            return javascript.eval(script, bindings);
         } catch (ScriptException e) {
             e.printStackTrace();
         }

@@ -18,7 +18,7 @@ public class SplitString {
         PrintWriter printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(tmpPath.replace("${i}", tmp), false)));
         while ((str = fis.readLine()) != null) {
             //2020-06-07 00
-            if (str.indexOf("2020-06-07 " + tmp) != -1) {
+            if (str.contains("2020-06-07 " + tmp)) {
                 System.out.println("第" + tmp + "文件");
                 printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(tmpPath.replace("${i}", tmp), false)));
                 tmp = String.format("%02d", index++);

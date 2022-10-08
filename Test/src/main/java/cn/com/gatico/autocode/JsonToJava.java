@@ -1,8 +1,10 @@
 package cn.com.gatico.autocode;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,22 +36,30 @@ public class JsonToJava {
                 "  }\n" +
                 "}");
 
-        Map map = new HashMap();
-        print(map, jsonObject);
-        System.out.println(map);
+        Map<String, String> map = new HashMap<>();
+        toJavaObject(map, jsonObject);
     }
 
-    public static void print(Map strings, JSONObject jsonObject) {
-//        List<String> strings1 = new ArrayList<>();
-//        jsonObject.keySet().forEach(s -> {
-//            strings1.add(s);
-//            JSONObject o = (JSONObject) jsonObject.get(s);
-//            if (o != null && o.is) {
-//                System.out.println(s);
-//                print(strings, o);
-//            }
-//        });
-//
-//        strings.put(jsonObject, strings1);
+    public static String toJavaObject(Map<String, String> resMap, JSONObject jsonObject) {
+        jsonObject.keySet().forEach(key -> {
+            Object o = jsonObject.get(key);
+            if (o instanceof Number) {
+                System.out.println(o);
+                resMap.put(key, "Long");
+            } else if (o instanceof String) {
+                System.out.println(o);
+                resMap.put(key, "String");
+            } else if (o instanceof JSONObject) {
+                System.out.println(o);
+                char[] chars = key.toCharArray();
+                chars[0] = String.valueOf(chars[0]).toUpperCase().charAt(0);
+                resMap.put(key, new String(chars));
+                toJavaObject(resMap, (JSONObject) o);
+            } else if (o instanceof JSONArray) {
+                System.out.println(o);
+                resMap.put(key, "ArrayList<"+key+">");
+            }
+        });
+        return null;
     }
 }

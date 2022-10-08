@@ -1,5 +1,8 @@
 package cn.com.gatico.rmi;
 
+import cn.com.gatico.rmi.public_interface.Hello;
+import cn.com.gatico.rmi.server.HelloImpl;
+
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
@@ -10,21 +13,14 @@ public class Server {
 
     public static void main(String[] args) {
 
+        Hello hello;
         try {
-            Hello hello = new HelloImpl(); // 创建一个远程对象，同时也会创建stub对象、skeleton对象
-
-            LocateRegistry.createRegistry(8080); //启动注册服务
-            try {
-                Naming.bind("//127.0.0.1:8080/hello", hello); //将stub引用绑定到服务地址上
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (AlreadyBoundException e) {
-                e.printStackTrace();
-            }
-            System.out.println("service bind already!!");
-
-        } catch (RemoteException e) {
+            hello = new HelloImpl(); //生成了stubs skeleton 并且返回了stubs的代理应用
+            LocateRegistry.createRegistry(8080);
+            //将stub应用绑定到注册的服务地址
+            Naming.bind("rmi://127.0.0.1:8080/hello", hello);
+            System.out.println("完成服务注册及绑定");
+        } catch (RemoteException | AlreadyBoundException | MalformedURLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

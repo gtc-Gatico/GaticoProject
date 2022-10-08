@@ -104,13 +104,6 @@ public class quickSort {
     }
 
     //堆排序
-
-    /**
-     * 选择排序-堆排序
-     *
-     * @param array 待排序数组
-     * @return 已排序数组
-     */
     public static void heapSort(int[] array) {
         //这里元素的索引是从0开始的,所以最后一个非叶子结点array.length/2 - 1
         for (int i = array.length / 2 - 1; i >= 0; i--) {

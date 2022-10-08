@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AbsRestful implements HttpHandler {
-    static ThreadLocal<HttpExchange> threadLocal = new ThreadLocal();
+    static ThreadLocal<HttpExchange> threadLocal = new ThreadLocal<>();
     public Map<String, UrlClass> urlMap = new HashMap<>();
 
     @Override
@@ -73,7 +73,7 @@ public class AbsRestful implements HttpHandler {
         HttpExchange httpExchange = threadLocal.get();
         String query = httpExchange.getRequestURI().getQuery();
         String[] split = query.split("&");
-        Map<String, Object> map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         for (int i = 0; i < split.length; i++) {
             String key = split[i].split("=")[0];
             String value = split[i].split("=")[1];

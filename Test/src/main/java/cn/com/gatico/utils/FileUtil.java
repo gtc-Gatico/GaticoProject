@@ -3,8 +3,8 @@ package cn.com.gatico.utils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lance on 4/29/17.
@@ -13,6 +13,21 @@ public class FileUtil {
 
     private static final Logger logger = Logger.getLogger(FileUtil.class);
 
+    public static List<File> listFiles(File path,String[]ext,boolean isChild){
+        List<File> files = new ArrayList<>(Arrays.stream(Objects.requireNonNull(path.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().endsWith("ext");
+            }
+        }))).collect(Collectors.toList()));
+
+       if(isChild){
+           files.forEach(file -> {
+               files.addAll(listFiles(file, ext, isChild));
+           });
+       }
+        return files;
+    }
     public static List<String> readLines(String filePath) {
 
         BufferedReader br = null;

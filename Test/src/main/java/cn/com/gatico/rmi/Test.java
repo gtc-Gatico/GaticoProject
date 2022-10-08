@@ -1,6 +1,5 @@
 package cn.com.gatico.rmi;
 
-import javax.print.ServiceUI;
 import javax.smartcardio.*;
 import java.util.List;
 

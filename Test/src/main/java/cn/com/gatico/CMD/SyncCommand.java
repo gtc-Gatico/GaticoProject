@@ -1,16 +1,8 @@
 package cn.com.gatico.CMD;
 
-import cn.com.gatico.窗体.UserItem;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Gatico
@@ -19,6 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SyncCommand {
     public static void main(String[] args) throws Exception {
+
+
         File file = new File(SyncCommand.class.getClass().getResource("/").toURI());
         String files[] = file.list((dir, name) -> {
             return name.endsWith("properties");

@@ -4,7 +4,7 @@ import cn.com.gatico.Tree.TreeNode;
 import cn.com.gatico.Tree.TreeNodeEntity;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
-import org.zson.JsonSerializer;
+import com.google.gson.JsonSerializer;
 
 public class ZsonTest {
 
@@ -57,11 +57,11 @@ public class ZsonTest {
         nodeA.getTreeNodeList().add(nodeB);
         root.getTreeNodeList().add(nodeA);
         int count = 1000000;
-        JsonSerializer jsonSerializer = new JsonSerializer();
+//        JsonSerializer jsonSerializer = new JsonSerializer();
         long b = System.currentTimeMillis();
-        for (int i = 0; i < count; i++) {
-            jsonSerializer.serialize(root);
-        }
+//        for (int i = 0; i < count; i++) {
+//            jsonSerializer.serialize(root);
+//        }
         long e = System.currentTimeMillis();
         System.out.println(e - b);
 
