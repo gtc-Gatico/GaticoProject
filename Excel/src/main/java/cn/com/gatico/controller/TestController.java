@@ -1,7 +1,7 @@
 package cn.com.gatico.controller;
 
 import cn.com.gatico.service.TestService;
-import com.d2rabbit.exception.annotation.CheckExceptionx;
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -12,8 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
+@Aspect
 @RequestMapping("/test")
 public class TestController {
     @Autowired
@@ -64,4 +67,25 @@ public class TestController {
         return ResponseEntity.ok(environment.getProperty("test.ip"));
     }
 
+    @RequestMapping(value = "/abc", method = RequestMethod.POST)
+    public ResponseEntity<Object> testJson(@RequestBody TestBean testBean) {
+        System.out.println(testBean.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "test2", method = RequestMethod.GET)
+    public ResponseEntity<Object> ttt(Integer interval) {
+        Stream<Object> objectStream = new Random().ints(10).mapToObj(intStream ->
+        {
+            try {
+                System.out.println("test1:" + Thread.currentThread().getName());
+//                TimeUnit.SECONDS.sleep(2);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "this is data" + intStream;
+        });
+        List<Object> collect = objectStream.collect(Collectors.toList());
+        return ResponseEntity.ok(collect);
+    }
 }
