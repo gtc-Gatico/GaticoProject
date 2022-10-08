@@ -74,7 +74,7 @@ public class Test {
         g2d.drawRect(((imgSize - size) / 2), ((imgSize - size) / 2), size, size);
         bufferimg.flush();
         try {
-            ImageIO.write(bufferimg, "PNG", new File("/home/tianci.gao/test/test2.PNG"));
+            ImageIO.write(bufferimg, "png", new File("D:\\test2.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
