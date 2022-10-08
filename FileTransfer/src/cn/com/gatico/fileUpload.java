@@ -15,7 +15,7 @@ public class fileUpload {
         String port = args[1];
         String path = args[2];
         fc.setAddress(address);
-        fc.setPort(Integer.valueOf(port));
+        fc.setPort(Integer.parseInt(port));
         File file = new File(path);
         System.out.println(fileUpload.upload(file));
     }

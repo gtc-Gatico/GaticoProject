@@ -13,7 +13,7 @@
 
     <properties>
         <jme3_g>org.jmonkeyengine</jme3_g>
-        <jme3_v>3.1.0-stable</jme3_v>
+        <jme3_v>3.4.0-stable</jme3_v>
     </properties>
 
     <repositories>

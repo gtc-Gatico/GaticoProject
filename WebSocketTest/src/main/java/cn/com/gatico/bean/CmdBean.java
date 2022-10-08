@@ -1,4 +1,4 @@
-package cn.com.gatico.bean;
+package cn.com.gatico.remote.bean;
 
 /**
  * @author Gatico

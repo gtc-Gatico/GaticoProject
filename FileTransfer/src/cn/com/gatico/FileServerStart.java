@@ -21,15 +21,15 @@ public class FileServerStart {
             } else {
                 Log.path = args[1];
                 FileServerStart.path = args[0];
-                FileServerStart.port = Integer.valueOf(args[2]);
+                FileServerStart.port = Integer.parseInt(args[2]);
             }
             File files = new File(FileServerStart.path);
-            File filelog = new File(Log.path);
+            File fileLog = new File(Log.path);
             if (!files.exists()) {
                 files.mkdirs();
             }
-            if (!filelog.exists()) {
-                filelog.mkdirs();
+            if (!fileLog.exists()) {
+                fileLog.mkdirs();
             }
             Log.i("main", "文件存放目录:" + FileServerStart.path);
             Log.i("main", "日志目录:" + Log.path);

@@ -94,9 +94,9 @@ public class FileClient {
             }
         } else if (file.isDirectory()) {
             protocol.setType((byte) 2);
-            Double d = Math.random() * 1000000000;
+            double d = Math.random() * 1000000000;
             File[] files = file.listFiles();
-            protocol.setSplitByte(d.intValue());
+            protocol.setSplitByte((int) d);
             System.out.println(protocol.getSplitByte());
             try {
                 os.write(Util.intToByte(protocol.getProtocolTitle()));
@@ -116,11 +116,20 @@ public class FileClient {
                 if (tmp.isDirectory()) {
                     continue;
                 }
+                byte[] fileName = null;
+                try {
+                    fileName = tmp.getName().getBytes("UTF8");
+                    protocol.setNameLength((byte) fileName.length);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                protocol.setFileName(fileName);
+                protocol.setFileLength(tmp.length());
                 try {
                     os.write(Util.intToByte(protocol.getSplitByte()));
-                    os.write((byte) tmp.getName().getBytes().length);
-                    os.write(tmp.getName().getBytes());
-                    os.write(Util.longToByte(tmp.length()));
+                    os.write(protocol.getNameLength());
+                    os.write(protocol.getFileName());
+                    os.write(Util.longToByte(protocol.getFileLength()));
                     os.flush();
                     Log.i(tga, "文件名：" + new String(tmp.getName().getBytes(), "UTF8"));
                     Log.i(tga, "文件大小：" + tmp.length());

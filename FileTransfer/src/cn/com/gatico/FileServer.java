@@ -90,21 +90,23 @@ public class FileServer extends Thread {
                         is.read(temp);
                         protocol.setFileLength(Util.byteToLong(temp));
                         protocol.setProtocolStatus(ProtocolStatus.fileContext);//8388608
-                        protocol.setTempSize(protocol.getFileLength() > 65536 ? 65536 : (int) protocol.getFileLength());
+                        protocol.setTempSize(protocol.getFileLength() >  1 << 23 ?  1 << 23 : (int) protocol.getFileLength());
                         Log.i(tga, "获取的文件长度:" + protocol.getFileLength());
                         break;
                     case fileContext:
-                        File file = new File(FileServerStart.path + File.separator + new String(protocol.getFileName(), Charset.forName("UTF8")));
+                        File file = new File(FileServerStart.path + File.separator + new String(protocol.getFileName(), "UTF8"));
                         FileOutputStream fileOutputStream = new FileOutputStream(file);
                         temp = new byte[protocol.getTempSize()];
 
                         size = 0;
                         int length = 0;
-                        while ((length = is.read(temp, 0, temp.length)) > 0 && size <= protocol.getFileLength()) {
+                        while ( size < protocol.getFileLength()) {
+                            length = is.read(temp);
                             fileOutputStream.write(temp, 0, length);
                             size += length;
                             fileOutputStream.flush();
                         }
+                        fileOutputStream.flush();
                         fileOutputStream.close();
                         Log.i(tga, "文件接收已完成：" + file.getAbsolutePath());
                         if (protocol.getType() == 1) {

@@ -2,7 +2,7 @@ package cn.com.gatico.controller;
 
 
 import cn.com.gatico.TailLogThread;
-import cn.com.gatico.bean.CmdBean;
+import cn.com.gatico.remote.bean.CmdBean;
 import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

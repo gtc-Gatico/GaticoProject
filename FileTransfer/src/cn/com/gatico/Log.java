@@ -26,8 +26,8 @@ public class Log {
     public static void i(String tga, String msg) {
         if (writerFileFlag) {
             try {
-                String logpath = Log.path + "\\" + getDataTime().substring(0, 10) + log_path;
                 if (log == null || !log.exists()) {
+                    String logpath = Log.path + "\\" + getDataTime().substring(0, 10) + log_path;
                     log = new File(logpath);
                     log.createNewFile();
                     logps = new PrintStream(log);
@@ -44,8 +44,8 @@ public class Log {
     public static void e(String tga, Exception error) {
         if (writerFileFlag) {
             try {
-                String errpath = Log.path + "\\" + getDataTime().substring(0, 10) + err_path;
                 if (err == null || !err.exists()) {
+                    String errpath = Log.path + "\\" + getDataTime().substring(0, 10) + err_path;
                     err = new File(errpath);
                     err.createNewFile();
                     errps = new PrintStream(err);

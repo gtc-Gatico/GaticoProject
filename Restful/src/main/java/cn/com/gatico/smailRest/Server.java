@@ -5,7 +5,6 @@ import sun.net.httpserver.HttpServerImpl;
 
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
